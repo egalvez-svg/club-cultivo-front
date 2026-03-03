@@ -371,7 +371,7 @@ export default function StrainsPage() {
                                         </div>
                                     </div>
 
-                                    <div className="grid grid-cols-2 gap-4">
+                                    <div className="grid grid-cols-2 gap-4 items-end">
                                         <div className="space-y-2">
                                             <label className="text-xs font-black text-muted-foreground uppercase tracking-widest ml-1">Genética (Cruce) <span className="opacity-50">(Opcional)</span></label>
                                             <div className="relative group/input">
@@ -407,7 +407,7 @@ export default function StrainsPage() {
                                         </div>
                                     </div>
 
-                                    <div className="grid grid-cols-2 gap-4">
+                                    <div className="grid grid-cols-2 gap-4 items-end">
                                         <div className="space-y-2">
                                             <label className="text-xs font-black text-muted-foreground uppercase tracking-widest ml-1">% THC <span className="opacity-50">(Opcional)</span></label>
                                             <div className="relative group/input">

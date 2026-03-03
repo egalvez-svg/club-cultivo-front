@@ -196,7 +196,7 @@ export function LotModals({
                                         </div>
                                     </div>
 
-                                    <div className="grid grid-cols-2 gap-4">
+                                    <div className="grid grid-cols-2 gap-4 items-end">
                                         <div className="space-y-2">
                                             <label className="text-xs font-black text-muted-foreground uppercase tracking-widest ml-1">Tipo de Lote</label>
                                             <div className="relative group/input">
@@ -231,7 +231,7 @@ export function LotModals({
                                         </div>
                                     </div>
 
-                                    <div className="grid grid-cols-2 gap-4">
+                                    <div className="grid grid-cols-2 gap-4 items-end">
                                         <div className="space-y-2">
                                             <label className="text-xs font-black text-muted-foreground uppercase tracking-widest ml-1">Producción (g) <span className="opacity-50">(Opc)</span></label>
                                             <div className="relative group/input">

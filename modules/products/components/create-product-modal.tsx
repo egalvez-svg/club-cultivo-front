@@ -90,11 +90,10 @@ export function CreateProductModal({ isOpen, onClose, product }: CreateProductMo
                     netPhysicalQuantity: Number(netPhysicalQuantity),
                     equivalentDryGrams: Number(equivalentDryGrams),
                     price: Number(price),
+                    currentStock: Number(currentStock),
                 };
 
-                // Only include lot if it changed
-                const currentLotId = product.productionLotId || product.lots?.[0]?.id;
-                if (productionLotId && productionLotId !== currentLotId) {
+                if (productionLotId) {
                     updateData.productionLotId = productionLotId;
                 }
 

@@ -1,4 +1,4 @@
-export const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://club-cultivo-8kko.onrender.com";
+export const API_URL = process.env.NEXT_PUBLIC_API_URL || "";
 
 export interface LoginParams {
     email: string;

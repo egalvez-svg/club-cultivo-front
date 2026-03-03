@@ -40,10 +40,11 @@ export const dashboardService = {
             },
         });
 
-        const data = await response.json();
+        const data = await response.json().catch(() => ({}));
 
         if (!response.ok) {
-            throw new Error(data.message || "Error al obtener datos del dashboard");
+            const errorMessage = data.message || data.error || `HTTP ${response.status}`;
+            throw new Error(`Error en Dashboard (${response.status}): ${errorMessage}`);
         }
 
         return data;

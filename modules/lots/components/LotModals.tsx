@@ -114,14 +114,12 @@ export function LotModals({
                                 <Edit2 size={14} className="text-primary" /> Editar
                             </button>
 
-                            {selectedLot.status === "CREATED" && (
-                                <button
-                                    onClick={onDeleteClick}
-                                    className="w-full px-4 py-3 text-left text-sm font-bold flex items-center gap-3 hover:bg-red-50 text-red-600 transition-colors"
-                                >
-                                    <Trash2 size={14} /> Eliminar
-                                </button>
-                            )}
+                            <button
+                                onClick={onDeleteClick}
+                                className="w-full px-4 py-3 text-left text-sm font-bold flex items-center gap-3 hover:bg-red-50 text-red-600 transition-colors"
+                            >
+                                <Trash2 size={14} /> Eliminar
+                            </button>
                         </motion.div>
                     </>
                 )}

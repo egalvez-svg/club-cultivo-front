@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { Loader2, LayoutGrid, Leaf, Droplet, Beaker, PackageOpen, Pencil } from "lucide-react";
+import { Loader2, LayoutGrid, Leaf, Droplet, Beaker, PackageOpen, Pencil, Trash2 } from "lucide-react";
 import { Product, ProductPresentationType, ProductPhysicalUnit } from "@/lib/services/product";
 
 const PRESENTATION_CONFIG: Record<ProductPresentationType, { label: string; icon: any; color: string; bg: string }> = {
@@ -22,9 +22,10 @@ interface ProductGridProps {
     isLoading: boolean;
     searchQuery: string;
     onEditProduct: (product: Product) => void;
+    onDeleteProduct: (product: Product) => void;
 }
 
-export function ProductGrid({ products, isLoading, searchQuery, onEditProduct }: ProductGridProps) {
+export function ProductGrid({ products, isLoading, searchQuery, onEditProduct, onDeleteProduct }: ProductGridProps) {
     if (isLoading) {
         return (
             <div className="flex-1 flex flex-col items-center justify-center min-h-[400px]">
@@ -89,12 +90,20 @@ export function ProductGrid({ products, isLoading, searchQuery, onEditProduct }:
                                         </div>
                                     </div>
 
-                                    <button
-                                        onClick={() => onEditProduct(product)}
-                                        className="w-8 h-8 rounded-lg flex items-center justify-center bg-slate-50 text-slate-400 opacity-0 group-hover:opacity-100 hover:bg-primary/10 hover:text-primary transition-all shadow-sm"
-                                    >
-                                        <Pencil size={14} />
-                                    </button>
+                                    <div className="flex gap-2 relative z-20">
+                                        <button
+                                            onClick={() => onEditProduct(product)}
+                                            className="w-8 h-8 rounded-lg flex items-center justify-center bg-slate-50 text-slate-400 opacity-0 group-hover:opacity-100 hover:bg-primary/10 hover:text-primary transition-all shadow-sm"
+                                        >
+                                            <Pencil size={14} />
+                                        </button>
+                                        <button
+                                            onClick={() => onDeleteProduct(product)}
+                                            className="w-8 h-8 rounded-lg flex items-center justify-center bg-slate-50 text-slate-400 opacity-0 group-hover:opacity-100 hover:bg-red-500/10 hover:text-red-500 transition-all shadow-sm"
+                                        >
+                                            <Trash2 size={14} />
+                                        </button>
+                                    </div>
                                 </div>
 
                                 <div className="mt-auto space-y-4">

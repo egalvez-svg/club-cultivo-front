@@ -1,26 +1,80 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
+@theme {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+:root {
+  --background: #f8faf9;
+  --foreground: #1c1e1d;
+  --card: #ffffff;
+  --card-foreground: #1c1e1d;
+  --primary: #2d5a4c;
+  --primary-foreground: #f8faf9;
+  --secondary: #e2ede8;
+  --secondary-foreground: #1c1e1d;
+  --muted: #f1f5f3;
+  --muted-foreground: #64746b;
+  --accent: #4ade80;
+  --accent-foreground: #1c1e1d;
+  --destructive: #ef4444;
+  --border: #e2e8e5;
+  --radius: 1rem;
+}
+
+.dark {
+  --background: #0f1110;
+  --foreground: #f8faf9;
+  --card: #161817;
+  --card-foreground: #f8faf9;
+  --primary: #4ade80;
+  --primary-foreground: #0f1110;
+  --secondary: #1e2925;
+  --secondary-foreground: #f8faf9;
+  --muted: #1e2925;
+  --muted-foreground: #a1a1aa;
+  --border: #27272a;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "rlig" 1, "calt" 1;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer components {
+  .glass {
+    @apply bg-white/70 backdrop-blur-md border border-white/20;
+  }
+
+  .card-hover {
+    @apply transition-all duration-300 hover:shadow-lg hover:-translate-y-1;
+  }
+}
+
+/* Sileo Toast Overrides to prevent hiding behind modals */
+[data-sileo-wrapper] {
+  z-index: 99999 !important;
 }

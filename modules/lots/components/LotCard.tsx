@@ -65,17 +65,23 @@ export function LotCard({ lot, colorClass, borderClass, onDragStart, onActionCli
                 </div>
             </div>
 
-            {(lot.totalOutputEquivalentGrams || lot.totalProductionCost) && (
-                <div className="grid grid-cols-2 gap-2 mb-4 bg-muted/30 rounded-xl p-3 shrink-0">
-                    {lot.totalOutputEquivalentGrams !== undefined && (
+            {(lot.totalOutputEquivalentGrams !== null || lot.totalProductionCost !== null || lot.availableEquivalentGrams !== null) && (
+                <div className="grid grid-cols-3 gap-2 mb-4 bg-muted/30 rounded-xl p-3 shrink-0">
+                    {lot.totalOutputEquivalentGrams !== null && lot.totalOutputEquivalentGrams !== undefined && (
                         <div>
-                            <span className="block text-[10px] font-bold text-muted-foreground uppercase tracking-tighter">Producción</span>
+                            <span className="block text-[9px] font-bold text-muted-foreground uppercase tracking-tighter">Cosechado</span>
                             <span className="font-black text-sm">{lot.totalOutputEquivalentGrams}g</span>
                         </div>
                     )}
-                    {lot.totalProductionCost !== undefined && lot.totalProductionCost !== null && (
+                    {lot.availableEquivalentGrams !== null && lot.availableEquivalentGrams !== undefined && (
                         <div>
-                            <span className="block text-[10px] font-bold text-muted-foreground uppercase tracking-tighter">Costo</span>
+                            <span className="block text-[9px] font-bold text-muted-foreground uppercase tracking-tighter">Stock</span>
+                            <span className="font-black text-sm text-primary">{lot.availableEquivalentGrams}g</span>
+                        </div>
+                    )}
+                    {lot.totalProductionCost !== null && lot.totalProductionCost !== undefined && (
+                        <div>
+                            <span className="block text-[9px] font-bold text-muted-foreground uppercase tracking-tighter">Costo</span>
                             <span className="font-black text-sm">${lot.totalProductionCost.toLocaleString()}</span>
                         </div>
                     )}

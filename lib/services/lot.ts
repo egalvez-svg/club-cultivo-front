@@ -13,6 +13,7 @@ export interface Lot {
     status: "CREATED" | "TESTING" | "RELEASED" | "BLOCKED" | "DEPLETED" | string;
     translatedStatus?: string;
     totalOutputEquivalentGrams: number | null;
+    availableEquivalentGrams: number | null;
     totalProductionCost: number | null;
     releasedAt: string | null;
     organizationId: string;

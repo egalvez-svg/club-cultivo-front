@@ -261,7 +261,7 @@ export function CreateProductModal({ isOpen, onClose, product }: CreateProductMo
                                                                 </option>
                                                                 {lots && lots.length > 0 && lots.map(l => (
                                                                     <option key={l.id} value={l.id} className="text-slate-800 font-bold">
-                                                                        {l.lotCode} | Stock: {l.totalOutputEquivalentGrams}g
+                                                                        {l.lotCode} | Stock: {l.availableEquivalentGrams ?? l.totalOutputEquivalentGrams}g
                                                                     </option>
                                                                 ))}
                                                             </select>

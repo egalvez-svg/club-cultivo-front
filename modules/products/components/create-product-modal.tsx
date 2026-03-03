@@ -198,83 +198,91 @@ export function CreateProductModal({ isOpen, onClose, product }: CreateProductMo
                                     </div>
 
                                     <div className="grid grid-cols-1 gap-5">
-                                        <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-                                            <label className="sm:w-32 text-[11px] font-black uppercase tracking-widest text-slate-500 shrink-0">Nombre</label>
-                                            <div className="relative group flex-1">
+                                        <div className="space-y-2">
+                                            <label className="text-xs font-black text-muted-foreground uppercase tracking-widest ml-1">Nombre</label>
+                                            <div className="relative group/input">
+                                                <PackageOpen className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within/input:text-primary transition-colors" size={18} />
                                                 <input
                                                     type="text"
                                                     required
                                                     value={name}
                                                     onChange={(e) => setName(e.target.value)}
-                                                    className="w-full px-5 py-3.5 bg-slate-50 border-2 border-transparent focus:bg-white focus:ring-4 focus:ring-primary/5 focus:border-primary/20 rounded-2xl transition-all text-sm font-bold outline-none text-slate-700"
+                                                    className="w-full pl-12 pr-4 py-3.5 bg-muted/30 border-2 border-transparent rounded-[1.25rem] outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary/20 transition-all font-medium text-[15px]"
                                                     placeholder="Ej. Frasco Amnesia Haze 5g"
                                                 />
                                             </div>
                                         </div>
 
-                                        <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-                                            <label className="sm:w-32 text-[11px] font-black uppercase tracking-widest text-slate-500 shrink-0">Genética</label>
-                                            <div className="relative group flex-1">
-                                                <select
-                                                    required
-                                                    value={strainId}
-                                                    onChange={(e) => setStrainId(e.target.value)}
-                                                    className="w-full px-5 py-3.5 bg-slate-50 border-2 border-transparent focus:bg-white focus:ring-4 focus:ring-primary/5 focus:border-primary/20 rounded-2xl transition-all text-sm font-bold outline-none appearance-none cursor-pointer pr-10 text-slate-700"
-                                                >
-                                                    <option value="" className="text-muted-foreground">Seleccionar cepa...</option>
-                                                    {strains?.filter(s => s.active).map(s => (
-                                                        <option key={s.id} value={s.id} className="text-slate-700">{s.name} ({s.type})</option>
-                                                    ))}
-                                                </select>
-                                                <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
-                                                    <ChevronDown size={18} />
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                            <div className="space-y-2">
+                                                <label className="text-xs font-black text-muted-foreground uppercase tracking-widest ml-1">Genética</label>
+                                                <div className="relative group/input">
+                                                    <Leaf className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within/input:text-primary transition-colors" size={18} />
+                                                    <select
+                                                        required
+                                                        value={strainId}
+                                                        onChange={(e) => setStrainId(e.target.value)}
+                                                        className="w-full pl-12 pr-10 py-3.5 bg-muted/30 border-2 border-transparent rounded-[1.25rem] outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary/20 transition-all font-medium text-[15px] appearance-none cursor-pointer text-slate-700"
+                                                    >
+                                                        <option value="" className="text-muted-foreground">Seleccionar cepa...</option>
+                                                        {strains?.filter(s => s.active).map(s => (
+                                                            <option key={s.id} value={s.id} className="text-slate-700">{s.name} ({s.type})</option>
+                                                        ))}
+                                                    </select>
+                                                    <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                                                        <ChevronDown size={18} />
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
 
-                                        <AnimatePresence>
-                                            {strainId && (
-                                                <motion.div
-                                                    initial={{ opacity: 0, scale: 0.98 }}
-                                                    animate={{ opacity: 1, scale: 1 }}
-                                                    className="flex flex-col sm:flex-row sm:items-center gap-4 pt-1"
-                                                >
-                                                    <label className="sm:w-32 text-[11px] font-black uppercase tracking-widest text-slate-500 shrink-0">Lote Origen</label>
-                                                    <div className="relative group flex-1">
-                                                        <select
-                                                            required
-                                                            value={productionLotId}
-                                                            onChange={(e) => setProductionLotId(e.target.value)}
-                                                            className={cn(
-                                                                "w-full px-5 py-3.5 border-2 transition-all text-sm font-bold outline-none appearance-none cursor-pointer pr-10 rounded-2xl",
-                                                                isLoadingLots ? "bg-slate-100 text-muted-foreground border-transparent" : "bg-slate-50 border-transparent focus:bg-white focus:ring-4 focus:ring-primary/5 focus:border-primary/20 text-slate-700"
-                                                            )}
-                                                        >
-                                                            <option value="" className="text-slate-400">
-                                                                {isLoadingLots ? "Consultando disponibilidad..." : "Vincular con un lote físico..."}
-                                                            </option>
-                                                            {lots && lots.length > 0 && lots.map(l => (
-                                                                <option key={l.id} value={l.id} className="text-slate-800 font-bold">
-                                                                    {l.lotCode} | Stock: {l.totalOutputEquivalentGrams}g
+                                            <AnimatePresence>
+                                                {strainId && (
+                                                    <motion.div
+                                                        initial={{ opacity: 0, scale: 0.98 }}
+                                                        animate={{ opacity: 1, scale: 1 }}
+                                                        className="space-y-2"
+                                                    >
+                                                        <label className="text-xs font-black text-muted-foreground uppercase tracking-widest ml-1">Lote Origen</label>
+                                                        <div className="relative group/input">
+                                                            <Hash className={cn(
+                                                                "absolute left-4 top-1/2 -translate-y-1/2 transition-colors",
+                                                                isLoadingLots ? "text-primary animate-pulse" : "text-muted-foreground group-focus-within/input:text-primary"
+                                                            )} size={18} />
+                                                            <select
+                                                                required
+                                                                value={productionLotId}
+                                                                onChange={(e) => setProductionLotId(e.target.value)}
+                                                                className={cn(
+                                                                    "w-full pl-12 pr-10 py-3.5 border-2 rounded-[1.25rem] transition-all font-medium text-[15px] outline-none appearance-none cursor-pointer",
+                                                                    isLoadingLots ? "bg-slate-100 text-muted-foreground border-transparent" : "bg-muted/30 border-transparent focus:border-primary/20 focus:ring-4 focus:ring-primary/10 text-slate-700"
+                                                                )}
+                                                            >
+                                                                <option value="" className="text-slate-400">
+                                                                    {isLoadingLots ? "Consultando disponibilidad..." : "Vincular con un lote físico..."}
                                                                 </option>
-                                                            ))}
-                                                        </select>
-                                                        <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none flex items-center gap-2">
-                                                            {isLoadingLots && <Loader2 size={16} className="animate-spin text-primary" />}
-                                                            {!isLoadingLots && <ChevronDown size={18} className="text-slate-400" />}
-                                                        </div>
-                                                        {(!lots || (lots && lots.length === 0)) && !isLoadingLots && (
-                                                            <div className="absolute left-0 -bottom-8 w-full">
-                                                                <p className="text-[9px] font-black text-rose-500 uppercase tracking-widest px-2 flex items-center gap-1.5 anim-pulse">
-                                                                    <AlertCircle size={12} />
-                                                                    No hay lotes disponibles para esta cepa. (Es obligatorio)
-                                                                </p>
+                                                                {lots && lots.length > 0 && lots.map(l => (
+                                                                    <option key={l.id} value={l.id} className="text-slate-800 font-bold">
+                                                                        {l.lotCode} | Stock: {l.totalOutputEquivalentGrams}g
+                                                                    </option>
+                                                                ))}
+                                                            </select>
+                                                            <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none flex items-center gap-2">
+                                                                {isLoadingLots && <Loader2 size={16} className="animate-spin text-primary" />}
+                                                                {!isLoadingLots && <ChevronDown size={18} className="text-slate-400" />}
                                                             </div>
-                                                        )}
-                                                    </div>
-                                                </motion.div>
-                                            )}
-                                        </AnimatePresence>
+                                                            {(!lots || (lots && lots.length === 0)) && !isLoadingLots && (
+                                                                <div className="absolute left-0 -bottom-8 w-full">
+                                                                    <p className="text-[9px] font-black text-rose-500 uppercase tracking-widest px-2 flex items-center gap-1.5 animate-pulse">
+                                                                        <AlertCircle size={12} />
+                                                                        No hay lotes disponibles para esta cepa. (Es obligatorio)
+                                                                    </p>
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    </motion.div>
+                                                )}
+                                            </AnimatePresence>
+                                        </div>
                                     </div>
                                 </div>
 

@@ -15,7 +15,9 @@ import {
     AlertTriangle,
     Loader2,
     CheckCircle2,
-    Activity
+    Activity,
+    Hash,
+    ChevronDown
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useStrainsList, useCreateStrain, useUpdateStrain, useDeleteStrain } from "@/lib/hooks/useStrains";
@@ -356,40 +358,52 @@ export default function StrainsPage() {
                                 <form onSubmit={isEditModalOpen ? handleUpdateStrain : handleCreateStrain} className="space-y-6">
                                     <div className="space-y-2">
                                         <label className="text-xs font-black text-muted-foreground uppercase tracking-widest ml-1">Nombre de Cepa</label>
-                                        <input
-                                            type="text"
-                                            required
-                                            value={name}
-                                            onChange={(e) => setName(e.target.value)}
-                                            className="w-full px-4 py-3.5 bg-muted/30 border-2 border-transparent rounded-[1.25rem] outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary/20 transition-all font-medium text-[15px]"
-                                            placeholder="Ej: Gorilla Glue"
-                                        />
+                                        <div className="relative group/input">
+                                            <Leaf className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within/input:text-primary transition-colors" size={18} />
+                                            <input
+                                                type="text"
+                                                required
+                                                value={name}
+                                                onChange={(e) => setName(e.target.value)}
+                                                className="w-full pl-12 pr-4 py-3.5 bg-muted/30 border-2 border-transparent rounded-[1.25rem] outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary/20 transition-all font-medium text-[15px] text-slate-800"
+                                                placeholder="Ej: Gorilla Glue"
+                                            />
+                                        </div>
                                     </div>
 
                                     <div className="grid grid-cols-2 gap-4">
                                         <div className="space-y-2">
                                             <label className="text-xs font-black text-muted-foreground uppercase tracking-widest ml-1">Genética (Cruce) <span className="opacity-50">(Opcional)</span></label>
-                                            <input
-                                                type="text"
-                                                value={genetics}
-                                                onChange={(e) => setGenetics(e.target.value)}
-                                                className="w-full px-4 py-3.5 bg-muted/30 border-2 border-transparent rounded-[1.25rem] outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary/20 transition-all font-medium text-[15px]"
-                                                placeholder="Ej: Sour Dubb x Chem Sis"
-                                            />
+                                            <div className="relative group/input">
+                                                <Dna className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within/input:text-primary transition-colors" size={18} />
+                                                <input
+                                                    type="text"
+                                                    value={genetics}
+                                                    onChange={(e) => setGenetics(e.target.value)}
+                                                    className="w-full pl-12 pr-4 py-3.5 bg-muted/30 border-2 border-transparent rounded-[1.25rem] outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary/20 transition-all font-medium text-[15px] text-slate-800"
+                                                    placeholder="Ej: Sour Dubb x Chem Sis"
+                                                />
+                                            </div>
                                         </div>
                                         <div className="space-y-2">
                                             <label className="text-xs font-black text-muted-foreground uppercase tracking-widest ml-1">Tipo <span className="opacity-50">(Opcional)</span></label>
-                                            <select
-                                                value={type}
-                                                onChange={(e) => setType(e.target.value as any)}
-                                                className="w-full px-4 py-3.5 bg-muted/30 border-2 border-transparent rounded-[1.25rem] outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary/20 transition-all font-medium text-[15px] cursor-pointer appearance-none"
-                                            >
-                                                <option value="">Seleccionar...</option>
-                                                <option value="SATIVA">Sativa</option>
-                                                <option value="INDICA">Indica</option>
-                                                <option value="HYBRID">Híbrida</option>
-                                                <option value="OTHER">Otro</option>
-                                            </select>
+                                            <div className="relative group/input">
+                                                <Hash className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within/input:text-primary transition-colors" size={18} />
+                                                <select
+                                                    value={type}
+                                                    onChange={(e) => setType(e.target.value as any)}
+                                                    className="w-full pl-12 pr-10 py-3.5 bg-muted/30 border-2 border-transparent rounded-[1.25rem] outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary/20 transition-all font-medium text-[15px] cursor-pointer appearance-none text-slate-800"
+                                                >
+                                                    <option value="">Seleccionar...</option>
+                                                    <option value="SATIVA">Sativa</option>
+                                                    <option value="INDICA">Indica</option>
+                                                    <option value="HYBRID">Híbrida</option>
+                                                    <option value="OTHER">Otro</option>
+                                                </select>
+                                                <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                                                    <ChevronDown size={18} />
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
 
@@ -403,7 +417,7 @@ export default function StrainsPage() {
                                                     step="0.01"
                                                     value={thcPercentage}
                                                     onChange={(e) => setThcPercentage(e.target.value)}
-                                                    className="w-full pl-12 pr-4 py-3.5 bg-muted/30 border-2 border-transparent rounded-[1.25rem] outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary/20 transition-all font-medium text-[15px]"
+                                                    className="w-full pl-12 pr-4 py-3.5 bg-muted/30 border-2 border-transparent rounded-[1.25rem] outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary/20 transition-all font-medium text-[15px] text-slate-800"
                                                     placeholder="Ej: 22.5"
                                                 />
                                             </div>
@@ -417,7 +431,7 @@ export default function StrainsPage() {
                                                     step="0.01"
                                                     value={cbdPercentage}
                                                     onChange={(e) => setCbdPercentage(e.target.value)}
-                                                    className="w-full pl-12 pr-4 py-3.5 bg-muted/30 border-2 border-transparent rounded-[1.25rem] outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary/20 transition-all font-medium text-[15px]"
+                                                    className="w-full pl-12 pr-4 py-3.5 bg-muted/30 border-2 border-transparent rounded-[1.25rem] outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary/20 transition-all font-medium text-[15px] text-slate-800"
                                                     placeholder="Ej: 0.1"
                                                 />
                                             </div>

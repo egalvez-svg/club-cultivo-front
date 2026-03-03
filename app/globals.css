@@ -75,6 +75,6 @@
 }
 
 /* Sileo Toast Overrides to prevent hiding behind modals */
-[data-sileo-wrapper] {
-  z-index: 99999 !important;
+[data-sileo-viewport] {
+  z-index: 999999 !important;
 }

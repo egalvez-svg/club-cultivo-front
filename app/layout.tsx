@@ -51,7 +51,9 @@ export default function RootLayout({
             </div>
           </Providers>
         </AuthProvider>
-        <Toaster position="top-center" />
+        <div style={{ position: 'relative', zIndex: 999999 }}>
+          <Toaster position="top-center" />
+        </div>
       </body>
     </html>
   );

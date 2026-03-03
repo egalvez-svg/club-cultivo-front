@@ -143,9 +143,9 @@ export function UserModals({
                             initial={{ opacity: 0, scale: 0.9, y: 20 }}
                             animate={{ opacity: 1, scale: 1, y: 0 }}
                             exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                            className="relative w-full max-w-2xl glass bg-white rounded-[2.5rem] shadow-2xl border border-white/50 p-8 max-h-[90vh] overflow-y-auto custom-scrollbar"
+                            className="relative w-full max-w-2xl glass bg-white rounded-[2.5rem] shadow-2xl border border-white/50 flex flex-col max-h-[90vh] overflow-hidden"
                         >
-                            <div className="flex items-center justify-between mb-8">
+                            <div className="flex items-center justify-between p-8 pb-6 border-b border-muted/20 shrink-0 bg-muted/5">
                                 <div className="flex items-center gap-3">
                                     <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
                                         {isEditModalOpen ? <Edit2 size={24} /> : <UserPlus size={24} />}
@@ -159,153 +159,156 @@ export function UserModals({
                                 </div>
                                 <button
                                     onClick={() => {
+                                        if (isPending) return;
                                         setIsCreateModalOpen(false);
                                         setIsEditModalOpen(false);
                                     }}
-                                    className="p-2 rounded-full hover:bg-muted transition-colors"
+                                    className="p-2 bg-muted/50 text-muted-foreground hover:bg-muted hover:text-foreground rounded-full transition-colors"
                                 >
                                     <X size={20} />
                                 </button>
                             </div>
 
-                            <form onSubmit={isEditModalOpen ? onUpdateUser : onCreateUser} className="space-y-6">
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    <div className="space-y-2">
-                                        <label className="text-xs font-black text-muted-foreground uppercase tracking-widest ml-1">Nombre Completo</label>
-                                        <div className="relative group/input">
-                                            <UserIcon className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within/input:text-primary transition-colors" size={18} />
-                                            <input
-                                                type="text"
-                                                required
-                                                value={fullName}
-                                                onChange={(e) => setFullName(e.target.value)}
-                                                className="w-full pl-12 pr-4 py-3.5 bg-muted/30 border-2 border-transparent rounded-[1.25rem] outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary/20 transition-all font-medium text-[15px]"
-                                                placeholder="Ej: Juan Pérez"
-                                            />
+                            <div className="p-8 pt-6 overflow-y-auto custom-scrollbar">
+                                <form onSubmit={isEditModalOpen ? onUpdateUser : onCreateUser} className="space-y-6">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div className="space-y-2">
+                                            <label className="text-xs font-black text-muted-foreground uppercase tracking-widest ml-1">Nombre Completo</label>
+                                            <div className="relative group/input">
+                                                <UserIcon className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within/input:text-primary transition-colors" size={18} />
+                                                <input
+                                                    type="text"
+                                                    required
+                                                    value={fullName}
+                                                    onChange={(e) => setFullName(e.target.value)}
+                                                    className="w-full pl-12 pr-4 py-3.5 bg-muted/30 border-2 border-transparent rounded-[1.25rem] outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary/20 transition-all font-medium text-[15px]"
+                                                    placeholder="Ej: Juan Pérez"
+                                                />
+                                            </div>
+                                        </div>
+
+                                        <div className="space-y-2">
+                                            <label className="text-xs font-black text-muted-foreground uppercase tracking-widest ml-1">Documento (DNI)</label>
+                                            <div className="relative group/input">
+                                                <FileText className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within/input:text-primary transition-colors" size={18} />
+                                                <input
+                                                    type="text"
+                                                    required
+                                                    value={documentNumber}
+                                                    onChange={(e) => setDocumentNumber(e.target.value)}
+                                                    className="w-full pl-12 pr-4 py-3.5 bg-muted/30 border-2 border-transparent rounded-[1.25rem] outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary/20 transition-all font-medium text-[15px]"
+                                                    placeholder="Ej: 12345678"
+                                                />
+                                            </div>
                                         </div>
                                     </div>
 
                                     <div className="space-y-2">
-                                        <label className="text-xs font-black text-muted-foreground uppercase tracking-widest ml-1">Documento (DNI)</label>
+                                        <label className="text-xs font-black text-muted-foreground uppercase tracking-widest ml-1">Correo Electrónico</label>
                                         <div className="relative group/input">
-                                            <FileText className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within/input:text-primary transition-colors" size={18} />
+                                            <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within/input:text-primary transition-colors" size={18} />
                                             <input
-                                                type="text"
+                                                type="email"
                                                 required
-                                                value={documentNumber}
-                                                onChange={(e) => setDocumentNumber(e.target.value)}
+                                                value={email}
+                                                onChange={(e) => setEmail(e.target.value)}
                                                 className="w-full pl-12 pr-4 py-3.5 bg-muted/30 border-2 border-transparent rounded-[1.25rem] outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary/20 transition-all font-medium text-[15px]"
-                                                placeholder="Ej: 12345678"
+                                                placeholder="operario@ejemplo.com"
                                             />
                                         </div>
                                     </div>
-                                </div>
 
-                                <div className="space-y-2">
-                                    <label className="text-xs font-black text-muted-foreground uppercase tracking-widest ml-1">Correo Electrónico</label>
-                                    <div className="relative group/input">
-                                        <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within/input:text-primary transition-colors" size={18} />
-                                        <input
-                                            type="email"
-                                            required
-                                            value={email}
-                                            onChange={(e) => setEmail(e.target.value)}
-                                            className="w-full pl-12 pr-4 py-3.5 bg-muted/30 border-2 border-transparent rounded-[1.25rem] outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary/20 transition-all font-medium text-[15px]"
-                                            placeholder="operario@ejemplo.com"
-                                        />
-                                    </div>
-                                </div>
-
-                                <div className="space-y-4">
-                                    <label className="text-xs font-black text-muted-foreground uppercase tracking-widest ml-1 block">Roles Asignados</label>
-                                    <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                                        {roles?.map((r) => (
-                                            <button
-                                                key={r.id}
-                                                type="button"
-                                                onClick={() => toggleRole(r.id)}
-                                                className={cn(
-                                                    "flex items-center gap-3 p-3 rounded-2xl border-2 transition-all text-left group",
-                                                    roleIds.includes(r.id)
-                                                        ? "bg-primary/5 border-primary text-primary shadow-md shadow-primary/10"
-                                                        : "bg-white border-slate-100 text-slate-400 hover:border-slate-200"
-                                                )}
-                                            >
-                                                <div className={cn(
-                                                    "w-8 h-8 rounded-lg flex items-center justify-center transition-colors",
-                                                    roleIds.includes(r.id) ? "bg-primary text-white" : "bg-slate-100 text-slate-400 group-hover:bg-slate-200"
-                                                )}>
-                                                    <Shield size={16} />
-                                                </div>
-                                                <span className="text-xs font-bold uppercase tracking-tight truncate">{r.name}</span>
-                                            </button>
-                                        ))}
-                                    </div>
-                                    {roleIds.length === 0 && (
-                                        <p className="text-[10px] text-destructive font-bold uppercase tracking-widest ml-2 flex items-center gap-1.5 animate-pulse">
-                                            <X size={12} /> Selecciona al menos un rol
-                                        </p>
-                                    )}
-                                </div>
-
-                                <div className="space-y-2">
-                                    <label className="text-xs font-black text-muted-foreground uppercase tracking-widest ml-1">Organización</label>
-                                    <div className="relative group/input">
-                                        <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within/input:text-primary transition-colors" size={18} />
-                                        <select
-                                            value={organizationId}
-                                            onChange={(e) => setOrganizationId(e.target.value)}
-                                            className="w-full pl-12 pr-4 py-3.5 bg-muted/30 border-2 border-transparent rounded-[1.25rem] outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary/20 transition-all font-medium text-[15px] appearance-none"
-                                        >
-                                            <option value="">Org. Por Defecto (Admin)</option>
-                                            {organizations?.map((o) => (
-                                                <option key={o.id} value={o.id}>{o.name}</option>
+                                    <div className="space-y-4">
+                                        <label className="text-xs font-black text-muted-foreground uppercase tracking-widest ml-1 block">Roles Asignados</label>
+                                        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                                            {roles?.map((r) => (
+                                                <button
+                                                    key={r.id}
+                                                    type="button"
+                                                    onClick={() => toggleRole(r.id)}
+                                                    className={cn(
+                                                        "flex items-center gap-3 p-3 rounded-2xl border-2 transition-all text-left group",
+                                                        roleIds.includes(r.id)
+                                                            ? "bg-primary/5 border-primary text-primary shadow-md shadow-primary/10"
+                                                            : "bg-white border-slate-100 text-slate-400 hover:border-slate-200"
+                                                    )}
+                                                >
+                                                    <div className={cn(
+                                                        "w-8 h-8 rounded-lg flex items-center justify-center transition-colors",
+                                                        roleIds.includes(r.id) ? "bg-primary text-white" : "bg-slate-100 text-slate-400 group-hover:bg-slate-200"
+                                                    )}>
+                                                        <Shield size={16} />
+                                                    </div>
+                                                    <span className="text-xs font-bold uppercase tracking-tight truncate">{r.name}</span>
+                                                </button>
                                             ))}
-                                        </select>
-                                    </div>
-                                </div>
-
-                                {isCreateModalOpen && (
-                                    <div className="space-y-2">
-                                        <label className="text-xs font-black text-muted-foreground uppercase tracking-widest ml-1">Contraseña Temp.</label>
-                                        <input
-                                            type="password"
-                                            required
-                                            value={password}
-                                            onChange={(e) => setPassword(e.target.value)}
-                                            className="w-full px-4 py-3.5 bg-muted/30 border-2 border-transparent rounded-[1.25rem] outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary/20 transition-all font-medium text-[15px]"
-                                            placeholder="••••••••"
-                                        />
-                                    </div>
-                                )}
-
-                                <div className="pt-4 flex gap-4">
-                                    <button
-                                        type="button"
-                                        onClick={() => {
-                                            setIsCreateModalOpen(false);
-                                            setIsEditModalOpen(false);
-                                        }}
-                                        className="flex-1 py-4.5 rounded-2xl font-black text-sm uppercase tracking-widest text-muted-foreground hover:bg-muted transition-all"
-                                    >
-                                        Cancelar
-                                    </button>
-                                    <button
-                                        type="submit"
-                                        disabled={isPending || roleIds.length === 0}
-                                        className="flex-[2] py-4.5 bg-primary text-primary-foreground rounded-2xl font-black text-sm uppercase tracking-widest flex items-center justify-center gap-2 shadow-xl shadow-primary/30 hover:shadow-2xl hover:-translate-y-1 transition-all active:scale-95 disabled:opacity-70"
-                                    >
-                                        {isPending ? (
-                                            <Loader2 size={20} className="animate-spin" />
-                                        ) : (
-                                            <>
-                                                {isEditModalOpen ? <CheckCircle2 size={20} /> : <Plus size={20} />}
-                                                {isEditModalOpen ? "Guardar Cambios" : "Crear Usuario"}
-                                            </>
+                                        </div>
+                                        {roleIds.length === 0 && (
+                                            <p className="text-[10px] text-destructive font-bold uppercase tracking-widest ml-2 flex items-center gap-1.5 animate-pulse">
+                                                <X size={12} /> Selecciona al menos un rol
+                                            </p>
                                         )}
-                                    </button>
-                                </div>
-                            </form>
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <label className="text-xs font-black text-muted-foreground uppercase tracking-widest ml-1">Organización</label>
+                                        <div className="relative group/input">
+                                            <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within/input:text-primary transition-colors" size={18} />
+                                            <select
+                                                value={organizationId}
+                                                onChange={(e) => setOrganizationId(e.target.value)}
+                                                className="w-full pl-12 pr-4 py-3.5 bg-muted/30 border-2 border-transparent rounded-[1.25rem] outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary/20 transition-all font-medium text-[15px] appearance-none"
+                                            >
+                                                <option value="">Org. Por Defecto (Admin)</option>
+                                                {organizations?.map((o) => (
+                                                    <option key={o.id} value={o.id}>{o.name}</option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    {isCreateModalOpen && (
+                                        <div className="space-y-2">
+                                            <label className="text-xs font-black text-muted-foreground uppercase tracking-widest ml-1">Contraseña Temp.</label>
+                                            <input
+                                                type="password"
+                                                required
+                                                value={password}
+                                                onChange={(e) => setPassword(e.target.value)}
+                                                className="w-full px-4 py-3.5 bg-muted/30 border-2 border-transparent rounded-[1.25rem] outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary/20 transition-all font-medium text-[15px]"
+                                                placeholder="••••••••"
+                                            />
+                                        </div>
+                                    )}
+
+                                    <div className="pt-4 flex gap-4">
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                setIsCreateModalOpen(false);
+                                                setIsEditModalOpen(false);
+                                            }}
+                                            className="flex-1 py-4.5 rounded-2xl font-black text-sm uppercase tracking-widest text-muted-foreground hover:bg-muted transition-all"
+                                        >
+                                            Cancelar
+                                        </button>
+                                        <button
+                                            type="submit"
+                                            disabled={isPending || roleIds.length === 0}
+                                            className="flex-[2] py-4.5 bg-primary text-primary-foreground rounded-2xl font-black text-sm uppercase tracking-widest flex items-center justify-center gap-2 shadow-xl shadow-primary/30 hover:shadow-2xl hover:-translate-y-1 transition-all active:scale-95 disabled:opacity-70"
+                                        >
+                                            {isPending ? (
+                                                <Loader2 size={20} className="animate-spin" />
+                                            ) : (
+                                                <>
+                                                    {isEditModalOpen ? <CheckCircle2 size={20} /> : <Plus size={20} />}
+                                                    {isEditModalOpen ? "Guardar Cambios" : "Crear Usuario"}
+                                                </>
+                                            )}
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
                         </motion.div>
                     </div>
                 )}

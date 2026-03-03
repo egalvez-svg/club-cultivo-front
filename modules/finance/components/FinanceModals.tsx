@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X, Unlock, BadgeDollarSign, Loader2, Plus, TrendingUp, TrendingDown, ArrowUpDown, Lock, AlertCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { MovementType } from "@/lib/services/cash-register";
+import { FileText } from "lucide-react";
 
 interface FinanceModalsProps {
     // Visibility
@@ -81,15 +82,15 @@ export function FinanceModals({
 
                         <div className="space-y-2">
                             <label className="text-xs font-black uppercase tracking-widest text-muted-foreground">Monto Inicial (ARS)</label>
-                            <div className="relative">
-                                <BadgeDollarSign className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" size={20} />
+                            <div className="relative group/input">
+                                <BadgeDollarSign className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within/input:text-primary transition-colors" size={20} />
                                 <input
                                     type="number"
                                     required
                                     autoFocus
                                     value={openingAmount || ""}
                                     onChange={(e) => setOpeningAmount(Number(e.target.value))}
-                                    className="w-full h-16 pl-12 pr-4 bg-muted/50 border-2 border-transparent focus:border-primary/20 focus:bg-white rounded-2xl outline-none transition-all text-2xl font-black"
+                                    className="w-full pl-12 pr-4 py-3.5 bg-muted/30 border-2 border-transparent focus:ring-4 focus:ring-primary/10 focus:border-primary/20 rounded-[1.25rem] outline-none transition-all text-2xl font-black text-slate-800"
                                     placeholder="0.00"
                                 />
                             </div>
@@ -159,26 +160,32 @@ export function FinanceModals({
 
                         <div className="space-y-4">
                             <div className="space-y-2">
-                                <label className="text-xs font-black uppercase tracking-widest text-muted-foreground">Monto</label>
-                                <input
-                                    type="number"
-                                    required
-                                    value={movementAmount || ""}
-                                    onChange={(e) => setMovementAmount(Number(e.target.value))}
-                                    className="w-full h-14 px-4 bg-muted/50 border-2 border-transparent focus:border-primary/20 focus:bg-white rounded-xl outline-none transition-all text-xl font-black"
-                                    placeholder="0.00"
-                                />
+                                <label className="text-xs font-black uppercase tracking-widest text-muted-foreground ml-1">Monto</label>
+                                <div className="relative group/input">
+                                    <BadgeDollarSign className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within/input:text-primary transition-colors" size={18} />
+                                    <input
+                                        type="number"
+                                        required
+                                        value={movementAmount || ""}
+                                        onChange={(e) => setMovementAmount(Number(e.target.value))}
+                                        className="w-full pl-12 pr-4 py-3.5 bg-muted/30 border-2 border-transparent focus:ring-4 focus:ring-primary/10 focus:border-primary/20 rounded-[1.25rem] outline-none transition-all text-xl font-black text-slate-800"
+                                        placeholder="0.00"
+                                    />
+                                </div>
                             </div>
                             <div className="space-y-2">
-                                <label className="text-xs font-black uppercase tracking-widest text-muted-foreground">Descripción / Motivo</label>
-                                <input
-                                    type="text"
-                                    required
-                                    value={movementDescription}
-                                    onChange={(e) => setMovementDescription(e.target.value)}
-                                    className="w-full h-14 px-4 bg-muted/50 border-2 border-transparent focus:border-primary/20 focus:bg-white rounded-xl outline-none transition-all text-sm font-bold"
-                                    placeholder="Ej. Pago de luz, Limpieza, etc."
-                                />
+                                <label className="text-xs font-black uppercase tracking-widest text-muted-foreground ml-1">Descripción / Motivo</label>
+                                <div className="relative group/input">
+                                    <FileText className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within/input:text-primary transition-colors" size={18} />
+                                    <input
+                                        type="text"
+                                        required
+                                        value={movementDescription}
+                                        onChange={(e) => setMovementDescription(e.target.value)}
+                                        className="w-full pl-12 pr-4 py-3.5 bg-muted/30 border-2 border-transparent focus:ring-4 focus:ring-primary/10 focus:border-primary/20 rounded-[1.25rem] outline-none transition-all font-medium text-[15px] text-slate-800"
+                                        placeholder="Ej. Pago de luz, Limpieza, etc."
+                                    />
+                                </div>
                             </div>
                         </div>
 
@@ -209,17 +216,20 @@ export function FinanceModals({
                             </p>
                         </div>
 
-                        <div className="space-y-2 text-left bg-slate-50 p-4 rounded-2xl">
-                            <label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">Dinero físico en caja (Arqueo)</label>
-                            <input
-                                type="number"
-                                required
-                                autoFocus
-                                value={closingAmount || ""}
-                                onChange={(e) => setClosingAmount(Number(e.target.value))}
-                                className="w-full h-16 px-4 bg-white border-2 border-slate-100 focus:border-primary/20 rounded-xl outline-none transition-all text-3xl font-black text-center"
-                                placeholder="0.00"
-                            />
+                        <div className="space-y-2 text-left bg-slate-50 p-4 rounded-3xl border border-slate-100">
+                            <label className="text-xs font-black uppercase tracking-[0.2em] text-muted-foreground ml-1">Dinero físico en caja (Arqueo)</label>
+                            <div className="relative group/input mt-2">
+                                <BadgeDollarSign className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within/input:text-primary transition-colors" size={24} />
+                                <input
+                                    type="number"
+                                    required
+                                    autoFocus
+                                    value={closingAmount || ""}
+                                    onChange={(e) => setClosingAmount(Number(e.target.value))}
+                                    className="w-full pl-14 pr-4 py-5 bg-white border-2 border-transparent focus:ring-4 focus:ring-primary/10 focus:border-primary/20 rounded-2xl outline-none transition-all text-3xl font-black text-slate-800 shadow-sm"
+                                    placeholder="0.00"
+                                />
+                            </div>
                         </div>
 
                         <div className="p-4 bg-amber-50 rounded-2xl border border-amber-100 flex items-start gap-3 text-left">

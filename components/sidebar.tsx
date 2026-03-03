@@ -11,7 +11,8 @@ import {
     BarChart3,
     Settings,
     Wallet,
-    UserCog
+    UserCog,
+    ShieldAlert
 } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -45,6 +46,7 @@ export function Sidebar() {
     // Solo añadir el ítem de Personal si el usuario es ADMIN
     if (user?.activeRole === "ADMIN" || user?.role === "ADMIN") {
         menuItems.push({ icon: UserCog, label: "Personal", href: "/users" });
+        menuItems.push({ icon: ShieldAlert, label: "Roles", href: "/roles" });
     }
 
 

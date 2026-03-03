@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Box, Edit2, Trash2, ArrowRight, CheckCircle2, Plus, Loader2, AlertTriangle } from "lucide-react";
+import { X, Box, Edit2, Trash2, ArrowRight, CheckCircle2, Plus, Loader2, AlertTriangle, Leaf, Scale, DollarSign, ChevronDown } from "lucide-react";
 import { Lot } from "@/lib/services/lot";
 import { Strain } from "@/lib/services/strain";
 
@@ -176,68 +176,89 @@ export function LotModals({
                                 <form onSubmit={isEditModalOpen ? onUpdateLot : onCreateLot} className="space-y-6">
                                     <div className="space-y-2">
                                         <label className="text-xs font-black text-muted-foreground uppercase tracking-widest ml-1">Cepa Genética</label>
-                                        <select
-                                            required
-                                            value={strainId}
-                                            onChange={(e) => setStrainId(e.target.value)}
-                                            disabled={isEditModalOpen}
-                                            className="w-full px-4 py-3.5 bg-muted/30 border-2 border-transparent rounded-[1.25rem] outline-none focus:ring-4 focus:ring-primary/10 transition-all font-medium text-[15px] cursor-pointer appearance-none disabled:opacity-50"
-                                        >
-                                            <option value="">Seleccionar Cepa...</option>
-                                            {strains?.filter(s => s.active).map(s => (
-                                                <option key={s.id} value={s.id}>{s.name} ({s.type || "N/A"})</option>
-                                            ))}
-                                        </select>
+                                        <div className="relative group/input">
+                                            <Leaf className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within/input:text-primary transition-colors" size={18} />
+                                            <select
+                                                required
+                                                value={strainId}
+                                                onChange={(e) => setStrainId(e.target.value)}
+                                                disabled={isEditModalOpen}
+                                                className="w-full pl-12 pr-10 py-3.5 bg-muted/30 border-2 border-transparent rounded-[1.25rem] outline-none focus:ring-4 focus:ring-primary/10 transition-all font-medium text-[15px] cursor-pointer appearance-none disabled:opacity-50 text-slate-700"
+                                            >
+                                                <option value="">Seleccionar Cepa...</option>
+                                                {strains?.filter(s => s.active).map(s => (
+                                                    <option key={s.id} value={s.id}>{s.name} ({s.type || "N/A"})</option>
+                                                ))}
+                                            </select>
+                                            <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                                                <ChevronDown size={18} />
+                                            </div>
+                                        </div>
                                     </div>
 
                                     <div className="grid grid-cols-2 gap-4">
                                         <div className="space-y-2">
                                             <label className="text-xs font-black text-muted-foreground uppercase tracking-widest ml-1">Tipo de Lote</label>
-                                            <select
-                                                required
-                                                value={lotType}
-                                                onChange={(e) => setLotType(e.target.value as any)}
-                                                className="w-full px-4 py-3.5 bg-muted/30 border-2 border-transparent rounded-[1.25rem] outline-none focus:ring-4 focus:ring-primary/10 transition-all font-medium text-[15px] cursor-pointer appearance-none"
-                                            >
-                                                <option value="">Seleccionar...</option>
-                                                <option value="CULTIVATION">Cultivo</option>
-                                                <option value="PACKAGING">Empaque</option>
-                                            </select>
+                                            <div className="relative group/input">
+                                                <Box className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within/input:text-primary transition-colors" size={18} />
+                                                <select
+                                                    required
+                                                    value={lotType}
+                                                    onChange={(e) => setLotType(e.target.value as any)}
+                                                    className="w-full pl-12 pr-10 py-3.5 bg-muted/30 border-2 border-transparent rounded-[1.25rem] outline-none focus:ring-4 focus:ring-primary/10 transition-all font-medium text-[15px] cursor-pointer appearance-none text-slate-700"
+                                                >
+                                                    <option value="">Seleccionar...</option>
+                                                    <option value="CULTIVATION">Cultivo</option>
+                                                    <option value="PACKAGING">Empaque</option>
+                                                </select>
+                                                <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                                                    <ChevronDown size={18} />
+                                                </div>
+                                            </div>
                                         </div>
                                         <div className="space-y-2">
                                             <label className="text-xs font-black text-muted-foreground uppercase tracking-widest ml-1">Nº Lote <span className="opacity-50">(Opcional)</span></label>
-                                            <input
-                                                type="text"
-                                                value={lotCode}
-                                                onChange={(e) => setLotCode(e.target.value)}
-                                                className="w-full px-4 py-3.5 bg-muted/30 border-2 border-transparent rounded-[1.25rem] outline-none focus:ring-4 focus:ring-primary/10 transition-all font-medium text-[15px]"
-                                                placeholder="Ej: LOT-2024-001"
-                                            />
+                                            <div className="relative group/input">
+                                                <Edit2 className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within/input:text-primary transition-colors" size={18} />
+                                                <input
+                                                    type="text"
+                                                    value={lotCode}
+                                                    onChange={(e) => setLotCode(e.target.value)}
+                                                    className="w-full pl-12 pr-4 py-3.5 bg-muted/30 border-2 border-transparent rounded-[1.25rem] outline-none focus:ring-4 focus:ring-primary/10 transition-all font-medium text-[15px] text-slate-700"
+                                                    placeholder="Ej: LOT-2024-001"
+                                                />
+                                            </div>
                                         </div>
                                     </div>
 
                                     <div className="grid grid-cols-2 gap-4">
                                         <div className="space-y-2">
                                             <label className="text-xs font-black text-muted-foreground uppercase tracking-widest ml-1">Producción (g) <span className="opacity-50">(Opc)</span></label>
-                                            <input
-                                                type="number"
-                                                step="0.1"
-                                                value={totalGrams}
-                                                onChange={(e) => setTotalGrams(e.target.value)}
-                                                className="w-full px-4 py-3.5 bg-muted/30 border-2 border-transparent rounded-[1.25rem] outline-none focus:ring-4 focus:ring-primary/10 transition-all font-medium text-[15px]"
-                                                placeholder="Ej: 1250.5"
-                                            />
+                                            <div className="relative group/input">
+                                                <Scale className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within/input:text-primary transition-colors" size={18} />
+                                                <input
+                                                    type="number"
+                                                    step="0.1"
+                                                    value={totalGrams}
+                                                    onChange={(e) => setTotalGrams(e.target.value)}
+                                                    className="w-full pl-12 pr-4 py-3.5 bg-muted/30 border-2 border-transparent rounded-[1.25rem] outline-none focus:ring-4 focus:ring-primary/10 transition-all font-medium text-[15px] text-slate-700"
+                                                    placeholder="Ej: 1250.5"
+                                                />
+                                            </div>
                                         </div>
                                         <div className="space-y-2">
                                             <label className="text-xs font-black text-muted-foreground uppercase tracking-widest ml-1">Costo ($) <span className="opacity-50">(Opc)</span></label>
-                                            <input
-                                                type="number"
-                                                step="0.01"
-                                                value={totalCost}
-                                                onChange={(e) => setTotalCost(e.target.value)}
-                                                className="w-full px-4 py-3.5 bg-muted/30 border-2 border-transparent rounded-[1.25rem] outline-none focus:ring-4 focus:ring-primary/10 transition-all font-medium text-[15px]"
-                                                placeholder="Ej: 85000"
-                                            />
+                                            <div className="relative group/input">
+                                                <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within/input:text-primary transition-colors" size={18} />
+                                                <input
+                                                    type="number"
+                                                    step="0.01"
+                                                    value={totalCost}
+                                                    onChange={(e) => setTotalCost(e.target.value)}
+                                                    className="w-full pl-12 pr-4 py-3.5 bg-muted/30 border-2 border-transparent rounded-[1.25rem] outline-none focus:ring-4 focus:ring-primary/10 transition-all font-medium text-[15px] text-slate-700"
+                                                    placeholder="Ej: 85000"
+                                                />
+                                            </div>
                                         </div>
                                     </div>
 

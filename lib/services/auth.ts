@@ -64,6 +64,11 @@ export const authService = {
             body: JSON.stringify(params),
         });
 
+        const contentType = response.headers.get("content-type");
+        if (!contentType || !contentType.includes("application/json")) {
+            throw new Error(`Error del servidor: URL incorrecta o servicio no disponible (${response.status})`);
+        }
+
         const data = await response.json();
 
         if (!response.ok) {

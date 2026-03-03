@@ -65,7 +65,94 @@ export function UserTable({
                     </div>
                 </div>
 
-                <div className="overflow-x-auto">
+                <div className="lg:hidden p-4 space-y-4">
+                    {isLoading ? (
+                        Array(3).fill(0).map((_, i) => (
+                            <div key={i} className="animate-pulse bg-white/60 rounded-2xl p-4 border border-white/40 space-y-3">
+                                <div className="flex gap-3">
+                                    <div className="h-10 w-10 bg-muted rounded-xl" />
+                                    <div className="space-y-2 flex-1">
+                                        <div className="h-4 w-2/3 bg-muted rounded" />
+                                        <div className="h-3 w-1/3 bg-muted rounded" />
+                                    </div>
+                                </div>
+                            </div>
+                        ))
+                    ) : filteredUsers?.length === 0 ? (
+                        <div className="text-center py-10 text-muted-foreground">
+                            No se encontraron usuarios.
+                        </div>
+                    ) : (
+                        filteredUsers?.map((u, index) => (
+                            <motion.div
+                                key={u.id}
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: index * 0.05 }}
+                                className="bg-white/60 backdrop-blur-sm rounded-2xl p-4 border border-white/40 space-y-4"
+                            >
+                                <div className="flex justify-between items-start">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary font-bold">
+                                            {u.fullName.charAt(0)}
+                                        </div>
+                                        <div>
+                                            <p className="font-bold text-sm leading-none">{u.fullName}</p>
+                                            <p className="text-[10px] text-muted-foreground mt-1 truncate max-w-[150px]">
+                                                {u.email}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <button
+                                        onClick={(e) => {
+                                            const rect = e.currentTarget.getBoundingClientRect();
+                                            onActionClick(u, rect);
+                                        }}
+                                        className="p-2 rounded-lg hover:bg-white transition-colors"
+                                    >
+                                        <MoreVertical size={18} className="text-muted-foreground" />
+                                    </button>
+                                </div>
+
+                                <div className="flex flex-wrap gap-2 pt-2 border-t border-white/40">
+                                    <div className="flex-1 space-y-1">
+                                        <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">Documento</p>
+                                        <p className="text-xs font-bold text-slate-700">{u.documentNumber}</p>
+                                    </div>
+                                    <div className="flex-1 space-y-1">
+                                        <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">Estado</p>
+                                        {u.active ? (
+                                            <span className="inline-flex items-center gap-1 text-emerald-600 font-bold text-[10px]">
+                                                <CheckCircle2 size={10} /> Activo
+                                            </span>
+                                        ) : (
+                                            <span className="inline-flex items-center gap-1 text-destructive font-bold text-[10px]">
+                                                <XCircle size={10} /> Inactivo
+                                            </span>
+                                        )}
+                                    </div>
+                                </div>
+
+                                <div className="space-y-1">
+                                    <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">Roles</p>
+                                    <div className="flex flex-wrap gap-1.5">
+                                        {(u.roles && u.roles.length > 0 ? u.roles : u.role ? [{ id: u.role.id, name: u.role.name }] : []).map((r) => (
+                                            <span
+                                                key={`role-mobile-${u.id}-${r.id}`}
+                                                className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-slate-100 text-slate-600 font-black text-[9px] uppercase"
+                                            >
+                                                <Shield size={8} />
+                                                {r.name}
+                                            </span>
+                                        ))}
+                                    </div>
+                                </div>
+                            </motion.div>
+                        ))
+                    )}
+                </div>
+
+                <div className="overflow-x-auto hidden lg:block">
                     <table className="w-full border-separate border-spacing-y-0">
                         <thead>
                             <tr className="bg-muted/10 text-left border-b border-white/20">

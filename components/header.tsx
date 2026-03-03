@@ -2,10 +2,11 @@
 
 import { useState, useRef, useEffect } from "react";
 import { useAuth } from "@/context/auth-context";
-import { Building2, UserCircle, LogOut, ChevronDown, Check, Shield, UserCog, Heart, Repeat } from "lucide-react";
+import { Building2, UserCircle, LogOut, ChevronDown, Check, Shield, UserCog, Heart, Repeat, Menu } from "lucide-react";
 import { useRouter, usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
+import { useUI } from "@/context/ui-context";
 
 const ROLE_LABELS: Record<string, { label: string; icon: typeof Shield; color: string }> = {
     ADMIN: { label: "Administrador", icon: Shield, color: "bg-primary/10 text-primary" },
@@ -17,6 +18,7 @@ export function Header() {
     const router = useRouter();
     const pathname = usePathname();
     const { user, activeRole, setActiveRole, logout } = useAuth();
+    const { toggleSidebar } = useUI();
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -44,13 +46,22 @@ export function Header() {
     const roles = user.roles || [];
 
     return (
-        <header className="h-20 border-b border-border bg-card/50 backdrop-blur-md sticky top-0 z-40 px-8 flex items-center justify-between">
-            <div>
-                <h1 className="text-xl font-bold text-foreground">Panel de Gestión</h1>
-                <p className="text-xs text-muted-foreground flex items-center gap-1.5 mt-0.5">
-                    <Building2 size={12} className="text-primary" />
-                    {organizationName}
-                </p>
+        <header className="h-20 border-b border-border bg-card/50 backdrop-blur-md sticky top-0 z-40 px-4 md:px-8 flex items-center justify-between">
+            <div className="flex items-center gap-4">
+                <button
+                    onClick={toggleSidebar}
+                    className="p-2 -ml-2 text-muted-foreground hover:text-foreground lg:hidden"
+                    aria-label="Toggle menu"
+                >
+                    <Menu size={24} />
+                </button>
+                <div>
+                    <h1 className="text-lg md:text-xl font-bold text-foreground">Panel de Gestión</h1>
+                    <p className="text-[10px] md:text-xs text-muted-foreground flex items-center gap-1.5 mt-0.5">
+                        <Building2 size={12} className="text-primary" />
+                        {organizationName}
+                    </p>
+                </div>
             </div>
 
             <div className="relative" ref={dropdownRef}>

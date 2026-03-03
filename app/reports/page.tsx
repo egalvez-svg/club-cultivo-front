@@ -32,13 +32,13 @@ export default function ReportsPage() {
     const downloadFinanceMutation = useDownloadFinanceReport();
     return (
         <div className="space-y-8">
-            <div className="flex justify-between items-end">
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-end gap-4">
                 <div>
                     <h2 className="text-2xl font-bold font-display">Centro de Reportes</h2>
                     <p className="text-muted-foreground text-sm">Documentación oficial y trazabilidad para cumplimiento legal.</p>
                 </div>
-                <div className="flex gap-3">
-                    <button className="flex items-center gap-2 px-4 py-2 bg-muted border border-border rounded-xl text-xs font-bold uppercase tracking-wider hover:bg-muted/80 transition-all">
+                <div className="flex gap-3 w-full sm:w-auto">
+                    <button className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 bg-muted border border-border rounded-xl text-xs font-bold uppercase tracking-wider hover:bg-muted/80 transition-all">
                         <Calendar size={14} />
                         {format(selectedDate, "MMMM yyyy", { locale: es })}
                     </button>
@@ -124,14 +124,14 @@ export default function ReportsPage() {
                         </div>
                     ) : (
                         recentReports?.map((file) => (
-                            <div key={file.id} className="px-6 py-4 flex items-center justify-between hover:bg-muted/20 transition-colors group">
+                            <div key={file.id} className="px-4 sm:px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between hover:bg-muted/20 transition-colors group gap-4">
                                 <div className="flex items-center gap-4">
-                                    <div className="p-2 bg-muted rounded-lg text-muted-foreground group-hover:text-primary transition-colors">
+                                    <div className="p-2 bg-muted rounded-lg text-muted-foreground group-hover:text-primary transition-colors shrink-0">
                                         <FileText size={20} />
                                     </div>
-                                    <div>
-                                        <p className="text-sm font-semibold">{file.name}</p>
-                                        <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-tighter">
+                                    <div className="min-w-0">
+                                        <p className="text-sm font-semibold truncate">{file.name}</p>
+                                        <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-tighter truncate">
                                             {file.fileSize > 1024 * 1024
                                                 ? `${(file.fileSize / 1024 / 1024).toFixed(2)} MB`
                                                 : `${(file.fileSize / 1024).toFixed(1)} KB`}
@@ -139,13 +139,13 @@ export default function ReportsPage() {
                                         </p>
                                     </div>
                                 </div>
-                                <div className="flex items-center gap-4">
-                                    <span className="text-xs text-muted-foreground">
+                                <div className="flex items-center justify-between sm:justify-end gap-4 w-full sm:w-auto">
+                                    <span className="text-[10px] sm:text-xs text-muted-foreground bg-muted sm:bg-transparent px-2 py-1 rounded sm:p-0">
                                         {file.createdAt && !isNaN(new Date(file.createdAt).getTime())
                                             ? format(new Date(file.createdAt), "dd MMM, HH:mm", { locale: es })
                                             : "Fecha reciente"}
                                     </span>
-                                    <button className="p-1.5 text-muted-foreground hover:text-primary hover:bg-secondary/50 rounded-lg transition-all">
+                                    <button className="p-2 text-muted-foreground hover:text-primary hover:bg-secondary/50 rounded-lg transition-all border border-border sm:border-0">
                                         <Download size={16} />
                                     </button>
                                 </div>

@@ -26,13 +26,13 @@ export function DispensationHeader({
     return (
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-2">
             <div>
-                <h1 className="text-3xl font-black text-foreground tracking-tight flex items-center gap-3">
-                    <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center text-primary">
-                        <HandCoins size={28} />
+                <h1 className="text-2xl md:text-3xl font-black text-foreground tracking-tight flex items-center gap-3">
+                    <div className="w-10 h-10 md:w-12 md:h-12 bg-primary/10 rounded-2xl flex items-center justify-center text-primary shrink-0">
+                        <HandCoins size={24} className="md:w-7 md:h-7" />
                     </div>
                     Nueva Dispensación
                 </h1>
-                <p className="text-muted-foreground font-medium mt-1">
+                <p className="text-muted-foreground font-medium mt-1 text-sm md:text-base">
                     Registra la entrega de productos a un socio reprocanneado.
                 </p>
             </div>

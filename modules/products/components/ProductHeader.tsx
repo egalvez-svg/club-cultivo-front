@@ -20,8 +20,8 @@ export function ProductHeader({ searchQuery, onSearchChange, onCreateProduct }: 
                     Catálogo de productos disponibles para dispensación.
                 </p>
             </div>
-            <div className="flex items-center gap-3 h-12">
-                <div className="relative h-full flex items-center w-full sm:w-[320px] max-w-full">
+            <div className="flex flex-col sm:flex-row items-center gap-3 sm:h-12 w-full sm:w-auto">
+                <div className="relative h-12 sm:h-full flex items-center w-full sm:w-[320px] max-w-full">
                     <Search className="absolute left-4 text-muted-foreground" size={18} />
                     <input
                         type="text"
@@ -34,7 +34,7 @@ export function ProductHeader({ searchQuery, onSearchChange, onCreateProduct }: 
 
                 <button
                     onClick={onCreateProduct}
-                    className="h-12 px-6 bg-primary text-primary-foreground font-bold text-[13px] uppercase tracking-widest rounded-2xl flex items-center justify-center gap-2 shadow-xl shadow-primary/20 hover:shadow-2xl hover:-translate-y-0.5 transition-all hover:bg-primary/95 shrink-0 whitespace-nowrap"
+                    className="h-12 w-full sm:w-auto px-6 bg-primary text-primary-foreground font-bold text-[13px] uppercase tracking-widest rounded-2xl flex items-center justify-center gap-2 shadow-xl shadow-primary/20 hover:shadow-2xl hover:-translate-y-0.5 transition-all hover:bg-primary/95 shrink-0 whitespace-nowrap"
                 >
                     <Plus size={20} />
                     Nuevo Producto

@@ -73,8 +73,99 @@ export function PatientTable({
                 </div>
             </div>
 
-            <div className="overflow-x-auto">
-                <table className="w-full border-separate border-spacing-y-0">
+            <div className="lg:hidden p-4 space-y-4">
+                {isLoading ? (
+                    Array(3).fill(0).map((_, i) => (
+                        <div key={i} className="animate-pulse bg-white/60 rounded-2xl p-4 border border-white/40 space-y-3">
+                            <div className="flex gap-3">
+                                <div className="h-10 w-10 bg-muted rounded-xl" />
+                                <div className="space-y-2 flex-1">
+                                    <div className="h-4 w-2/3 bg-muted rounded" />
+                                    <div className="h-3 w-1/3 bg-muted rounded" />
+                                </div>
+                            </div>
+                        </div>
+                    ))
+                ) : filteredPatients?.length === 0 ? (
+                    <div className="text-center py-10 text-muted-foreground">
+                        <Users size={40} className="mx-auto mb-4 opacity-30" />
+                        <p className="font-bold">Sin resultados</p>
+                    </div>
+                ) : (
+                    filteredPatients?.map((p, index) => (
+                        <motion.div
+                            key={p.id}
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: index * 0.05 }}
+                            className="bg-white/60 backdrop-blur-sm rounded-2xl p-4 border border-white/40 space-y-4"
+                        >
+                            <div className="flex justify-between items-start">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary font-bold">
+                                        {p.fullName.charAt(0)}
+                                    </div>
+                                    <div>
+                                        <p className="font-bold text-sm leading-none">{p.fullName}</p>
+                                        <p className="text-[10px] text-muted-foreground mt-1 flex items-center gap-1">
+                                            <FileText size={10} /> {p.documentNumber}
+                                        </p>
+                                    </div>
+                                </div>
+                                <button
+                                    onClick={(e) => {
+                                        const rect = e.currentTarget.getBoundingClientRect();
+                                        onActionClick(p, rect);
+                                    }}
+                                    className="p-2 rounded-lg hover:bg-white transition-colors"
+                                >
+                                    <MoreVertical size={18} className="text-muted-foreground" />
+                                </button>
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-3 text-[11px]">
+                                <div className="space-y-1">
+                                    <p className="text-muted-foreground font-bold uppercase tracking-tighter">REPROCANN</p>
+                                    {p.reprocanNumber ? (
+                                        <span className="text-blue-600 font-bold">{p.reprocanNumber}</span>
+                                    ) : (
+                                        <span className="text-muted-foreground/50">—</span>
+                                    )}
+                                </div>
+                                <div className="space-y-1">
+                                    <p className="text-muted-foreground font-bold uppercase tracking-tighter">Vencimiento</p>
+                                    {p.reprocanExpiration ? (
+                                        <span className={isReprocannExpired(p.reprocanExpiration) ? "text-destructive font-bold" : "font-medium"}>
+                                            {formatDate(p.reprocanExpiration)}
+                                        </span>
+                                    ) : (
+                                        <span className="text-muted-foreground/50">—</span>
+                                    )}
+                                </div>
+                            </div>
+
+                            <div className="space-y-2 pt-2 border-t border-white/40">
+                                <div className="flex justify-between text-[10px] font-bold">
+                                    <span className="text-muted-foreground">Consumo Diario</span>
+                                    <span className="text-foreground">{p.dailyConsumption ?? 0}g / {p.dailyDose ?? 0}g</span>
+                                </div>
+                                <div className="w-full bg-muted/40 rounded-full h-1.5 overflow-hidden">
+                                    <div
+                                        className={`h-full rounded-full transition-all ${p.dailyDose && p.dailyDose > 0 && (p.dailyConsumption ?? 0) >= p.dailyDose
+                                            ? "bg-destructive"
+                                            : "bg-primary"
+                                            }`}
+                                        style={{ width: `${Math.min(100, (p.dailyDose && p.dailyDose > 0) ? ((p.dailyConsumption ?? 0) / p.dailyDose) * 100 : 0)}%` }}
+                                    />
+                                </div>
+                            </div>
+                        </motion.div>
+                    ))
+                )}
+            </div>
+
+            <div className="hidden lg:block overflow-x-auto">
+                <table className="w-full border-separate border-spacing-y-0 text-sm">
                     <thead>
                         <tr className="bg-muted/10 text-left border-b border-white/20">
                             <th className="px-6 py-4 text-[10px] font-black text-muted-foreground uppercase tracking-widest rounded-tl-3xl">Paciente</th>

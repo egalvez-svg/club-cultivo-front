@@ -19,13 +19,13 @@ export function FinanceStats({ activeRegister }: FinanceStatsProps) {
         <div className="bg-slate-900 rounded-[3rem] p-8 text-white relative overflow-hidden shadow-2xl shadow-slate-200">
             <div className="absolute top-0 right-0 w-64 h-64 bg-primary/20 rounded-full -mr-24 -mt-24 blur-3xl" />
             <div className="relative z-10">
-                <span className="text-xs font-black uppercase tracking-[0.3em] text-white/40 mb-4 block">Balance de Caja Actual</span>
-                <div className="flex items-baseline gap-2 mb-8">
-                    <span className="text-5xl font-black">${activeRegister.currentBalance.toLocaleString()}</span>
-                    <span className="text-white/40 font-bold">ARS</span>
+                <span className="text-[10px] md:text-xs font-black uppercase tracking-[0.3em] text-white/40 mb-2 md:mb-4 block">Balance de Caja Actual</span>
+                <div className="flex items-baseline gap-2 mb-6 md:mb-8">
+                    <span className="text-3xl md:text-5xl font-black">${activeRegister.currentBalance.toLocaleString()}</span>
+                    <span className="text-white/40 font-bold text-xs md:text-base">ARS</span>
                 </div>
 
-                <div className="grid grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
                     <div className="p-4 bg-white/5 rounded-2xl border border-white/5">
                         <span className="text-[10px] font-black uppercase tracking-widest text-white/40 mb-2 block">Saldo Inicial</span>
                         <span className="text-lg font-black">${activeRegister.openingBalance.toLocaleString()}</span>

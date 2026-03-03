@@ -40,9 +40,9 @@ export default function RootLayout({
           <Providers>
             <div className="flex min-h-screen bg-background text-foreground">
               <Sidebar />
-              <div className="flex-1 ml-64 flex flex-col min-h-screen">
+              <div className="flex-1 lg:ml-64 flex flex-col min-h-screen transition-all duration-300">
                 <Header />
-                <main className="flex-1 p-8 transition-all duration-300">
+                <main className="flex-1 p-4 md:p-8 transition-all duration-300">
                   <div className="animate-in fade-in duration-700">
                     {children}
                   </div>

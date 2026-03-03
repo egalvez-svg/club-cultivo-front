@@ -152,14 +152,14 @@ export default function StrainsPage() {
 
     return (
         <div className="space-y-6">
-            <div className="flex justify-between items-end">
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
                 <div>
                     <h2 className="text-2xl font-bold font-display">Genéticas (Cepas)</h2>
                     <p className="text-muted-foreground text-sm">Control de variedades, perfiles cannabinoides y herencia genética.</p>
                 </div>
                 <button
                     onClick={() => { resetForm(); setIsCreateModalOpen(true); }}
-                    className="flex items-center gap-2 px-4 py-2.5 bg-primary text-primary-foreground rounded-xl text-sm font-medium hover:bg-primary/90 transition-colors shadow-lg shadow-primary/20"
+                    className="flex items-center justify-center gap-2 px-4 py-2.5 bg-primary text-primary-foreground rounded-xl text-sm font-medium hover:bg-primary/90 transition-colors shadow-lg shadow-primary/20 w-full sm:w-auto"
                 >
                     <Plus size={18} />
                     Registrar Cepa

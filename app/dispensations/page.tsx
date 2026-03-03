@@ -152,7 +152,7 @@ export default function DispensationsPage() {
     }
 
     return (
-        <div className="flex flex-col gap-10 p-1">
+        <div className="flex flex-col gap-6 md:gap-10 p-2 md:p-4">
             <DispensationHeader
                 searchQuery={searchQuery}
                 onSearchChange={setSearchQuery}
@@ -161,7 +161,7 @@ export default function DispensationsPage() {
                 onSelectPatient={setSelectedPatient}
             />
 
-            <div className="grid grid-cols-12 gap-10">
+            <div className="grid grid-cols-12 gap-6 lg:gap-10">
                 <ProductSelection
                     products={products}
                     isLoading={isProductsLoading}

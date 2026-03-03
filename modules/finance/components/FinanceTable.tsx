@@ -28,7 +28,50 @@ export function FinanceTable({ movements, onOpenMovementModal }: FinanceTablePro
                 </button>
             </div>
 
-            <div className="flex-1 overflow-x-auto">
+            <div className="md:hidden p-4 space-y-3">
+                {[...movements].reverse().map((movement) => (
+                    <div key={movement.id} className="p-4 bg-slate-50/50 rounded-2xl border border-slate-100 space-y-3">
+                        <div className="flex justify-between items-start">
+                            <div className="flex items-center gap-2 text-muted-foreground">
+                                <Clock size={12} />
+                                <span className="text-xs font-bold">{format(new Date(movement.createdAt), "HH:mm")}</span>
+                            </div>
+                            <span className={cn(
+                                "px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-widest",
+                                movement.movementType === "INCOME"
+                                    ? "bg-emerald-50 text-emerald-600"
+                                    : movement.movementType === "ADJUSTMENT"
+                                        ? "bg-amber-50 text-amber-600"
+                                        : "bg-rose-50 text-rose-600"
+                            )}>
+                                {movement.translatedMovementType || movement.movementType}
+                            </span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                            <span className="text-sm font-bold text-slate-700 truncate mr-4">
+                                {movement.translatedReferenceType || movement.referenceType}
+                            </span>
+                            <span className={cn(
+                                "text-lg font-black shrink-0",
+                                movement.movementType === "INCOME"
+                                    ? "text-emerald-600"
+                                    : movement.movementType === "ADJUSTMENT"
+                                        ? "text-amber-600"
+                                        : "text-rose-600"
+                            )}>
+                                {movement.movementType === "INCOME" ? "+" : movement.movementType === "ADJUSTMENT" ? "" : "-"}${movement.amount.toLocaleString()}
+                            </span>
+                        </div>
+                    </div>
+                ))}
+                {movements.length === 0 && (
+                    <div className="py-10 text-center text-muted-foreground text-sm">
+                        No hay movimientos registrados.
+                    </div>
+                )}
+            </div>
+
+            <div className="flex-1 overflow-x-auto hidden md:block">
                 <table className="w-full">
                     <thead>
                         <tr className="bg-slate-50 text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">

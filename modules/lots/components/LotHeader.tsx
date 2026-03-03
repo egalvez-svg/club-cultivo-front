@@ -8,14 +8,14 @@ interface LotHeaderProps {
 
 export function LotHeader({ onAddLot }: LotHeaderProps) {
     return (
-        <div className="flex justify-between items-end pb-2">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-2">
             <div>
                 <h2 className="text-2xl font-bold font-display">Lotes de Producción</h2>
                 <p className="text-muted-foreground text-sm">Trazabilidad en tiempo real (Kanban drag & drop).</p>
             </div>
             <button
                 onClick={onAddLot}
-                className="flex items-center gap-2 px-4 py-2.5 bg-primary text-primary-foreground rounded-xl text-sm font-medium hover:bg-primary/90 transition-all shadow-lg shadow-primary/20"
+                className="flex items-center justify-center gap-2 px-4 py-2.5 bg-primary text-primary-foreground rounded-xl text-sm font-medium hover:bg-primary/90 transition-all shadow-lg shadow-primary/20 w-full sm:w-auto"
             >
                 <Plus size={18} />
                 Nuevo Lote

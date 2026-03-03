@@ -17,11 +17,6 @@ export function Header() {
     const router = useRouter();
     const pathname = usePathname();
     const { user, activeRole, setActiveRole, logout } = useAuth();
-
-    // No mostrar el header en las rutas de autenticación
-    if (pathname?.startsWith("/auth")) {
-        return null;
-    }
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -35,6 +30,11 @@ export function Header() {
         document.addEventListener("mousedown", handleClickOutside);
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
+
+    // No mostrar el header en las rutas de autenticación
+    if (pathname?.startsWith("/auth")) {
+        return null;
+    }
 
     if (!user) return null;
 

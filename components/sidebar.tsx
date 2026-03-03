@@ -12,7 +12,8 @@ import {
     Settings,
     Wallet,
     UserCog,
-    ShieldAlert
+    ShieldAlert,
+    Building2
 } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -47,6 +48,7 @@ export function Sidebar() {
     if (user?.activeRole === "ADMIN" || user?.role === "ADMIN") {
         menuItems.push({ icon: UserCog, label: "Personal", href: "/users" });
         menuItems.push({ icon: ShieldAlert, label: "Roles", href: "/roles" });
+        menuItems.push({ icon: Building2, label: "Organizaciones", href: "/organizations" });
     }
 
 

@@ -74,7 +74,7 @@ export const authService = {
         if (!response.ok) {
             throw new Error(data.message || "Error al iniciar sesión");
         }
-
+        console.log(data);
         return data;
     },
 

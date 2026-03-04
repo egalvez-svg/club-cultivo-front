@@ -2,13 +2,13 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { roleService, CreateRoleParams, UpdateRoleParams } from "../services/role";
 import { useAuth } from "@/context/auth-context";
 
-export function useRolesList() {
+export function useRolesList(organizationId?: string) {
     const { token } = useAuth();
     return useQuery({
-        queryKey: ["roles"],
+        queryKey: ["roles", organizationId],
         queryFn: async () => {
             if (!token) throw new Error("No token available");
-            return await roleService.getRoles(token);
+            return await roleService.getRoles(token, organizationId);
         },
         enabled: !!token,
     });
@@ -23,8 +23,11 @@ export function useCreateRole() {
             if (!token) throw new Error("No token available");
             return await roleService.createRole(params, token);
         },
-        onSuccess: () => {
+        onSuccess: (_, variables) => {
             queryClient.invalidateQueries({ queryKey: ["roles"] });
+            if (variables.organizationId) {
+                queryClient.invalidateQueries({ queryKey: ["roles", variables.organizationId] });
+            }
         },
     });
 }

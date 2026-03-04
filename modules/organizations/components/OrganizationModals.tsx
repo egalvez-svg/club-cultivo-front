@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Building2, Edit2, Trash2, CheckCircle2, Plus, Loader2, AlertTriangle, Fingerprint } from "lucide-react";
+import { X, Building2, Edit2, Trash2, CheckCircle2, Plus, Loader2, AlertTriangle, Fingerprint, ShieldAlert } from "lucide-react";
 import { Organization } from "@/lib/services/organization";
 
 interface OrganizationModalsProps {
@@ -31,6 +31,7 @@ interface OrganizationModalsProps {
     menuPosition: { top: number; left: number };
     onEditClick: (org: Organization) => void;
     onDeleteClick: (org: Organization) => void;
+    onRolesClick: (id: string) => void;
 }
 
 export function OrganizationModals({
@@ -53,7 +54,8 @@ export function OrganizationModals({
     setActiveMenuId,
     menuPosition,
     onEditClick,
-    onDeleteClick
+    onDeleteClick,
+    onRolesClick
 }: OrganizationModalsProps) {
 
     return (
@@ -83,6 +85,12 @@ export function OrganizationModals({
                                 className="w-full px-4 py-3 text-left text-sm font-bold flex items-center gap-3 hover:bg-primary/5 transition-colors border-b border-muted/20"
                             >
                                 <Edit2 size={14} className="text-primary" /> Editar
+                            </button>
+                            <button
+                                onClick={() => onRolesClick(selectedOrganization.id)}
+                                className="w-full px-4 py-3 text-left text-sm font-bold flex items-center gap-3 hover:bg-primary/5 transition-colors border-b border-muted/20"
+                            >
+                                <ShieldAlert size={14} className="text-blue-600" /> Gestionar Roles
                             </button>
                             <button
                                 onClick={() => onDeleteClick(selectedOrganization)}

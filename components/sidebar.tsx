@@ -44,10 +44,13 @@ export function Sidebar() {
         { icon: BarChart3, label: "Reportes", href: "/reports" },
     ];
 
-    // Solo añadir el ítem de Personal si el usuario es ADMIN
-    if (user?.activeRole === "ADMIN" || user?.role === "ADMIN") {
+    // Solo añadir el ítem de Personal si el usuario es ADMIN o SUPER_ADMIN
+    if (user?.activeRole === "ADMIN" || user?.role === "ADMIN" || user?.activeRole === "SUPER_ADMIN") {
         menuItems.push({ icon: UserCog, label: "Personal", href: "/users" });
-        menuItems.push({ icon: ShieldAlert, label: "Roles", href: "/roles" });
+    }
+
+    // Secciones restringidas SOLO a SUPER_ADMIN (Multi-tenancy / Global)
+    if (user?.activeRole === "SUPER_ADMIN") {
         menuItems.push({ icon: Building2, label: "Organizaciones", href: "/organizations" });
     }
 

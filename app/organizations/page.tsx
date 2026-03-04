@@ -2,12 +2,23 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Plus, MoreVertical, Loader2, Building2 } from "lucide-react";
+import { Plus, MoreVertical, Loader2, Building2, ShieldAlert } from "lucide-react";
 import { useOrganizationsList, useCreateOrganization, useUpdateOrganization, useDeleteOrganization } from "@/lib/hooks/useOrganizations";
 import { OrganizationModals } from "@/modules/organizations/components/OrganizationModals";
 import { Organization } from "@/lib/services/organization";
+import { RoleGuard } from "@/components/auth/Guard";
+import { useRouter } from "next/navigation";
 
 export default function OrganizationsPage() {
+    return (
+        <RoleGuard allowedRoles={["SUPER_ADMIN"]}>
+            <OrganizationsContent />
+        </RoleGuard>
+    );
+}
+
+function OrganizationsContent() {
+    const router = useRouter();
     const { data: organizations, isLoading } = useOrganizationsList();
     const createOrg = useCreateOrganization();
     const updateOrg = useUpdateOrganization();
@@ -181,7 +192,9 @@ export default function OrganizationsPage() {
                 menuPosition={menuPosition}
                 onEditClick={openEditModal}
                 onDeleteClick={openDeleteModal}
+                onRolesClick={(id) => router.push(`/organizations/${id}/roles`)}
             />
         </div>
     );
 }
+

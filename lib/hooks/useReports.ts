@@ -68,3 +68,21 @@ export function useDownloadFinanceReport() {
         },
     });
 }
+
+export function useDownloadHistoricalReport() {
+    const { token } = useAuth();
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: async ({ id, name }: { id: string; name: string }) => {
+            if (!token) throw new Error("No authentication token");
+            await reportService.downloadReportById(token, id, name);
+        },
+        onSuccess: () => {
+            sileo.success({ description: "Reporte descargado exitosamente" });
+        },
+        onError: (error: Error) => {
+            sileo.error({ description: error.message || "Error al descargar el reporte" });
+        },
+    });
+}

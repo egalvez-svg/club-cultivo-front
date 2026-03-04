@@ -13,6 +13,7 @@ import {
 } from "@/lib/hooks/useUsers";
 import { UserWithRole } from "@/lib/services/user";
 import { sileo } from "sileo";
+import { RoleGuard } from "@/components/auth/Guard";
 
 // Components
 import { UserHeader } from "@/modules/users/components/UserHeader";
@@ -20,6 +21,14 @@ import { UserTable } from "@/modules/users/components/UserTable";
 import { UserModals } from "@/modules/users/components/UserModals";
 
 export default function UsersPage() {
+    return (
+        <RoleGuard allowedRoles={["ADMIN", "SUPER_ADMIN"]}>
+            <UsersContent />
+        </RoleGuard>
+    );
+}
+
+function UsersContent() {
     const { user: currentUser } = useAuth();
     const { data: users, isLoading: isLoadingUsers } = useUsersList();
     const { data: roles } = useRoles();
@@ -51,22 +60,6 @@ export default function UsersPage() {
         window.addEventListener("scroll", handleScroll, { passive: true });
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
-
-    // Seguridad: Si no es ADMIN, no debería estar aquí
-    if (currentUser?.activeRole !== "ADMIN" && currentUser?.role !== "ADMIN") {
-        return (
-            <div className="flex flex-col items-center justify-center min-h-[60vh] text-center px-4">
-                <div className="w-20 h-20 bg-destructive/10 rounded-full flex items-center justify-center text-destructive mb-6">
-                    <Shield size={40} />
-                </div>
-                <h1 className="text-2xl font-bold mb-2">Acceso Restringido</h1>
-                <p className="text-muted-foreground max-w-md">
-                    No tienes los permisos necesarios para acceder a la gestión de personal.
-                    Contacta con un administrador superior si crees que esto es un error.
-                </p>
-            </div>
-        );
-    }
 
     const resetForm = () => {
         setFullName("");
@@ -237,3 +230,4 @@ export default function UsersPage() {
         </div>
     );
 }
+

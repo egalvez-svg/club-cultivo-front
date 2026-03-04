@@ -27,6 +27,11 @@ export interface UserWithRole {
     };
     roles?: { id: string; name: string; translatedName?: string; isDefault: boolean }[];
     organizationId: string;
+    orgName?: string;
+    organization?: {
+        id: string;
+        name: string;
+    };
 }
 
 

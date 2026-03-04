@@ -20,7 +20,8 @@ import {
     useRecentReports,
     useDownloadPatientReport,
     useDownloadProductionReport,
-    useDownloadFinanceReport
+    useDownloadFinanceReport,
+    useDownloadHistoricalReport
 } from "@/lib/hooks/useReports";
 
 export default function ReportsPage() {
@@ -30,6 +31,7 @@ export default function ReportsPage() {
     const downloadPatientMutation = useDownloadPatientReport();
     const downloadProductionMutation = useDownloadProductionReport();
     const downloadFinanceMutation = useDownloadFinanceReport();
+    const downloadHistoricalMutation = useDownloadHistoricalReport();
     return (
         <div className="space-y-8">
             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-end gap-4">
@@ -141,12 +143,20 @@ export default function ReportsPage() {
                                 </div>
                                 <div className="flex items-center justify-between sm:justify-end gap-4 w-full sm:w-auto">
                                     <span className="text-[10px] sm:text-xs text-muted-foreground bg-muted sm:bg-transparent px-2 py-1 rounded sm:p-0">
-                                        {file.createdAt && !isNaN(new Date(file.createdAt).getTime())
-                                            ? format(new Date(file.createdAt), "dd MMM, HH:mm", { locale: es })
+                                        {file.date && !isNaN(new Date(file.date).getTime())
+                                            ? format(new Date(file.date), "dd/MM/yyyy", { locale: es })
                                             : "Fecha reciente"}
                                     </span>
-                                    <button className="p-2 text-muted-foreground hover:text-primary hover:bg-secondary/50 rounded-lg transition-all border border-border sm:border-0">
-                                        <Download size={16} />
+                                    <button
+                                        onClick={() => downloadHistoricalMutation.mutate({ id: file.id, name: file.name })}
+                                        disabled={downloadHistoricalMutation.isPending && downloadHistoricalMutation.variables?.id === file.id}
+                                        className="p-2 text-muted-foreground hover:text-primary hover:bg-secondary/50 rounded-lg transition-all border border-border sm:border-0 disabled:opacity-50"
+                                    >
+                                        {downloadHistoricalMutation.isPending && downloadHistoricalMutation.variables?.id === file.id ? (
+                                            <Loader2 size={16} className="animate-spin" />
+                                        ) : (
+                                            <Download size={16} />
+                                        )}
                                     </button>
                                 </div>
                             </div>

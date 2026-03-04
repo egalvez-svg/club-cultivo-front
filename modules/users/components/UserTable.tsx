@@ -1,6 +1,6 @@
 "use client";
 
-import { Search, Shield, FileText, CheckCircle2, XCircle, MoreVertical, Loader2 } from "lucide-react";
+import { Search, Shield, FileText, CheckCircle2, XCircle, MoreVertical, Loader2, Building2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { UserWithRole, Organization } from "@/lib/services/user";
 
@@ -120,6 +120,12 @@ export function UserTable({
                                         <p className="text-xs font-bold text-slate-700">{u.documentNumber}</p>
                                     </div>
                                     <div className="flex-1 space-y-1">
+                                        <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">Organización</p>
+                                        <p className="text-xs font-bold text-blue-600 truncate max-w-[100px]">
+                                            {u.organization?.name || u.orgName || "-"}
+                                        </p>
+                                    </div>
+                                    <div className="flex-1 space-y-1">
                                         <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">Estado</p>
                                         {u.active ? (
                                             <span className="inline-flex items-center gap-1 text-emerald-600 font-bold text-[10px]">
@@ -158,6 +164,7 @@ export function UserTable({
                             <tr className="bg-muted/10 text-left border-b border-white/20">
                                 <th className="px-6 py-4 text-[10px] font-black text-muted-foreground uppercase tracking-widest rounded-tl-3xl">Integrante</th>
                                 <th className="px-6 py-4 text-[10px] font-black text-muted-foreground uppercase tracking-widest">Documento</th>
+                                <th className="px-6 py-4 text-[10px] font-black text-muted-foreground uppercase tracking-widest">Organización</th>
                                 <th className="px-6 py-4 text-[10px] font-black text-muted-foreground uppercase tracking-widest">Rol</th>
                                 <th className="px-6 py-4 text-[10px] font-black text-muted-foreground uppercase tracking-widest text-center">Estado</th>
                                 <th className="px-6 py-4 text-[10px] font-black text-muted-foreground uppercase tracking-widest text-right rounded-tr-3xl">Acciones</th>
@@ -204,6 +211,12 @@ export function UserTable({
                                             <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
                                                 <FileText size={14} className="opacity-50" />
                                                 {u.documentNumber}
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-5">
+                                            <div className="flex items-center gap-2 text-sm font-medium text-slate-700">
+                                                <Building2 size={14} className="text-blue-500 opacity-70" />
+                                                {u.organization?.name || u.orgName || "-"}
                                             </div>
                                         </td>
                                         <td className="px-6 py-5">

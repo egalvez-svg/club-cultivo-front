@@ -1,14 +1,28 @@
 "use client";
 
+import { useParams, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
-import { ShieldAlert, Plus, MoreVertical, Loader2, Fingerprint } from "lucide-react";
+import { ShieldAlert, Plus, MoreVertical, Loader2, Fingerprint, ArrowLeft } from "lucide-react";
 import { useRolesList, useCreateRole, useUpdateRole, useDeleteRole } from "@/lib/hooks/useRoles";
 import { Role } from "@/lib/services/role";
 import { RoleModals } from "@/modules/roles/components/RoleModals";
 import { sileo } from "sileo";
+import { RoleGuard } from "@/components/auth/Guard";
 
-export default function RolesPage() {
-    const { data: roles, isLoading } = useRolesList();
+export default function OrganizationRolesPage() {
+    return (
+        <RoleGuard allowedRoles={["SUPER_ADMIN"]}>
+            <OrganizationRolesContent />
+        </RoleGuard>
+    );
+}
+
+function OrganizationRolesContent() {
+    const params = useParams();
+    const router = useRouter();
+    const organizationId = params.id as string;
+
+    const { data: roles, isLoading } = useRolesList(organizationId);
     const createMutation = useCreateRole();
     const updateMutation = useUpdateRole();
     const deleteMutation = useDeleteRole();
@@ -39,12 +53,12 @@ export default function RolesPage() {
     const handleCreateRole = (e: React.FormEvent) => {
         e.preventDefault();
         createMutation.mutate(
-            { name },
+            { name, organizationId },
             {
                 onSuccess: () => {
                     setIsCreateModalOpen(false);
                     resetForm();
-                    sileo.success({ title: "¡Rol Creado!", description: "El rol fue añadido exitosamente." });
+                    sileo.success({ title: "¡Rol Creado!", description: "El rol fue añadido a la organización exitosamente." });
                 },
                 onError: (error) => {
                     sileo.error({ title: "Error", description: error.message || "No se pudo crear el rol." });
@@ -103,10 +117,21 @@ export default function RolesPage() {
 
     return (
         <div className="space-y-6">
+            <button
+                onClick={() => router.back()}
+                className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors font-bold text-sm uppercase tracking-widest"
+            >
+                <ArrowLeft size={16} />
+                Volver a Organizaciones
+            </button>
+
             <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
                 <div>
-                    <h2 className="text-2xl font-bold font-display">Roles y Permisos</h2>
-                    <p className="text-muted-foreground text-sm">Administra los roles de tu organización.</p>
+                    <h2 className="text-2xl font-bold font-display flex items-center gap-3">
+                        <ShieldAlert className="text-primary" />
+                        Roles de la Organización
+                    </h2>
+                    <p className="text-muted-foreground text-sm">Gestiona los permisos específicos de este club.</p>
                 </div>
                 <button
                     onClick={() => { resetForm(); setIsCreateModalOpen(true); }}
@@ -162,7 +187,7 @@ export default function RolesPage() {
                             <Plus size={32} />
                         </div>
                         <h4 className="font-bold text-lg">Nuevo Rol</h4>
-                        <p className="text-xs text-muted-foreground mt-1 px-4">Agregar a la organización.</p>
+                        <p className="text-xs text-muted-foreground mt-1 px-4">Agregar a esta organización.</p>
                     </div>
                 </div>
             )}

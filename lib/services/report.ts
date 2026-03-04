@@ -6,7 +6,7 @@ export interface RecentReport {
     fileSize: number;
     generatedBy: string;
     status: "COMPLETED" | "FAILED" | "PENDING";
-    createdAt: string;
+    date: string;
 }
 
 /**
@@ -99,5 +99,24 @@ export const reportService = {
 
         const blob = await response.blob();
         downloadBlob(blob, `Auditoria_Financiera_${new Date().toISOString().split('T')[0]}.pdf`);
+    },
+
+    /**
+     * Descarga un reporte histórico por su ID
+     */
+    async downloadReportById(token: string, id: string, name: string): Promise<void> {
+        const response = await fetch(`${API_URL}/reports/download/${id}`, {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${token}`,
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error("Error al descargar el reporte histórico");
+        }
+
+        const blob = await response.blob();
+        downloadBlob(blob, name);
     }
 };

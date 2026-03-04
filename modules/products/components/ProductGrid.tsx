@@ -120,7 +120,7 @@ export function ProductGrid({ products, isLoading, searchQuery, onEditProduct, o
 
                                     <div className={`flex items-center justify-between p-3 rounded-xl border ${isOut ? 'bg-destructive/5 border-destructive/20 text-destructive' : isLow ? 'bg-amber-500/5 border-amber-500/20 text-amber-600' : 'bg-primary/5 border-primary/20 text-primary'}`}>
                                         <span className="text-xs font-black uppercase tracking-widest">Stock Disponible</span>
-                                        <span className="text-xl font-black">{product.currentStock} {UNIT_LABELS[product.physicalUnitType]}</span>
+                                        <span className="text-xl font-black">{product.currentStock}</span>
                                     </div>
                                 </div>
                             </motion.div>

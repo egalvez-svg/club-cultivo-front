@@ -11,8 +11,13 @@ export function useCreateDispensation() {
         onSuccess: () => {
             // Refrescar los catálogos de stock luego de dispensar
             queryClient.invalidateQueries({ queryKey: ["products"] });
-            // Opcionalmente podemos refrescar pacientes para actualizar su límite disponible si existiese
+            // Refrescar pacientes para ver actualización de saldo/límites
             queryClient.invalidateQueries({ queryKey: ["patients"] });
+            // Refrescar lotes ya que el availableEquivalentGrams cambia
+            queryClient.invalidateQueries({ queryKey: ["lots-list"] });
+            queryClient.invalidateQueries({ queryKey: ["lots-by-strain"] });
+            // Refrescar caja para ver el nuevo movimiento de dinero
+            queryClient.invalidateQueries({ queryKey: ["active-register"] });
         },
     });
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Leaf, Box, MoreHorizontal, Clock, CheckCircle2 } from "lucide-react";
+import { Leaf, Box, MoreHorizontal, Clock } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Lot } from "@/lib/services/lot";
 
@@ -15,7 +15,6 @@ interface LotCardProps {
 }
 
 export function LotCard({ lot, colorClass, borderClass, onDragStart, onActionClick, isActive }: LotCardProps) {
-    // Extract bg color for the left bar
     const bgColor = colorClass.split(" ")[0];
 
     return (
@@ -27,18 +26,76 @@ export function LotCard({ lot, colorClass, borderClass, onDragStart, onActionCli
             draggable
             onDragStart={onDragStart as any}
             className={cn(
-                "bg-card rounded-2xl p-5 shadow-sm border cursor-grab active:cursor-grabbing hover:shadow-md transition-shadow relative overflow-hidden group/card flex flex-col min-h-[180px] shrink-0",
+                "bg-card rounded-xl shadow-sm border cursor-grab active:cursor-grabbing hover:shadow-md transition-shadow relative overflow-hidden flex flex-col shrink-0",
+                "p-1.5 sm:p-5 min-h-[60px] sm:min-h-[180px]", // Reducción drástica en móvil
                 borderClass,
                 isActive && "ring-2 ring-primary/20"
             )}
         >
-            {/* Left color bar */}
-            <div className={cn("absolute left-0 top-0 bottom-0 w-1.5", bgColor)} />
+            <div className={cn("absolute left-0 top-0 bottom-0 w-1 sm:w-1.5", bgColor)} />
 
-            <div className="flex justify-between items-start mb-3 shrink-0">
-                <span className="text-[10px] uppercase font-black tracking-widest text-muted-foreground bg-muted/30 px-2 py-1 rounded-md">
-                    {lot.lotType === "CULTIVATION" ? "Cultivo" : "Empaque"}
-                </span>
+            {/* Layout Móvil: Fila única ultra-compacta */}
+            <div className="flex sm:flex-col items-center sm:items-start h-full gap-2 sm:gap-4">
+                {/* Icono y Título (Lado izquierdo en móvil) */}
+                <div className="flex items-center gap-2 flex-1 min-w-0">
+                    <div className={cn("p-1 sm:p-2.5 rounded-lg sm:rounded-[14px] flex items-center justify-center shrink-0", colorClass)}>
+                        {lot.lotType === "CULTIVATION" ? <Leaf size={12} className="sm:w-[18px] sm:h-[18px]" /> : <Box size={12} className="sm:w-[18px] sm:h-[18px]" />}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                        <h4 className="font-bold text-[11px] sm:text-base leading-none sm:leading-tight truncate text-foreground">
+                            {lot.strain?.name || "Sin Cepa"}
+                        </h4>
+                        <p className="text-[8px] sm:text-xs font-medium text-muted-foreground uppercase tracking-widest mt-0.5 truncate">
+                            {lot.lotCode}
+                        </p>
+                    </div>
+                </div>
+
+                {/* Estadísticas (Lado derecho en móvil) */}
+                <div className="flex items-center gap-3 shrink-0 mr-1 sm:mr-0 sm:grid sm:grid-cols-3 sm:w-full sm:bg-muted/30 sm:rounded-xl sm:p-3">
+                    {lot.totalOutputEquivalentGrams !== null && (
+                        <div className="flex flex-col items-end sm:items-start">
+                            <span className="hidden sm:block text-[9px] font-bold text-muted-foreground uppercase">Cosechado</span>
+                            <div className="flex items-center gap-1">
+                                <span className="font-black text-[10px] sm:text-sm">{lot.totalOutputEquivalentGrams}</span>
+                                <span className="text-[8px] font-bold text-muted-foreground sm:hidden">g</span>
+                            </div>
+                        </div>
+                    )}
+                    {lot.availableEquivalentGrams !== null && (
+                        <div className="flex flex-col items-end sm:items-start">
+                            <span className="hidden sm:block text-[9px] font-bold text-muted-foreground uppercase">Stock</span>
+                            <div className="flex items-center gap-1">
+                                <span className="font-black text-[10px] sm:text-sm text-primary">{lot.availableEquivalentGrams}</span>
+                                <span className="text-[8px] font-bold text-primary/60 sm:hidden">g</span>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Botón Acción Móvil */}
+                    <button
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            const rect = e.currentTarget.getBoundingClientRect();
+                            onActionClick(lot, rect as DOMRect);
+                        }}
+                        className="sm:hidden text-muted-foreground p-1 hover:bg-muted rounded-md shrink-0"
+                    >
+                        <MoreHorizontal size={14} />
+                    </button>
+                </div>
+
+                {/* Footer Desktop */}
+                <div className="hidden sm:flex items-center justify-between mt-auto pt-3 border-t border-border/50 text-xs font-medium text-muted-foreground shrink-0 w-full">
+                    <div className="flex items-center gap-1.5">
+                        <Clock size={12} />
+                        {new Date(lot.createdAt).toLocaleDateString('es-AR')}
+                    </div>
+                </div>
+            </div>
+
+            {/* Botón Acción Desktop */}
+            <div className="hidden sm:block absolute right-2 top-2">
                 <button
                     onClick={(e) => {
                         e.stopPropagation();
@@ -49,53 +106,6 @@ export function LotCard({ lot, colorClass, borderClass, onDragStart, onActionCli
                 >
                     <MoreHorizontal size={18} />
                 </button>
-            </div>
-
-            <div className="flex items-center gap-3 mb-4 shrink-0">
-                <div className={cn("p-2.5 rounded-[14px] flex items-center justify-center", colorClass)}>
-                    {lot.lotType === "CULTIVATION" ? <Leaf size={18} /> : <Box size={18} />}
-                </div>
-                <div className="min-w-0">
-                    <h4 className="font-bold text-base leading-tight truncate">
-                        {lot.strain?.name || "Cepa Desconocida"}
-                    </h4>
-                    <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest mt-0.5 truncate">
-                        {lot.lotCode}
-                    </p>
-                </div>
-            </div>
-
-            {(lot.totalOutputEquivalentGrams !== null || lot.totalProductionCost !== null || lot.availableEquivalentGrams !== null) && (
-                <div className="grid grid-cols-3 gap-2 mb-4 bg-muted/30 rounded-xl p-3 shrink-0">
-                    {lot.totalOutputEquivalentGrams !== null && lot.totalOutputEquivalentGrams !== undefined && (
-                        <div>
-                            <span className="block text-[9px] font-bold text-muted-foreground uppercase tracking-tighter">Cosechado</span>
-                            <span className="font-black text-sm">{lot.totalOutputEquivalentGrams}g</span>
-                        </div>
-                    )}
-                    {lot.availableEquivalentGrams !== null && lot.availableEquivalentGrams !== undefined && (
-                        <div>
-                            <span className="block text-[9px] font-bold text-muted-foreground uppercase tracking-tighter">Stock</span>
-                            <span className="font-black text-sm text-primary">{lot.availableEquivalentGrams}g</span>
-                        </div>
-                    )}
-                    {lot.totalProductionCost !== null && lot.totalProductionCost !== undefined && (
-                        <div>
-                            <span className="block text-[9px] font-bold text-muted-foreground uppercase tracking-tighter">Costo</span>
-                            <span className="font-black text-sm">${lot.totalProductionCost.toLocaleString()}</span>
-                        </div>
-                    )}
-                </div>
-            )}
-
-            <div className="flex items-center justify-between mt-auto pt-3 border-t border-border/50 text-xs font-medium text-muted-foreground shrink-0">
-                <div className="flex items-center gap-1.5">
-                    <Clock size={12} />
-                    {new Date(lot.createdAt).toLocaleDateString('es-AR')}
-                </div>
-                {lot.status === "RELEASED" && (
-                    <CheckCircle2 size={14} className="text-emerald-500" />
-                )}
             </div>
         </motion.div>
     );

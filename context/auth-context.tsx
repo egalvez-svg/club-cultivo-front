@@ -18,6 +18,7 @@ interface AuthContextType {
     showSessionWarning: boolean;
     timeLeft: number;
     extendSession: () => Promise<void>;
+    refreshProfile: () => Promise<void>;
 }
 
 
@@ -198,6 +199,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
     };
 
+    const refreshProfile = async () => {
+        if (!token) return;
+        try {
+            const response = await authService.getMe(token);
+            if (response.user) {
+                setUser(response.user);
+                localStorage.setItem("auth_user", JSON.stringify(response.user));
+                console.log("AuthContext: Perfil refrescado con éxito");
+            }
+        } catch (error) {
+            console.error("AuthContext: Falló refresco de perfil", error);
+        }
+    };
+
     const setActiveRole = (role: string) => {
         if (user) {
             const updated = { ...user, activeRole: role };
@@ -254,7 +269,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             isLoading,
             showSessionWarning,
             timeLeft,
-            extendSession
+            extendSession,
+            refreshProfile
         }}>
 
             {children}

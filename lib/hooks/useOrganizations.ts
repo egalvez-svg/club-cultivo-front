@@ -40,7 +40,7 @@ export function useCreateOrganization() {
 
 export function useUpdateOrganization() {
     const queryClient = useQueryClient();
-    const { token } = useAuth();
+    const { token, refreshProfile } = useAuth();
 
     return useMutation({
         mutationFn: ({ id, params }: { id: string; params: UpdateOrganizationParams }) => {
@@ -49,6 +49,8 @@ export function useUpdateOrganization() {
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["organizations"] });
+            // Refrescar el perfil de usuario para actualizar el Header si es su organización
+            refreshProfile();
             requestAnimationFrame(() => {
                 sileo.success({ title: "Organización actualizada", description: "Los datos han sido guardados." });
             });

@@ -46,6 +46,9 @@ export const useUpdateLot = () => {
         onSuccess: (_, variables) => {
             queryClient.invalidateQueries({ queryKey: ["lots-list"] });
             queryClient.invalidateQueries({ queryKey: ["lot-detail", variables.id] });
+            // Al actualizar un lote se deben refrescar los productos asociados
+            queryClient.invalidateQueries({ queryKey: ["products"] });
+            queryClient.invalidateQueries({ queryKey: ["strains-list"] });
         },
     });
 };

@@ -30,6 +30,8 @@ export const useCreateStrain = () => {
         mutationFn: (params: CreateStrainParams) => strainService.createStrain(params, token || ""),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["strains-list"] });
+            // Refrescar lotes ya que una nueva cepa podría afectar la lista vacía
+            queryClient.invalidateQueries({ queryKey: ["lots-list"] });
         },
     });
 };
@@ -56,6 +58,7 @@ export const useDeleteStrain = () => {
         mutationFn: (id: string) => strainService.deleteStrain(id, token || ""),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["strains-list"] });
+            queryClient.invalidateQueries({ queryKey: ["lots-list"] });
         },
     });
 };

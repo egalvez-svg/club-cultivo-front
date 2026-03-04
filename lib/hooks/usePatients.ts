@@ -20,6 +20,8 @@ export const useCreatePatient = () => {
         mutationFn: (params: CreatePatientParams) => patientService.createPatient(params, token || ""),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["patients-list"] });
+            // Invalidad dispensaciones por si hay cambios en límites de paciente
+            queryClient.invalidateQueries({ queryKey: ["products"] });
         },
     });
 };

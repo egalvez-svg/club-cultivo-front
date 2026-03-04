@@ -36,7 +36,9 @@ export interface UpdateLotParams {
     status?: string | "RELEASED";
     lotType?: "CULTIVATION" | "PACKAGING";
     lotCode?: string;
+    strainId?: string;
     totalOutputEquivalentGrams?: number;
+    availableEquivalentGrams?: number;
     totalProductionCost?: number;
 }
 

@@ -95,7 +95,7 @@ export default function LotsPage() {
         if (lot && lot.status !== newStatus) {
             updateLot.mutate({
                 id: lotId,
-                data: { status: newStatus as any }
+                params: { status: newStatus as any }
             });
         }
     };
@@ -215,14 +215,14 @@ export default function LotsPage() {
                     if (selectedLot) {
                         updateLot.mutate({
                             id: selectedLot.id,
-                            data: {
+                            params: {
                                 strainId,
                                 lotCode,
                                 lotType,
                                 status,
-                                totalOutputEquivalentGrams: totalOutputEquivalentGrams === "" ? null : totalOutputEquivalentGrams,
-                                availableEquivalentGrams: availableEquivalentGrams === "" ? null : availableEquivalentGrams,
-                                totalProductionCost: totalProductionCost === "" ? null : totalProductionCost
+                                totalOutputEquivalentGrams: totalOutputEquivalentGrams === "" ? undefined : totalOutputEquivalentGrams,
+                                availableEquivalentGrams: availableEquivalentGrams === "" ? undefined : availableEquivalentGrams,
+                                totalProductionCost: totalProductionCost === "" ? undefined : totalProductionCost
                             }
                         }, {
                             onSuccess: () => {

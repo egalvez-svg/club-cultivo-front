@@ -106,7 +106,7 @@ export function ProductSelection({
                                     <div className="text-right shrink-0">
                                         <div className="text-[17px] font-black text-slate-800 tracking-tight">${product.price.toLocaleString()}</div>
                                         <div className="text-[9px] font-black text-slate-400 uppercase tracking-widest">
-                                            {product.physicalUnitType === 'GRAMS' ? 'por gramo' : 'por unidad'}
+                                            {'por unidad'}
                                         </div>
                                     </div>
                                 </motion.div>

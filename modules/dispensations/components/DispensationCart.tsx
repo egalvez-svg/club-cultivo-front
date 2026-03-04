@@ -26,6 +26,7 @@ interface DispensationCartProps {
     onConfirmDispensation: () => void;
     selectedPatient: Patient | null;
     isPending: boolean;
+    totalGrams: number;
 }
 
 export function DispensationCart({
@@ -40,7 +41,8 @@ export function DispensationCart({
     setPaymentMethod,
     onConfirmDispensation,
     selectedPatient,
-    isPending
+    isPending,
+    totalGrams
 }: DispensationCartProps) {
     const isCartEmpty = cartItems.length === 0;
 
@@ -128,6 +130,18 @@ export function DispensationCart({
 
                     <div className="h-px bg-slate-50 my-2 md:my-3" />
 
+                    <div className="flex justify-between items-center text-slate-400 font-bold uppercase tracking-widest text-[9px] md:text-[10px]">
+                        <span>Peso Total</span>
+                        <span className={cn(
+                            "font-black text-[13px] md:text-[14px]",
+                            totalGrams > 40 ? "text-rose-500" : totalGrams > 35 ? "text-amber-500" : "text-slate-800"
+                        )}>
+                            {totalGrams.toFixed(2)}g / 40g
+                        </span>
+                    </div>
+
+                    <div className="h-px bg-slate-50 my-2 md:my-3" />
+
                     <div className="flex justify-between items-center">
                         <span className="text-xs md:text-sm font-black text-slate-800 uppercase tracking-widest">Total</span>
                         <span className="text-2xl md:text-3xl font-black text-emerald-700 tracking-tight">${total.toLocaleString()}</span>
@@ -160,10 +174,10 @@ export function DispensationCart({
 
                 <button
                     onClick={onConfirmDispensation}
-                    disabled={isPending || isCartEmpty || !selectedPatient || total <= 0}
+                    disabled={isPending || isCartEmpty || !selectedPatient || total <= 0 || totalGrams > 40}
                     className="w-full h-14 md:h-16 bg-slate-900 text-white rounded-2xl font-black text-[10px] md:text-xs uppercase tracking-[0.2em] flex items-center justify-center gap-2 md:gap-3 transition-all transform active:scale-95 shadow-xl shadow-slate-200 disabled:opacity-50"
                 >
-                    Confirmar Operación
+                    {totalGrams > 40 ? "Límite Excedido" : "Confirmar Operación"}
                     <ArrowRight className="w-4 h-4 md:w-5 md:h-5" />
                 </button>
             </div>

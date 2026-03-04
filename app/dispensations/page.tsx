@@ -44,6 +44,9 @@ export default function DispensationsPage() {
     const subtotal = useMemo(() =>
         cartItems.reduce((acc, item) => acc + (item.product.price * item.quantity), 0),
         [cartItems]);
+    const totalGrams = useMemo(() =>
+        cartItems.reduce((acc, item) => acc + (item.product.equivalentDryGrams * item.quantity), 0),
+        [cartItems]);
     const total = Math.max(0, subtotal - discount);
 
     // Handlers
@@ -61,6 +64,16 @@ export default function DispensationsPage() {
 
         setCartItems(prev => {
             const existing = prev.find(item => item.product.id === product.id);
+            const additionalGrams = product.equivalentDryGrams;
+
+            if (totalGrams + additionalGrams > 40) {
+                sileo.error({
+                    title: "Límite de Dispensación",
+                    description: "No se pueden superar los 40g por operación."
+                });
+                return prev;
+            }
+
             if (existing) {
                 if (existing.quantity >= product.currentStock) {
                     sileo.error({ title: "Límite excedido", description: "No puedes agregar más del stock disponible." });
@@ -85,6 +98,18 @@ export default function DispensationsPage() {
         setCartItems(prev => prev.map(item => {
             if (item.product.id === productId) {
                 const newQty = Math.max(1, item.quantity + delta);
+
+                if (delta > 0) {
+                    const additionalGrams = item.product.equivalentDryGrams;
+                    if (totalGrams + additionalGrams > 40) {
+                        sileo.error({
+                            title: "Límite de Dispensación",
+                            description: "No se pueden superar los 40g por operación."
+                        });
+                        return item;
+                    }
+                }
+
                 if (newQty > item.product.currentStock) {
                     sileo.error({ title: "Límite excedido", description: "No puedes superar el stock actual." });
                     return item;
@@ -175,6 +200,7 @@ export default function DispensationsPage() {
                     onRemoveFromCart={handleRemoveFromCart}
                     onUpdateQuantity={handleUpdateQuantity}
                     subtotal={subtotal}
+                    totalGrams={totalGrams}
                     discount={discount}
                     setDiscount={setDiscount}
                     total={total}

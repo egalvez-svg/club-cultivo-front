@@ -32,7 +32,7 @@ function UsersContent() {
     const { user: currentUser } = useAuth();
     const { data: users, isLoading: isLoadingUsers } = useUsersList();
     const { data: roles } = useRoles();
-    const { data: organizations } = useOrganizations();
+    const { data: organizations } = useOrganizations(currentUser?.activeRole === "SUPER_ADMIN");
 
     const createUserMutation = useCreateUser();
     const updateUserMutation = useUpdateUser();

@@ -12,13 +12,13 @@ export const useRoles = () => {
     });
 };
 
-export const useOrganizations = () => {
+export const useOrganizations = (enabled: boolean = true) => {
     const { token } = useAuth();
 
     return useQuery({
         queryKey: ["organizations"],
         queryFn: () => userService.getOrganizations(token || ""),
-        enabled: !!token,
+        enabled: !!token && enabled,
     });
 };
 

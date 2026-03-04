@@ -14,27 +14,29 @@ interface LotModalsProps {
     setIsDeleteModalOpen: (open: boolean) => void;
     selectedLot: Lot | null;
     strains: Strain[] | undefined;
-    strainId: string;
-    setStrainId: (id: string) => void;
-    lotType: string;
-    setLotType: (type: "CULTIVATION" | "PACKAGING") => void;
-    lotCode: string;
-    setLotCode: (code: string) => void;
-    totalGrams: string;
-    setTotalGrams: (grams: string) => void;
-    totalCost: string;
-    setTotalCost: (cost: string) => void;
-    onCreateLot: (e: React.FormEvent) => void;
-    onUpdateLot: (e: React.FormEvent) => void;
-    onConfirmDelete: () => void;
-    onStatusChange: (lotId: string, status: string) => void;
+    formState: {
+        strainId: string;
+        setStrainId: (id: string) => void;
+        lotType: "CULTIVATION" | "PACKAGING";
+        setLotType: (type: "CULTIVATION" | "PACKAGING") => void;
+        lotCode: string;
+        setLotCode: (code: string) => void;
+        status: Lot["status"];
+        setStatus: (status: Lot["status"]) => void;
+        totalOutputEquivalentGrams: number | "";
+        setTotalOutputEquivalentGrams: (grams: number | "") => void;
+        availableEquivalentGrams: number | "";
+        setAvailableEquivalentGrams: (grams: number | "") => void;
+        totalProductionCost: number | "";
+        setTotalProductionCost: (cost: number | "") => void;
+    };
+    onCreateSubmit: () => void;
+    onEditSubmit: () => void;
+    onDeleteConfirm: () => void;
     isPending: boolean;
     activeMenuId: string | null;
     setActiveMenuId: (id: string | null) => void;
     menuPosition: { top: number; left: number };
-    onEditClick: () => void;
-    onDeleteClick: () => void;
-    KANBAN_COLUMNS: any[];
 }
 
 export function LotModals({
@@ -46,28 +48,47 @@ export function LotModals({
     setIsDeleteModalOpen,
     selectedLot,
     strains,
-    strainId,
-    setStrainId,
-    lotType,
-    setLotType,
-    lotCode,
-    setLotCode,
-    totalGrams,
-    setTotalGrams,
-    totalCost,
-    setTotalCost,
-    onCreateLot,
-    onUpdateLot,
-    onConfirmDelete,
-    onStatusChange,
+    formState,
+    onCreateSubmit,
+    onEditSubmit,
+    onDeleteConfirm,
     isPending,
     activeMenuId,
     setActiveMenuId,
-    menuPosition,
-    onEditClick,
-    onDeleteClick,
-    KANBAN_COLUMNS
+    menuPosition
 }: LotModalsProps) {
+    const {
+        strainId, setStrainId,
+        lotType, setLotType,
+        lotCode, setLotCode,
+        status, setStatus,
+        totalOutputEquivalentGrams, setTotalOutputEquivalentGrams,
+        availableEquivalentGrams, setAvailableEquivalentGrams,
+        totalProductionCost, setTotalProductionCost
+    } = formState;
+
+    const KANBAN_COLUMNS = [
+        { id: "CREATED", title: "Cargado" },
+        { id: "IN_ANALYSIS", title: "En Análisis" },
+        { id: "RELEASED", title: "Liberado" },
+        { id: "BLOCKED", title: "Bloqueado" },
+        { id: "EXHAUSTED", title: "Agotado" },
+    ];
+
+    const onStatusChange = (newStatus: string) => {
+        setStatus(newStatus as any);
+        setActiveMenuId(null);
+    };
+
+    const handleEditClick = () => {
+        setIsEditModalOpen(true);
+        setActiveMenuId(null);
+    };
+
+    const handleDeleteClick = () => {
+        setIsDeleteModalOpen(true);
+        setActiveMenuId(null);
+    };
     return (
         <>
             {/* Context Menu overlay */}
@@ -97,7 +118,7 @@ export function LotModals({
                                 col.id !== selectedLot.status && (
                                     <button
                                         key={col.id}
-                                        onClick={() => onStatusChange(selectedLot.id, col.id)}
+                                        onClick={() => onStatusChange(col.id)}
                                         className="w-full px-4 py-2.5 text-left text-xs font-bold flex items-center justify-between hover:bg-muted/50 transition-colors"
                                     >
                                         Mover a {col.title} <ArrowRight size={12} className="text-muted-foreground" />
@@ -108,14 +129,14 @@ export function LotModals({
                             <div className="border-t border-muted/50 mt-1" />
 
                             <button
-                                onClick={onEditClick}
+                                onClick={handleEditClick}
                                 className="w-full px-4 py-3 text-left text-sm font-bold flex items-center gap-3 hover:bg-primary/5 transition-colors border-b border-muted/20"
                             >
                                 <Edit2 size={14} className="text-primary" /> Editar
                             </button>
 
                             <button
-                                onClick={onDeleteClick}
+                                onClick={handleDeleteClick}
                                 className="w-full px-4 py-3 text-left text-sm font-bold flex items-center gap-3 hover:bg-red-50 text-red-600 transition-colors"
                             >
                                 <Trash2 size={14} /> Eliminar
@@ -171,7 +192,7 @@ export function LotModals({
                             </div>
 
                             <div className="p-8 overflow-y-auto custom-scrollbar">
-                                <form onSubmit={isEditModalOpen ? onUpdateLot : onCreateLot} className="space-y-6">
+                                <form onSubmit={(e) => { e.preventDefault(); isEditModalOpen ? onEditSubmit() : onCreateSubmit(); }} className="space-y-6">
                                     <div className="space-y-2">
                                         <label className="text-xs font-black text-muted-foreground uppercase tracking-widest ml-1">Cepa Genética</label>
                                         <div className="relative group/input">
@@ -237,8 +258,8 @@ export function LotModals({
                                                 <input
                                                     type="number"
                                                     step="0.1"
-                                                    value={totalGrams}
-                                                    onChange={(e) => setTotalGrams(e.target.value)}
+                                                    value={totalOutputEquivalentGrams}
+                                                    onChange={(e) => setTotalOutputEquivalentGrams(e.target.value === "" ? "" : parseFloat(e.target.value))}
                                                     className="w-full pl-12 pr-4 py-3.5 bg-muted/30 border-2 border-transparent rounded-[1.25rem] outline-none focus:ring-4 focus:ring-primary/10 transition-all font-medium text-[15px] text-slate-700"
                                                     placeholder="Ej: 1250.5"
                                                 />
@@ -251,8 +272,8 @@ export function LotModals({
                                                 <input
                                                     type="number"
                                                     step="0.01"
-                                                    value={totalCost}
-                                                    onChange={(e) => setTotalCost(e.target.value)}
+                                                    value={totalProductionCost}
+                                                    onChange={(e) => setTotalProductionCost(e.target.value === "" ? "" : parseFloat(e.target.value))}
                                                     className="w-full pl-12 pr-4 py-3.5 bg-muted/30 border-2 border-transparent rounded-[1.25rem] outline-none focus:ring-4 focus:ring-primary/10 transition-all font-medium text-[15px] text-slate-700"
                                                     placeholder="Ej: 85000"
                                                 />
@@ -326,7 +347,7 @@ export function LotModals({
                                     Cancelar
                                 </button>
                                 <button
-                                    onClick={onConfirmDelete}
+                                    onClick={onDeleteConfirm}
                                     disabled={isPending}
                                     className="flex-1 py-4 bg-red-500 text-white rounded-2xl font-black text-sm uppercase tracking-widest shadow-xl shadow-red-500/20 hover:shadow-2xl hover:-translate-y-1 transition-all active:scale-95 disabled:opacity-70 flex items-center justify-center gap-2"
                                 >

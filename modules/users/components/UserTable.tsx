@@ -43,11 +43,13 @@ export function UserTable({
                     <p className="text-sm font-bold text-muted-foreground uppercase tracking-wider mb-2">Activos</p>
                     <h3 className="text-4xl font-black text-accent">{users?.filter(u => u.active).length || 0}</h3>
                 </div>
-                <div className="glass p-6 rounded-3xl border border-white/50 shadow-sm relative overflow-hidden group">
-                    <div className="absolute top-0 right-0 w-24 h-24 bg-blue-500/5 rounded-full -mr-8 -mt-8 transition-transform group-hover:scale-150 duration-500" />
-                    <p className="text-sm font-bold text-muted-foreground uppercase tracking-wider mb-2">Organizaciones</p>
-                    <h3 className="text-4xl font-black text-blue-500">{organizations?.length || 0}</h3>
-                </div>
+                {organizations !== undefined && (
+                    <div className="glass p-6 rounded-3xl border border-white/50 shadow-sm relative overflow-hidden group">
+                        <div className="absolute top-0 right-0 w-24 h-24 bg-blue-500/5 rounded-full -mr-8 -mt-8 transition-transform group-hover:scale-150 duration-500" />
+                        <p className="text-sm font-bold text-muted-foreground uppercase tracking-wider mb-2">Organizaciones</p>
+                        <h3 className="text-4xl font-black text-blue-500">{organizations?.length || 0}</h3>
+                    </div>
+                )}
             </div>
 
             {/* Table/List Filter */}

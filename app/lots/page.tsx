@@ -186,6 +186,10 @@ export default function LotsPage() {
                 setIsDeleteModalOpen={setIsDeleteModalOpen}
                 selectedLot={selectedLot}
                 strains={strains || []}
+                isPending={createLot.isPending || updateLot.isPending || deleteLot.isPending}
+                activeMenuId={activeMenuId}
+                setActiveMenuId={setActiveMenuId}
+                menuPosition={menuPosition}
                 formState={{
                     strainId, setStrainId,
                     lotCode, setLotCode,

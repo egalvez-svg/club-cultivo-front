@@ -28,7 +28,9 @@ export interface CreateLotParams {
     strainId: string;
     lotType: "CULTIVATION" | "PACKAGING";
     lotCode?: string;
+    status?: string;
     totalOutputEquivalentGrams?: number;
+    availableEquivalentGrams?: number;
     totalProductionCost?: number;
 }
 

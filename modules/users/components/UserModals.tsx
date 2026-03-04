@@ -36,6 +36,7 @@ interface UserModalsProps {
     menuPosition: { top: number; left: number };
     onEditClick: (user: UserWithRole) => void;
     onDeleteClick: (user: UserWithRole) => void;
+    currentUser: any;
 }
 
 export function UserModals({
@@ -68,7 +69,8 @@ export function UserModals({
     setActiveMenuId,
     menuPosition,
     onEditClick,
-    onDeleteClick
+    onDeleteClick,
+    currentUser
 }: UserModalsProps) {
 
     const toggleRole = (roleId: string) => {
@@ -254,16 +256,22 @@ export function UserModals({
                                         <label className="text-xs font-black text-muted-foreground uppercase tracking-widest ml-1">Organización</label>
                                         <div className="relative group/input">
                                             <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within/input:text-primary transition-colors" size={18} />
-                                            <select
-                                                value={organizationId}
-                                                onChange={(e) => setOrganizationId(e.target.value)}
-                                                className="w-full pl-12 pr-4 py-3.5 bg-muted/30 border-2 border-transparent rounded-[1.25rem] outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary/20 transition-all font-medium text-[15px] appearance-none"
-                                            >
-                                                <option value="">Org. Por Defecto (Admin)</option>
-                                                {organizations?.map((o) => (
-                                                    <option key={o.id} value={o.id}>{o.name}</option>
-                                                ))}
-                                            </select>
+                                            {currentUser?.activeRole === "SUPER_ADMIN" ? (
+                                                <select
+                                                    value={organizationId}
+                                                    onChange={(e) => setOrganizationId(e.target.value)}
+                                                    className="w-full pl-12 pr-4 py-3.5 bg-muted/30 border-2 border-transparent rounded-[1.25rem] outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary/20 transition-all font-medium text-[15px] appearance-none"
+                                                >
+                                                    <option value="">Org. Por Defecto (Admin)</option>
+                                                    {organizations?.map((o) => (
+                                                        <option key={o.id} value={o.id}>{o.name}</option>
+                                                    ))}
+                                                </select>
+                                            ) : (
+                                                <div className="w-full pl-12 pr-4 py-3.5 bg-muted/20 border-2 border-transparent rounded-[1.25rem] font-medium text-[15px] text-slate-500 flex items-center">
+                                                    {currentUser?.organization?.name || currentUser?.orgName || "Cargando..."}
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
 

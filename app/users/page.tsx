@@ -67,7 +67,12 @@ function UsersContent() {
         setEmail("");
         setPassword("");
         setRoleIds([]);
-        setOrganizationId("");
+        // Si no es superadmin, pre-seleccionar su organización
+        if (currentUser?.activeRole !== "SUPER_ADMIN" && currentUser?.organizationId) {
+            setOrganizationId(currentUser.organizationId);
+        } else {
+            setOrganizationId("");
+        }
         setSelectedUser(null);
     };
 
@@ -226,6 +231,7 @@ function UsersContent() {
                 menuPosition={menuPosition}
                 onEditClick={handleEditClick}
                 onDeleteClick={handleDeleteClick}
+                currentUser={currentUser}
             />
         </div>
     );

@@ -14,6 +14,7 @@ interface UserModalsProps {
     setIsDeleteModalOpen: (open: boolean) => void;
     selectedUser: UserWithRole | null;
     roles: Role[] | undefined;
+    isLoadingRoles?: boolean;
     organizations: Organization[] | undefined;
     fullName: string;
     setFullName: (val: string) => void;
@@ -48,6 +49,7 @@ export function UserModals({
     setIsDeleteModalOpen,
     selectedUser,
     roles,
+    isLoadingRoles,
     organizations,
     fullName,
     setFullName,
@@ -80,6 +82,9 @@ export function UserModals({
             setRoleIds([...roleIds, roleId]);
         }
     };
+
+    const isSuperAdmin = currentUser?.activeRole === "SUPER_ADMIN";
+    const showRoles = !isSuperAdmin || (isSuperAdmin && organizationId);
 
     return (
         <>
@@ -173,6 +178,27 @@ export function UserModals({
 
                             <div className="p-8 pt-6 overflow-y-auto custom-scrollbar">
                                 <form onSubmit={isEditModalOpen ? onUpdateUser : onCreateUser} className="space-y-6">
+
+                                    {/* Organización al principio para SuperAdmin */}
+                                    {isSuperAdmin && (
+                                        <div className="space-y-2 p-4 bg-primary/5 rounded-3xl border border-primary/10">
+                                            <label className="text-xs font-black text-primary uppercase tracking-widest ml-1">1. Seleccionar Organización</label>
+                                            <div className="relative group/input mt-1">
+                                                <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 text-primary" size={18} />
+                                                <select
+                                                    value={organizationId}
+                                                    onChange={(e) => setOrganizationId(e.target.value)}
+                                                    className="w-full pl-12 pr-4 py-3.5 bg-white border-2 border-primary/20 rounded-[1.25rem] outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all font-bold text-[15px] appearance-none"
+                                                >
+                                                    <option value="">Selecciona un club...</option>
+                                                    {organizations?.map((o) => (
+                                                        <option key={o.id} value={o.id}>{o.name}</option>
+                                                    ))}
+                                                </select>
+                                            </div>
+                                        </div>
+                                    )}
+
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <div className="space-y-2">
                                             <label className="text-xs font-black text-muted-foreground uppercase tracking-widest ml-1">Nombre Completo</label>
@@ -222,58 +248,63 @@ export function UserModals({
 
                                     <div className="space-y-4">
                                         <label className="text-xs font-black text-muted-foreground uppercase tracking-widest ml-1 block">Roles Asignados</label>
-                                        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                                            {roles?.map((r) => (
-                                                <button
-                                                    key={r.id}
-                                                    type="button"
-                                                    onClick={() => toggleRole(r.id)}
-                                                    className={cn(
-                                                        "flex items-center gap-3 p-3 rounded-2xl border-2 transition-all text-left group",
-                                                        roleIds.includes(r.id)
-                                                            ? "bg-primary/5 border-primary text-primary shadow-md shadow-primary/10"
-                                                            : "bg-white border-slate-100 text-slate-400 hover:border-slate-200"
-                                                    )}
-                                                >
-                                                    <div className={cn(
-                                                        "w-8 h-8 rounded-lg flex items-center justify-center transition-colors",
-                                                        roleIds.includes(r.id) ? "bg-primary text-white" : "bg-slate-100 text-slate-400 group-hover:bg-slate-200"
-                                                    )}>
-                                                        <Shield size={16} />
-                                                    </div>
-                                                    <span className="text-xs font-bold uppercase tracking-tight truncate">{r.name}</span>
-                                                </button>
-                                            ))}
-                                        </div>
-                                        {roleIds.length === 0 && (
+
+                                        {!showRoles ? (
+                                            <div className="p-6 rounded-[1.5rem] bg-slate-50 border-2 border-dashed border-slate-200 text-center">
+                                                <Shield size={24} className="mx-auto text-slate-300 mb-2" />
+                                                <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                                                    Selecciona una organización para cargar los roles
+                                                </p>
+                                            </div>
+                                        ) : isLoadingRoles ? (
+                                            <div className="p-6 flex flex-col items-center justify-center gap-3 bg-slate-50 rounded-2xl border-2 border-slate-100">
+                                                <Loader2 size={24} className="text-primary animate-spin" />
+                                                <span className="text-[10px] font-black uppercase tracking-widest text-primary opacity-60">Consultando Roles...</span>
+                                            </div>
+                                        ) : (
+                                            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                                                {roles?.map((r) => (
+                                                    <button
+                                                        key={r.id}
+                                                        type="button"
+                                                        onClick={() => toggleRole(r.id)}
+                                                        className={cn(
+                                                            "flex items-center gap-3 p-3 rounded-2xl border-2 transition-all text-left group",
+                                                            roleIds.includes(r.id)
+                                                                ? "bg-primary/5 border-primary text-primary shadow-md shadow-primary/10"
+                                                                : "bg-white border-slate-100 text-slate-400 hover:border-slate-200"
+                                                        )}
+                                                    >
+                                                        <div className={cn(
+                                                            "w-8 h-8 rounded-lg flex items-center justify-center transition-colors",
+                                                            roleIds.includes(r.id) ? "bg-primary text-white" : "bg-slate-100 text-slate-400 group-hover:bg-slate-200"
+                                                        )}>
+                                                            <Shield size={16} />
+                                                        </div>
+                                                        <span className="text-xs font-bold uppercase tracking-tight truncate">{r.translatedName || r.name}</span>
+                                                    </button>
+                                                ))}
+                                            </div>
+                                        )}
+
+                                        {showRoles && !isLoadingRoles && roleIds.length === 0 && (
                                             <p className="text-[10px] text-destructive font-bold uppercase tracking-widest ml-2 flex items-center gap-1.5 animate-pulse">
                                                 <X size={12} /> Selecciona al menos un rol
                                             </p>
                                         )}
                                     </div>
 
-                                    <div className="space-y-2">
-                                        <label className="text-xs font-black text-muted-foreground uppercase tracking-widest ml-1">Organización</label>
-                                        <div className="relative group/input">
-                                            <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within/input:text-primary transition-colors" size={18} />
-                                            {currentUser?.activeRole === "SUPER_ADMIN" ? (
-                                                <select
-                                                    value={organizationId}
-                                                    onChange={(e) => setOrganizationId(e.target.value)}
-                                                    className="w-full pl-12 pr-4 py-3.5 bg-muted/30 border-2 border-transparent rounded-[1.25rem] outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary/20 transition-all font-medium text-[15px] appearance-none"
-                                                >
-                                                    <option value="">Org. Por Defecto (Admin)</option>
-                                                    {organizations?.map((o) => (
-                                                        <option key={o.id} value={o.id}>{o.name}</option>
-                                                    ))}
-                                                </select>
-                                            ) : (
+                                    {!isSuperAdmin && (
+                                        <div className="space-y-2">
+                                            <label className="text-xs font-black text-muted-foreground uppercase tracking-widest ml-1">Organización</label>
+                                            <div className="relative group/input">
+                                                <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within/input:text-primary transition-colors" size={18} />
                                                 <div className="w-full pl-12 pr-4 py-3.5 bg-muted/20 border-2 border-transparent rounded-[1.25rem] font-medium text-[15px] text-slate-500 flex items-center">
                                                     {currentUser?.organization?.name || currentUser?.orgName || "Cargando..."}
                                                 </div>
-                                            )}
+                                            </div>
                                         </div>
-                                    </div>
+                                    )}
 
                                     {isCreateModalOpen && (
                                         <div className="space-y-2">

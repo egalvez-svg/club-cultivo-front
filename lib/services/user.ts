@@ -68,8 +68,13 @@ const formatUser = (u: any): UserWithRole => ({
 });
 
 export const userService = {
-    async getRoles(token: string): Promise<Role[]> {
-        const response = await fetch(`${API_URL}/roles`, {
+    async getRoles(token: string, organizationId?: string): Promise<Role[]> {
+        const url = new URL(`${API_URL}/roles`);
+        if (organizationId) {
+            url.searchParams.append("organizationId", organizationId);
+        }
+
+        const response = await fetch(url.toString(), {
             method: "GET",
             headers: {
                 "Authorization": `Bearer ${token}`,

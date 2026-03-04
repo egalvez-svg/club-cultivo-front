@@ -30,13 +30,6 @@ export default function UsersPage() {
 
 function UsersContent() {
     const { user: currentUser } = useAuth();
-    const { data: users, isLoading: isLoadingUsers } = useUsersList();
-    const { data: roles } = useRoles();
-    const { data: organizations } = useOrganizations(currentUser?.activeRole === "SUPER_ADMIN");
-
-    const createUserMutation = useCreateUser();
-    const updateUserMutation = useUpdateUser();
-    const deleteUserMutation = useDeleteUser();
 
     const [searchTerm, setSearchTerm] = useState("");
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -53,6 +46,21 @@ function UsersContent() {
     const [password, setPassword] = useState("");
     const [roleIds, setRoleIds] = useState<string[]>([]);
     const [organizationId, setOrganizationId] = useState("");
+
+    const { data: users, isLoading: isLoadingUsers } = useUsersList();
+    const { data: roles, isLoading: isLoadingRoles } = useRoles(organizationId);
+    const { data: organizations } = useOrganizations(currentUser?.activeRole === "SUPER_ADMIN");
+
+    const createUserMutation = useCreateUser();
+    const updateUserMutation = useUpdateUser();
+    const deleteUserMutation = useDeleteUser();
+
+    // Limpiar roles seleccionados si cambia la organización (solo en creación o si es SuperAdmin)
+    useEffect(() => {
+        if (currentUser?.activeRole === "SUPER_ADMIN" && isCreateModalOpen) {
+            setRoleIds([]);
+        }
+    }, [organizationId, isCreateModalOpen, currentUser?.activeRole]);
 
     // Cierra el menú al hacer scroll
     useEffect(() => {
@@ -93,7 +101,7 @@ function UsersContent() {
                     resetForm();
                     sileo.success({ title: "¡Listo!", description: "Usuario creado exitosamente" });
                 },
-                onError: (error) => {
+                onError: (error: any) => {
                     sileo.error({ title: "Error", description: error.message || "No se pudo crear el usuario" });
                 }
             }
@@ -137,7 +145,7 @@ function UsersContent() {
                     resetForm();
                     sileo.success({ title: "¡Actualizado!", description: "Los datos se guardaron correctamente" });
                 },
-                onError: (error) => {
+                onError: (error: any) => {
                     sileo.error({ title: "Error", description: error.message || "No se pudo actualizar el usuario" });
                 }
             }
@@ -158,7 +166,7 @@ function UsersContent() {
                 setSelectedUser(null);
                 sileo.success({ title: "Desactivado", description: "El usuario fue desactivado del sistema" });
             },
-            onError: (error) => {
+            onError: (error: any) => {
                 sileo.error({ title: "Error", description: error.message || "No se pudo eliminar el usuario" });
             }
         });
@@ -209,6 +217,7 @@ function UsersContent() {
                 setIsDeleteModalOpen={setIsDeleteModalOpen}
                 selectedUser={selectedUser}
                 roles={roles}
+                isLoadingRoles={isLoadingRoles}
                 organizations={organizations}
                 fullName={fullName}
                 setFullName={setFullName}
@@ -236,4 +245,3 @@ function UsersContent() {
         </div>
     );
 }
-

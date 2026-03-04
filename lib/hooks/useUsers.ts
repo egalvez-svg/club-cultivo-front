@@ -2,12 +2,12 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { userService, CreateUserParams, UpdateUserParams } from "@/lib/services/user";
 import { useAuth } from "@/context/auth-context";
 
-export const useRoles = () => {
+export const useRoles = (organizationId?: string) => {
     const { token } = useAuth();
 
     return useQuery({
-        queryKey: ["roles"],
-        queryFn: () => userService.getRoles(token || ""),
+        queryKey: ["roles", organizationId],
+        queryFn: () => userService.getRoles(token || "", organizationId),
         enabled: !!token,
     });
 };

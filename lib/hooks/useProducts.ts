@@ -30,6 +30,7 @@ export function useCreateProduct() {
         mutationFn: (data: CreateProductDto) => productService.createProduct(data, token || ""),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["products"] });
+            queryClient.invalidateQueries({ queryKey: ["product-catalog"] });
             queryClient.invalidateQueries({ queryKey: ["lots-list"] });
             queryClient.invalidateQueries({ queryKey: ["lots-by-strain"] });
         },
@@ -45,6 +46,7 @@ export function useUpdateProduct() {
             productService.updateProduct(id, data, token || ""),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["products"] });
+            queryClient.invalidateQueries({ queryKey: ["product-catalog"] });
             queryClient.invalidateQueries({ queryKey: ["lots-list"] });
             queryClient.invalidateQueries({ queryKey: ["lots-by-strain"] });
         },
@@ -59,8 +61,19 @@ export function useDeleteProduct() {
         mutationFn: (id: string) => productService.deleteProduct(id, token || ""),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["products"] });
+            queryClient.invalidateQueries({ queryKey: ["product-catalog"] });
             queryClient.invalidateQueries({ queryKey: ["lots-list"] });
             queryClient.invalidateQueries({ queryKey: ["lots-by-strain"] });
         },
+    });
+}
+
+export function useCatalog() {
+    const { token } = useAuth();
+
+    return useQuery({
+        queryKey: ["product-catalog"],
+        queryFn: () => productService.getCatalog(token || ""),
+        enabled: !!token,
     });
 }

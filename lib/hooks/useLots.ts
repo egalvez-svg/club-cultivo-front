@@ -30,6 +30,7 @@ export const useCreateLot = () => {
         mutationFn: (params: CreateLotParams) => lotService.createLot(params, token || ""),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["lots-list"] });
+            queryClient.invalidateQueries({ queryKey: ["lots-by-strain"] });
             // By invalidating strains, we update the strains lot count
             queryClient.invalidateQueries({ queryKey: ["strains-list"] });
         },
@@ -46,6 +47,7 @@ export const useUpdateLot = () => {
         onSuccess: (_, variables) => {
             queryClient.invalidateQueries({ queryKey: ["lots-list"] });
             queryClient.invalidateQueries({ queryKey: ["lot-detail", variables.id] });
+            queryClient.invalidateQueries({ queryKey: ["lots-by-strain"] });
             // Al actualizar un lote se deben refrescar los productos asociados
             queryClient.invalidateQueries({ queryKey: ["products"] });
             queryClient.invalidateQueries({ queryKey: ["strains-list"] });
@@ -61,6 +63,7 @@ export const useDeleteLot = () => {
         mutationFn: (id: string) => lotService.deleteLot(id, token || ""),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["lots-list"] });
+            queryClient.invalidateQueries({ queryKey: ["lots-by-strain"] });
             queryClient.invalidateQueries({ queryKey: ["strains-list"] });
         },
     });

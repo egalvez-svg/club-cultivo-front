@@ -135,6 +135,28 @@ export const appointmentService = {
         return formatAppointment(data);
     },
 
+    async getMyAppointments(token: string, search?: string): Promise<Appointment[]> {
+        const url = search
+            ? `${API_URL}/appointments/my?search=${encodeURIComponent(search)}`
+            : `${API_URL}/appointments/my`;
+
+        const response = await fetch(url, {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json",
+            },
+        });
+
+        if (!response.ok) {
+            const data = await response.json();
+            throw new Error(data.message || "Error al obtener tus turnos");
+        }
+
+        const rawData = await response.json();
+        return rawData.map(formatAppointment);
+    },
+
     async cancelAppointment(id: string, token: string): Promise<Appointment> {
         const response = await fetch(`${API_URL}/appointments/${id}`, {
             method: "DELETE",

@@ -40,7 +40,6 @@ export interface UpdateLotParams {
     lotCode?: string;
     strainId?: string;
     totalOutputEquivalentGrams?: number;
-    availableEquivalentGrams?: number;
     totalProductionCost?: number;
 }
 

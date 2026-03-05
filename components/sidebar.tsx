@@ -14,7 +14,8 @@ import {
     UserCog,
     ShieldAlert,
     Building2,
-    CalendarClock
+    CalendarClock,
+    Clock
 } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -34,26 +35,37 @@ export function Sidebar() {
     }
 
 
-    const menuItems = [
-        { icon: Home, label: "Resumen", href: "/dashboard" },
-        { icon: CalendarClock, label: "Turnos", href: "/appointments" },
-        { icon: Users, label: "Pacientes", href: "/patients" },
-        { icon: Leaf, label: "Cepas", href: "/strains" },
-        { icon: Package, label: "Lotes", href: "/lots" },
-        { icon: Package, label: "Productos", href: "/products" },
-        { icon: ShoppingCart, label: "Dispensación", href: "/dispensations" },
-        { icon: Wallet, label: "Caja", href: "/finance" },
-        { icon: BarChart3, label: "Reportes", href: "/reports" },
-    ];
+    let menuItems = [];
 
-    // Solo añadir el ítem de Personal si el usuario es ADMIN o SUPER_ADMIN
-    if (user?.activeRole === "ADMIN" || user?.role === "ADMIN" || user?.activeRole === "SUPER_ADMIN") {
-        menuItems.push({ icon: UserCog, label: "Personal", href: "/users" });
-    }
+    if (user?.activeRole === "PATIENT") {
+        menuItems = [
+            { icon: Home, label: "Mi Tratamiento", href: "/paciente" },
+            { icon: CalendarClock, label: "Mis Turnos", href: "/paciente/turnos" },
+            { icon: Package, label: "Catálogo", href: "/paciente/catalogo" },
+        ];
+    } else {
+        menuItems = [
+            { icon: Home, label: "Resumen", href: "/dashboard" },
+            { icon: CalendarClock, label: "Turnos", href: "/appointments" },
+            { icon: Clock, label: "Malla Horaria", href: "/appointments/availability" },
+            { icon: Users, label: "Pacientes", href: "/patients" },
+            { icon: Leaf, label: "Cepas", href: "/strains" },
+            { icon: Package, label: "Lotes", href: "/lots" },
+            { icon: Package, label: "Productos", href: "/products" },
+            { icon: ShoppingCart, label: "Dispensación", href: "/dispensations" },
+            { icon: Wallet, label: "Caja", href: "/finance" },
+            { icon: BarChart3, label: "Reportes", href: "/reports" },
+        ];
 
-    // Secciones restringidas SOLO a SUPER_ADMIN (Multi-tenancy / Global)
-    if (user?.activeRole === "SUPER_ADMIN") {
-        menuItems.push({ icon: Building2, label: "Organizaciones", href: "/organizations" });
+        // Solo añadir el ítem de Personal si el usuario es ADMIN o SUPER_ADMIN
+        if (user?.activeRole === "ADMIN" || user?.role === "ADMIN" || user?.activeRole === "SUPER_ADMIN") {
+            menuItems.push({ icon: UserCog, label: "Personal", href: "/users" });
+        }
+
+        // Secciones restringidas SOLO a SUPER_ADMIN (Multi-tenancy / Global)
+        if (user?.activeRole === "SUPER_ADMIN") {
+            menuItems.push({ icon: Building2, label: "Organizaciones", href: "/organizations" });
+        }
     }
 
 

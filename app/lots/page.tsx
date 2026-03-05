@@ -225,7 +225,6 @@ export default function LotsPage() {
                                 lotType,
                                 status,
                                 totalOutputEquivalentGrams: totalOutputEquivalentGrams === "" ? undefined : totalOutputEquivalentGrams,
-                                availableEquivalentGrams: availableEquivalentGrams === "" ? undefined : availableEquivalentGrams,
                                 totalProductionCost: totalProductionCost === "" ? undefined : totalProductionCost
                             }
                         }, {

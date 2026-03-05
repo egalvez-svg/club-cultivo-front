@@ -48,6 +48,34 @@ export interface UpdatePatientParams {
 
 
 
+export interface PatientDashboardData {
+    patient: {
+        id: string;
+        fullName: string;
+        documentNumber: string;
+        status: string;
+        dailyDose: number;
+    };
+    organization: {
+        name: string;
+    };
+    reprocan: {
+        reprocanNumber: string;
+        status: string;
+        expirationDate: string;
+        createdAt: string;
+        daysRemaining: number;
+    };
+    consumption: {
+        consumedThisMonth: number;
+        monthlyAllowance: number;
+        available: number;
+        progressPercent: number;
+        lastDispensation: any | null;
+    };
+    pendingAppointments: any[];
+}
+
 // ── Service ─────────────────────────────────────────────────────────────────
 
 const formatReprocanRecord = (r: any): ReprocanRecord => ({
@@ -62,6 +90,23 @@ const formatPatient = (p: any): Patient => ({
 });
 
 export const patientService = {
+    async getPatientDashboard(token: string): Promise<PatientDashboardData> {
+        const response = await fetch(`${API_URL}/patients/me/dashboard`, {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json",
+            },
+        });
+
+        if (!response.ok) {
+            const data = await response.json();
+            throw new Error(data.message || "Error al obtener dashboard del paciente");
+        }
+
+        return response.json();
+    },
+
     async checkDocumentNumber(documentNumber: string, token: string): Promise<{
         exists: boolean;
         id?: string;

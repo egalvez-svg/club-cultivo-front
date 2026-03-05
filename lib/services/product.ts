@@ -25,6 +25,30 @@ export interface Product {
     productionLotId?: string;
 }
 
+export interface CatalogProduct {
+    id: string;
+    name: string;
+    presentationType: ProductPresentationType;
+    physicalUnitType: ProductPhysicalUnit;
+    netPhysicalQuantity: number;
+    equivalentDryGrams: number;
+    price: number;
+    stock: number;
+    available: boolean;
+}
+
+export interface StrainGroup {
+    strain: {
+        id: string;
+        name: string;
+        type: string;
+        genetics: string;
+        thcPercentage: number;
+        cbdPercentage: number;
+    };
+    products: CatalogProduct[];
+}
+
 export interface CreateProductDto {
     strainId: string;
     name: string;
@@ -124,5 +148,20 @@ export const productService = {
             const data = await response.json();
             throw new Error(data.message || "Error al eliminar producto");
         }
+    },
+
+    async getCatalog(token: string): Promise<StrainGroup[]> {
+        const response = await fetch(`${API_URL}/products/catalog`, {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json",
+            },
+        });
+        if (!response.ok) {
+            const data = await response.json();
+            throw new Error(data.message || "Error al obtener catálogo");
+        }
+        return response.json();
     },
 };

@@ -22,6 +22,16 @@ export const useTodayAppointments = () => {
     });
 };
 
+export const useMyAppointments = (search?: string) => {
+    const { token } = useAuth();
+
+    return useQuery({
+        queryKey: ["my-appointments", search],
+        queryFn: () => appointmentService.getMyAppointments(token || "", search),
+        enabled: !!token,
+    });
+};
+
 export const useCreateAppointment = () => {
     const { token } = useAuth();
     const queryClient = useQueryClient();
@@ -32,6 +42,8 @@ export const useCreateAppointment = () => {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["appointments"] });
             queryClient.invalidateQueries({ queryKey: ["appointments-today"] });
+            queryClient.invalidateQueries({ queryKey: ["my-appointments"] });
+            queryClient.invalidateQueries({ queryKey: ["availability-slots"] });
         },
     });
 };
@@ -46,6 +58,8 @@ export const useUpdateAppointment = () => {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["appointments"] });
             queryClient.invalidateQueries({ queryKey: ["appointments-today"] });
+            queryClient.invalidateQueries({ queryKey: ["my-appointments"] });
+            queryClient.invalidateQueries({ queryKey: ["availability-slots"] });
         },
     });
 };
@@ -59,6 +73,8 @@ export const useCancelAppointment = () => {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["appointments"] });
             queryClient.invalidateQueries({ queryKey: ["appointments-today"] });
+            queryClient.invalidateQueries({ queryKey: ["my-appointments"] });
+            queryClient.invalidateQueries({ queryKey: ["availability-slots"] });
         },
     });
 };

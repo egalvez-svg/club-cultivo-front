@@ -8,7 +8,7 @@ import { useAuth } from "@/context/auth-context";
 import { sileo } from "sileo";
 
 export default function ForcedChangePasswordPage() {
-    const { token, user, logout, refreshProfile } = useAuth();
+    const { token, user, logout, refreshProfile, updateUser } = useAuth();
     const [isPending, setIsPending] = useState(false);
     const [showCurrent, setShowCurrent] = useState(false);
     const [showNew, setShowNew] = useState(false);
@@ -52,8 +52,11 @@ export default function ForcedChangePasswordPage() {
 
             sileo.success({ title: "¡Éxito!", description: "Tu contraseña ha sido actualizada" });
 
-            // Refrescar perfil para limpiar bandera requiresPasswordChange
-            await refreshProfile();
+            // Limpiar bandera localmente para evitar que el effect redirija de vuelta
+            updateUser({ requiresPasswordChange: false });
+
+            // Intentar refrescar perfil desde el backend (best effort)
+            try { await refreshProfile(); } catch {}
 
             // Redirigir al dashboard
             window.location.href = "/dashboard";

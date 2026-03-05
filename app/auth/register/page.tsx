@@ -4,12 +4,13 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Mail, Lock, Loader2, ArrowRight, Leaf } from "lucide-react";
+import { Mail, Lock, Loader2, ArrowRight, Leaf, Eye, EyeOff } from "lucide-react";
 import { useRegister } from "@/lib/hooks/useAuth";
 
 export default function RegisterPage() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [showPassword, setShowPassword] = useState(false);
     const [success, setSuccess] = useState(false);
     const registerMutation = useRegister();
 
@@ -109,18 +110,26 @@ export default function RegisterPage() {
                                     <label className="text-sm font-medium text-muted-foreground ml-1">
                                         Contraseña
                                     </label>
-                                    <div className="relative group">
-                                        <div className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-primary transition-colors">
+                                    <div className="relative group/input">
+                                        <div className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within/input:text-primary transition-colors">
                                             <Lock size={18} />
                                         </div>
                                         <input
-                                            type="password"
+                                            type={showPassword ? "text" : "password"}
                                             required
                                             value={password}
                                             onChange={(e) => setPassword(e.target.value)}
-                                            className="w-full bg-white/50 border border-border rounded-xl py-3 pl-12 pr-4 outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-sm"
+                                            className="w-full bg-white/50 border border-border rounded-xl py-3 pl-12 pr-12 outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-sm"
                                             placeholder="••••••••"
                                         />
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowPassword(!showPassword)}
+                                            className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-primary transition-all duration-200 hover:scale-110 active:scale-95 focus:outline-none"
+                                            aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
+                                        >
+                                            {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                                        </button>
                                     </div>
                                 </div>
 

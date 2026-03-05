@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Mail, Lock, Loader2, ArrowRight, ShieldCheck, UserCog, Heart, Shield, ChevronLeft } from "lucide-react";
+import { Mail, Lock, Loader2, ArrowRight, ShieldCheck, UserCog, Heart, Shield, ChevronLeft, Eye, EyeOff } from "lucide-react";
 import { useLogin } from "@/lib/hooks/useAuth";
 import { useAuth } from "@/context/auth-context";
 import { AuthResponse, UserRole } from "@/lib/services/auth";
@@ -21,6 +21,7 @@ export default function LoginPage() {
     const { login, setActiveRole } = useAuth();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [showPassword, setShowPassword] = useState(false);
     const loginMutation = useLogin();
 
     // Multi-role state
@@ -157,13 +158,21 @@ export default function LoginPage() {
                                                     <Lock size={20} />
                                                 </div>
                                                 <input
-                                                    type="password"
+                                                    type={showPassword ? "text" : "password"}
                                                     required
                                                     value={password}
                                                     onChange={(e) => setPassword(e.target.value)}
-                                                    className="w-full bg-white/60 border-2 border-transparent rounded-2xl py-3.5 pl-12 pr-4 outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary/20 transition-all text-[15px] shadow-sm hover:bg-white/80"
+                                                    className="w-full bg-white/60 border-2 border-transparent rounded-2xl py-3.5 pl-12 pr-12 outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary/20 transition-all text-[15px] shadow-sm hover:bg-white/80"
                                                     placeholder="••••••••"
                                                 />
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setShowPassword(!showPassword)}
+                                                    className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-primary transition-all duration-200 hover:scale-110 active:scale-95 focus:outline-none"
+                                                    aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
+                                                >
+                                                    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                                                </button>
                                             </div>
                                         </div>
 

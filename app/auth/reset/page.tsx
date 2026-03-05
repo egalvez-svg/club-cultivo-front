@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
-import { Lock, Loader2, KeyRound, CheckCircle2, AlertCircle } from "lucide-react";
+import { Lock, Loader2, KeyRound, CheckCircle2, AlertCircle, Eye, EyeOff } from "lucide-react";
 import { useResetPassword } from "@/lib/hooks/useAuth";
 
 export default function ResetPasswordPage() {
@@ -14,6 +14,8 @@ export default function ResetPasswordPage() {
     const [token, setToken] = useState<string | null>(null);
     const [newPassword, setNewPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
+    const [showNew, setShowNew] = useState(false);
+    const [showConfirm, setShowConfirm] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
     const [validationError, setValidationError] = useState<string | null>(null);
 
@@ -98,13 +100,21 @@ export default function ResetPasswordPage() {
                                         <Lock size={20} />
                                     </div>
                                     <input
-                                        type="password"
+                                        type={showNew ? "text" : "password"}
                                         required
                                         value={newPassword}
                                         onChange={(e) => setNewPassword(e.target.value)}
-                                        className="w-full bg-white/60 border-2 border-transparent rounded-2xl py-3.5 pl-12 pr-4 outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary/20 text-[15px]"
+                                        className="w-full bg-white/60 border-2 border-transparent rounded-2xl py-3.5 pl-12 pr-12 outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary/20 text-[15px]"
                                         placeholder="Mínimo 6 caracteres"
                                     />
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowNew(!showNew)}
+                                        className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-primary transition-all duration-200 hover:scale-110 active:scale-95 focus:outline-none"
+                                        aria-label={showNew ? "Ocultar contraseña" : "Mostrar contraseña"}
+                                    >
+                                        {showNew ? <EyeOff size={20} /> : <Eye size={20} />}
+                                    </button>
                                 </div>
                             </div>
 
@@ -115,13 +125,21 @@ export default function ResetPasswordPage() {
                                         <KeyRound size={20} />
                                     </div>
                                     <input
-                                        type="password"
+                                        type={showConfirm ? "text" : "password"}
                                         required
                                         value={confirmPassword}
                                         onChange={(e) => setConfirmPassword(e.target.value)}
-                                        className="w-full bg-white/60 border-2 border-transparent rounded-2xl py-3.5 pl-12 pr-4 outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary/20 text-[15px]"
+                                        className="w-full bg-white/60 border-2 border-transparent rounded-2xl py-3.5 pl-12 pr-12 outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary/20 text-[15px]"
                                         placeholder="Repite tu contraseña"
                                     />
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowConfirm(!showConfirm)}
+                                        className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-primary transition-all duration-200 hover:scale-110 active:scale-95 focus:outline-none"
+                                        aria-label={showConfirm ? "Ocultar contraseña" : "Mostrar contraseña"}
+                                    >
+                                        {showConfirm ? <EyeOff size={20} /> : <Eye size={20} />}
+                                    </button>
                                 </div>
                             </div>
 

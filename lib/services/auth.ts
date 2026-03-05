@@ -27,6 +27,7 @@ export interface User {
         id: string;
         name: string;
     };
+    requiresPasswordChange?: boolean;
 }
 
 
@@ -51,6 +52,11 @@ export interface ForgotPasswordParams {
 
 export interface ResetPasswordParams {
     token: string;
+    newPassword: string;
+}
+
+export interface ChangePasswordParams {
+    currentPassword: string;
     newPassword: string;
 }
 
@@ -163,6 +169,25 @@ export const authService = {
 
         if (!response.ok) {
             throw new Error(data.message || "Error al restablecer contraseña");
+        }
+
+        return data;
+    },
+
+    async changePassword(params: ChangePasswordParams, token: string): Promise<{ message: string }> {
+        const response = await fetch(`${API_URL}/auth/change-password`, {
+            method: "POST",
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(params),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.message || "Error al cambiar contraseña");
         }
 
         return data;

@@ -13,7 +13,8 @@ import {
     Wallet,
     UserCog,
     ShieldAlert,
-    Building2
+    Building2,
+    CalendarClock
 } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -35,6 +36,7 @@ export function Sidebar() {
 
     const menuItems = [
         { icon: Home, label: "Resumen", href: "/dashboard" },
+        { icon: CalendarClock, label: "Turnos", href: "/appointments" },
         { icon: Users, label: "Pacientes", href: "/patients" },
         { icon: Leaf, label: "Cepas", href: "/strains" },
         { icon: Package, label: "Lotes", href: "/lots" },

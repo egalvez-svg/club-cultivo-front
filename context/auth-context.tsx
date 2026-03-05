@@ -94,6 +94,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                             setUser(response.user);
                             startSessionTimer(response.expires_in);
                             console.log("AuthContext: Sesión verificada vía /me");
+
+                            // Redirección obligatoria si requiere cambio de contraseña
+                            if (response.user.requiresPasswordChange) {
+                                const currentPath = window.location.pathname;
+                                if (currentPath !== "/auth/change-password") {
+                                    router.push("/auth/change-password");
+                                }
+                            }
+
                             setIsLoading(false);
                             return;
                         }
@@ -116,6 +125,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                                     if (userRes.user) {
                                         setUser(userRes.user);
                                         localStorage.setItem("auth_user", JSON.stringify(userRes.user));
+
+                                        // Redirección obligatoria tras refresh de perfil
+                                        if (userRes.user.requiresPasswordChange) {
+                                            const currentPath = window.location.pathname;
+                                            if (currentPath !== "/auth/change-password") {
+                                                router.push("/auth/change-password");
+                                            }
+                                        }
                                     }
                                 }
 
@@ -143,6 +160,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         checkAuth();
         return () => clearTimers();
     }, []);
+
+    // Effect extra para vigilar el estado del usuario en tiempo real (navegación)
+    useEffect(() => {
+        if (!isLoading && user?.requiresPasswordChange) {
+            const currentPath = window.location.pathname;
+            if (currentPath !== "/auth/change-password" && !currentPath.startsWith("/auth/login")) {
+                router.push("/auth/change-password");
+            }
+        }
+    }, [user, isLoading, router]);
 
     // Helper para guardar tokens y usuario
     const handleAuthData = (data: AuthResponse) => {

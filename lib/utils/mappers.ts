@@ -5,7 +5,7 @@ export const ENUM_TRANSLATIONS: Record<string, string> = {
     ADJUSTMENT: "Ajuste",
 
     // Reference Types (Cash Register)
-    DISPENSATION: "Dispensación",
+    DISPENSATION: "Retiro de Productos",
     SUBSCRIPTION: "Suscripción",
     MEMBERSHIP: "Membresía",
     MANUAL: "Manual",
@@ -65,7 +65,6 @@ export const ENUM_TRANSLATIONS: Record<string, string> = {
     // Appointment Reasons
     REPROCAN_RENEWAL: "Renovación REPROCANN",
     MEDICAL_CONSULTATION: "Consulta Médica",
-    DISPENSATION: "Retiro de Productos",
 };
 
 /**

@@ -35,37 +35,63 @@ export function Sidebar() {
     }
 
 
-    let menuItems = [];
+    let sections: { title?: string, items: any[] }[] = [];
+    const isActive = (href: string) => pathname === href;
 
     if (user?.activeRole === "PATIENT") {
-        menuItems = [
-            { icon: Home, label: "Mi Tratamiento", href: "/paciente" },
-            { icon: CalendarClock, label: "Mis Turnos", href: "/paciente/turnos" },
-            { icon: Package, label: "Catálogo", href: "/paciente/catalogo" },
+        sections = [
+            {
+                items: [
+                    { icon: Home, label: "Mi Tratamiento", href: "/paciente" },
+                    { icon: CalendarClock, label: "Mis Turnos", href: "/paciente/turnos" },
+                    { icon: Package, label: "Catálogo", href: "/paciente/catalogo" },
+                ]
+            }
         ];
     } else {
-        menuItems = [
-            { icon: Home, label: "Resumen", href: "/dashboard" },
-            { icon: CalendarClock, label: "Turnos", href: "/appointments" },
-            { icon: Clock, label: "Malla Horaria", href: "/appointments/availability" },
-            { icon: Users, label: "Pacientes", href: "/patients" },
-            { icon: Leaf, label: "Cepas", href: "/strains" },
-            { icon: Package, label: "Lotes", href: "/lots" },
-            { icon: Package, label: "Productos", href: "/products" },
-            { icon: ShoppingCart, label: "Dispensación", href: "/dispensations" },
-            { icon: Wallet, label: "Caja", href: "/finance" },
+        const adminItems = [
+            { icon: ShieldAlert, label: "Membresías", href: "/dashboard/membership/pending" },
+            { icon: UserCog, label: "Personal", href: "/users" },
             { icon: BarChart3, label: "Reportes", href: "/reports" },
         ];
 
-        if (user?.activeRole === "ADMIN" || user?.role === "ADMIN" || user?.activeRole === "SUPER_ADMIN") {
-            menuItems.push({ icon: UserCog, label: "Personal", href: "/users" });
-            menuItems.push({ icon: ShieldAlert, label: "Membresías", href: "/dashboard/membership/pending" });
+        if (user?.activeRole === "SUPER_ADMIN") {
+            adminItems.push({ icon: Building2, label: "Organizaciones", href: "/organizations" });
         }
 
-        // Secciones restringidas SOLO a SUPER_ADMIN (Multi-tenancy / Global)
-        if (user?.activeRole === "SUPER_ADMIN") {
-            menuItems.push({ icon: Building2, label: "Organizaciones", href: "/organizations" });
-        }
+        sections = [
+            {
+                title: "General",
+                items: [{ icon: Home, label: "Resumen", href: "/dashboard" }]
+            },
+            {
+                title: "Gestión Clínica",
+                items: [
+                    { icon: CalendarClock, label: "Turnos", href: "/appointments" },
+                    { icon: Clock, label: "Malla Horaria", href: "/appointments/availability" },
+                    { icon: Users, label: "Pacientes", href: "/patients" },
+                ]
+            },
+            {
+                title: "Inventario y Cultivo",
+                items: [
+                    { icon: Leaf, label: "Cepas", href: "/strains" },
+                    { icon: Package, label: "Lotes", href: "/lots" },
+                    { icon: Package, label: "Productos", href: "/products" },
+                ]
+            },
+            {
+                title: "Operaciones",
+                items: [
+                    { icon: ShoppingCart, label: "Dispensación", href: "/dispensations" },
+                    { icon: Wallet, label: "Caja", href: "/finance" },
+                ]
+            },
+            {
+                title: "Administración",
+                items: adminItems
+            }
+        ];
     }
 
 
@@ -103,31 +129,45 @@ export function Sidebar() {
                     </button>
                 </div>
 
-                <nav className="flex-1 space-y-1">
-                    {menuItems.map((item) => (
-                        <Link
-                            key={item.href}
-                            href={item.href}
-                            className={cn(
-                                "flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 group relative",
-                                pathname === item.href
-                                    ? "text-primary bg-secondary/50 font-medium"
-                                    : "text-muted-foreground hover:text-primary hover:bg-muted"
+                <nav className="flex-1 space-y-6 overflow-y-auto no-scrollbar pr-2 -mr-2">
+                    {sections.map((section, idx) => (
+                        <div key={section.title || idx} className="space-y-1">
+                            {section.title && (
+                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.15em] mb-2 px-3">
+                                    {section.title}
+                                </p>
                             )}
-                        >
-                            <item.icon size={20} className={cn(
-                                "transition-colors",
-                                pathname === item.href ? "text-primary" : "text-muted-foreground group-hover:text-primary"
-                            )} />
-                            <span>{item.label}</span>
-                            {pathname === item.href && (
-                                <motion.div
-                                    layoutId="active-pill"
-                                    className="absolute left-0 w-1 h-6 bg-primary rounded-full"
-                                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                                />
-                            )}
-                        </Link>
+                            <div className="space-y-0.5">
+                                {section.items.map((item) => (
+                                    <Link
+                                        key={item.href}
+                                        href={item.href}
+                                        onClick={() => {
+                                            if (window.innerWidth < 1024) closeSidebar();
+                                        }}
+                                        className={cn(
+                                            "flex items-center gap-3 px-3 py-2 rounded-xl transition-all duration-200 group relative",
+                                            isActive(item.href)
+                                                ? "text-primary bg-primary/10 font-bold"
+                                                : "text-slate-500 hover:text-primary hover:bg-slate-50"
+                                        )}
+                                    >
+                                        <item.icon size={18} className={cn(
+                                            "transition-colors",
+                                            isActive(item.href) ? "text-primary" : "text-slate-400 group-hover:text-primary"
+                                        )} />
+                                        <span className="text-sm">{item.label}</span>
+                                        {isActive(item.href) && (
+                                            <motion.div
+                                                layoutId="active-pill"
+                                                className="absolute left-0 w-1 h-5 bg-primary rounded-full"
+                                                transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                                            />
+                                        )}
+                                    </Link>
+                                ))}
+                            </div>
+                        </div>
                     ))}
                 </nav>
 

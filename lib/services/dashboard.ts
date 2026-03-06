@@ -1,4 +1,4 @@
-import { API_URL } from "./auth";
+import { apiClient } from "./api-client";
 
 export interface DashboardKPIS {
     activePatients: { value: number; growth: number };
@@ -66,44 +66,12 @@ export interface SuperAdminDashboardData {
 
 export const dashboardService = {
     async getDashboardData(token: string, organizationId?: string): Promise<DashboardData> {
-        const url = organizationId
-            ? `${API_URL}/dashboard?organizationId=${organizationId}`
-            : `${API_URL}/dashboard`;
-
-        const response = await fetch(url, {
-            method: "GET",
-            headers: {
-                "Authorization": `Bearer ${token}`,
-                "Content-Type": "application/json",
-            },
-        });
-
-        const data = await response.json().catch(() => ({}));
-
-        if (!response.ok) {
-            const errorMessage = data.message || data.error || `HTTP ${response.status}`;
-            throw new Error(`Error en Dashboard (${response.status}): ${errorMessage}`);
-        }
-
-        return data;
+        const query = organizationId ? `?organizationId=${organizationId}` : "";
+        return apiClient.get(`/dashboard${query}`, token);
     },
 
     async getSuperAdminKPIs(token: string): Promise<SuperAdminKPIResponse> {
-        const response = await fetch(`${API_URL}/dashboard/superadmin`, {
-            method: "GET",
-            headers: {
-                "Authorization": `Bearer ${token}`,
-                "Content-Type": "application/json",
-            },
-        });
-
-        const data = await response.json().catch(() => ({}));
-
-        if (!response.ok) {
-            const errorMessage = data.message || data.error || `HTTP ${response.status}`;
-            throw new Error(`Error en KPIs (SuperAdmin): ${errorMessage}`);
-        }
-
+        const data = await apiClient.get("/dashboard/superadmin", token);
         return {
             kpis: data.kpis,
             liveActivity: data.liveActivity || []
@@ -111,21 +79,7 @@ export const dashboardService = {
     },
 
     async getSuperAdminOrganizations(token: string): Promise<OrganizationSummary[]> {
-        const response = await fetch(`${API_URL}/dashboard/organizations`, {
-            method: "GET",
-            headers: {
-                "Authorization": `Bearer ${token}`,
-                "Content-Type": "application/json",
-            },
-        });
-
-        const data = await response.json().catch(() => ({}));
-
-        if (!response.ok) {
-            const errorMessage = data.message || data.error || `HTTP ${response.status}`;
-            throw new Error(`Error en Organizaciones (SuperAdmin): ${errorMessage}`);
-        }
-
+        const data = await apiClient.get("/dashboard/organizations", token);
         // Si el back devuelve un objeto { organizations: [...] } lo extraemos, 
         // de lo contrario asumimos que devuelve el array directamente.
         return Array.isArray(data) ? data : (data.organizations || []);

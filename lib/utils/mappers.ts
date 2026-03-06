@@ -61,6 +61,11 @@ export const ENUM_TRANSLATIONS: Record<string, string> = {
     CREDIT_CARD: "Tarjeta de Créd.",
     DEBIT_CARD: "Tarjeta de Déb.",
     BANK_TRANSFER: "Transferencia Bancaria",
+
+    // Appointment Reasons
+    REPROCAN_RENEWAL: "Renovación REPROCANN",
+    MEDICAL_CONSULTATION: "Consulta Médica",
+    DISPENSATION: "Retiro de Productos",
 };
 
 /**

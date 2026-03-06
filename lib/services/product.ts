@@ -1,4 +1,4 @@
-import { API_URL } from "./auth";
+import { apiClient } from "./api-client";
 import { Strain } from "./strain";
 import { translateEnum } from "../utils/mappers";
 
@@ -73,95 +73,30 @@ const formatProduct = (p: any): Product => ({
 
 export const productService = {
     async getProducts(token: string): Promise<Product[]> {
-        const response = await fetch(`${API_URL}/products`, {
-            method: "GET",
-            headers: {
-                "Authorization": `Bearer ${token}`,
-                "Content-Type": "application/json",
-            },
-        });
-        if (!response.ok) {
-            const data = await response.json();
-            throw new Error(data.message || "Error al obtener productos");
-        }
-        const rawData = await response.json();
+        const rawData = await apiClient.get("/products", token);
         return rawData.map(formatProduct);
     },
 
     async getProductById(id: string, token: string): Promise<Product> {
-        const response = await fetch(`${API_URL}/products/${id}`, {
-            method: "GET",
-            headers: {
-                "Authorization": `Bearer ${token}`,
-                "Content-Type": "application/json",
-            },
-        });
-        if (!response.ok) {
-            const data = await response.json();
-            throw new Error(data.message || "Error al obtener producto");
-        }
-        const rawData = await response.json();
+        const rawData = await apiClient.get(`/products/${id}`, token);
         return formatProduct(rawData);
     },
 
     async createProduct(data: CreateProductDto, token: string): Promise<Product> {
-        const response = await fetch(`${API_URL}/products`, {
-            method: "POST",
-            headers: {
-                "Authorization": `Bearer ${token}`,
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(data),
-        });
-        const resData = await response.json();
-        if (!response.ok) {
-            throw new Error(resData.message || "Error al crear producto");
-        }
+        const resData = await apiClient.post("/products", data, token);
         return formatProduct(resData);
     },
 
     async updateProduct(id: string, data: UpdateProductDto, token: string): Promise<Product> {
-        const response = await fetch(`${API_URL}/products/${id}`, {
-            method: "PATCH",
-            headers: {
-                "Authorization": `Bearer ${token}`,
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(data),
-        });
-        const resData = await response.json();
-        if (!response.ok) {
-            throw new Error(resData.message || "Error al actualizar producto");
-        }
+        const resData = await apiClient.patch(`/products/${id}`, data, token);
         return formatProduct(resData);
     },
 
     async deleteProduct(id: string, token: string): Promise<void> {
-        const response = await fetch(`${API_URL}/products/${id}`, {
-            method: "DELETE",
-            headers: {
-                "Authorization": `Bearer ${token}`,
-                "Content-Type": "application/json",
-            },
-        });
-        if (!response.ok) {
-            const data = await response.json();
-            throw new Error(data.message || "Error al eliminar producto");
-        }
+        await apiClient.delete(`/products/${id}`, token);
     },
 
     async getCatalog(token: string): Promise<StrainGroup[]> {
-        const response = await fetch(`${API_URL}/products/catalog`, {
-            method: "GET",
-            headers: {
-                "Authorization": `Bearer ${token}`,
-                "Content-Type": "application/json",
-            },
-        });
-        if (!response.ok) {
-            const data = await response.json();
-            throw new Error(data.message || "Error al obtener catálogo");
-        }
-        return response.json();
+        return apiClient.get("/products/catalog", token);
     },
 };

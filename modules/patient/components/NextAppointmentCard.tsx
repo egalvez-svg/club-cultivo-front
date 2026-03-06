@@ -1,8 +1,9 @@
 "use client";
 
-import { CalendarClock, MapPin, User, ChevronRight, Video } from "lucide-react";
+import { CalendarClock, MapPin, User, ChevronRight, Video, FileText } from "lucide-react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { translateEnum } from "@/lib/utils/mappers";
 
 interface NextAppointmentCardProps {
     date: string | null;
@@ -10,9 +11,17 @@ interface NextAppointmentCardProps {
     reason: string | null;
     location?: string;
     isVirtual?: boolean;
+    organizationName?: string;
 }
 
-export function NextAppointmentCard({ date, time, reason, location, isVirtual }: NextAppointmentCardProps) {
+export function NextAppointmentCard({
+    date,
+    time,
+    reason,
+    location,
+    isVirtual,
+    organizationName = "Sede Central"
+}: NextAppointmentCardProps) {
     if (!date) {
         return (
             <motion.div
@@ -72,17 +81,18 @@ export function NextAppointmentCard({ date, time, reason, location, isVirtual }:
                     <div className="space-y-3 px-1">
                         <div className="flex items-center gap-3">
                             <div className="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center text-slate-400">
-                                <FileText size={14} className="hidden" /> {/* Placeholder icon */}
                                 <User size={14} />
                             </div>
-                            <span className="text-[10px] font-black text-slate-600 uppercase tracking-widest">{reason}</span>
+                            <span className="text-[10px] font-black text-slate-600 uppercase tracking-widest">
+                                {translateEnum(reason)}
+                            </span>
                         </div>
                         <div className="flex items-center gap-3">
                             <div className="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center text-slate-400">
                                 {isVirtual ? <Video size={14} /> : <MapPin size={14} />}
                             </div>
                             <span className="text-[10px] font-black text-slate-600 uppercase tracking-widest">
-                                {isVirtual ? "Consulta Online (Meet)" : (location || "Sede Central")}
+                                {isVirtual ? "Consulta Online (Meet)" : (location || organizationName)}
                             </span>
                         </div>
                     </div>
@@ -103,6 +113,3 @@ export function NextAppointmentCard({ date, time, reason, location, isVirtual }:
         </motion.div>
     );
 }
-
-// Add FileText import to the top
-import { FileText } from "lucide-react";

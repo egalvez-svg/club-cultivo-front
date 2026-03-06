@@ -57,9 +57,9 @@ export function Sidebar() {
             { icon: BarChart3, label: "Reportes", href: "/reports" },
         ];
 
-        // Solo añadir el ítem de Personal si el usuario es ADMIN o SUPER_ADMIN
         if (user?.activeRole === "ADMIN" || user?.role === "ADMIN" || user?.activeRole === "SUPER_ADMIN") {
             menuItems.push({ icon: UserCog, label: "Personal", href: "/users" });
+            menuItems.push({ icon: ShieldAlert, label: "Membresías", href: "/dashboard/membership/pending" });
         }
 
         // Secciones restringidas SOLO a SUPER_ADMIN (Multi-tenancy / Global)

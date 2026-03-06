@@ -1,4 +1,4 @@
-import { API_URL } from "./auth";
+import { apiClient } from "./api-client";
 import { Strain } from "./strain";
 import { translateEnum } from "../utils/mappers";
 
@@ -53,109 +53,31 @@ const formatLot = (l: any): Lot => ({
 
 export const lotService = {
     async getLots(token: string): Promise<Lot[]> {
-        const response = await fetch(`${API_URL}/lots`, {
-            method: "GET",
-            headers: {
-                "Authorization": `Bearer ${token}`,
-                "Content-Type": "application/json",
-            },
-        });
-
-        if (!response.ok) {
-            const data = await response.json();
-            throw new Error(data.message || "Error al obtener lotes");
-        }
-
-        const rawData = await response.json();
+        const rawData = await apiClient.get("/lots", token);
         return rawData.map(formatLot);
     },
 
     async getLot(id: string, token: string): Promise<Lot> {
-        const response = await fetch(`${API_URL}/lots/${id}`, {
-            method: "GET",
-            headers: {
-                "Authorization": `Bearer ${token}`,
-                "Content-Type": "application/json",
-            },
-        });
-
-        if (!response.ok) {
-            const data = await response.json();
-            throw new Error(data.message || "Error al obtener lote");
-        }
-
-        const rawData = await response.json();
+        const rawData = await apiClient.get(`/lots/${id}`, token);
         return formatLot(rawData);
     },
 
     async createLot(params: CreateLotParams, token: string): Promise<Lot> {
-        const response = await fetch(`${API_URL}/lots`, {
-            method: "POST",
-            headers: {
-                "Authorization": `Bearer ${token}`,
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(params),
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-            throw new Error(data.message || "Error al crear lote");
-        }
-
+        const data = await apiClient.post("/lots", params, token);
         return formatLot(data);
     },
 
     async updateLot(id: string, params: UpdateLotParams, token: string): Promise<Lot> {
-        const response = await fetch(`${API_URL}/lots/${id}`, {
-            method: "PATCH",
-            headers: {
-                "Authorization": `Bearer ${token}`,
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(params),
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-            throw new Error(data.message || "Error al actualizar lote");
-        }
-
+        const data = await apiClient.patch(`/lots/${id}`, params, token);
         return formatLot(data);
     },
 
     async deleteLot(id: string, token: string): Promise<void> {
-        const response = await fetch(`${API_URL}/lots/${id}`, {
-            method: "DELETE",
-            headers: {
-                "Authorization": `Bearer ${token}`,
-                "Content-Type": "application/json",
-            },
-        });
-
-        if (!response.ok) {
-            const data = await response.json();
-            throw new Error(data.message || "Error al eliminar lote");
-        }
+        await apiClient.delete(`/lots/${id}`, token);
     },
 
     async getLotsByStrain(strainId: string, token: string): Promise<Lot[]> {
-        const response = await fetch(`${API_URL}/lots/by-strain/${strainId}`, {
-            method: "GET",
-            headers: {
-                "Authorization": `Bearer ${token}`,
-                "Content-Type": "application/json",
-            },
-        });
-
-        if (!response.ok) {
-            const data = await response.json();
-            throw new Error(data.message || "Error al obtener lotes por cepa");
-        }
-
-        const rawData = await response.json();
+        const rawData = await apiClient.get(`/lots/by-strain/${strainId}`, token);
         return rawData.map(formatLot);
     },
 };

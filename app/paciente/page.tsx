@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useAuth } from "@/context/auth-context";
-import { Loader2, User, MapPin, Building2, ExternalLink } from "lucide-react";
+import { Loader2, User, MapPin, FileText, ShieldCheck, Building2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
@@ -10,15 +10,19 @@ import { cn } from "@/lib/utils";
 import { ReprocannStatusCard } from "@/modules/patient/components/ReprocannStatusCard";
 import { ConsumptionStatsCard } from "@/modules/patient/components/ConsumptionStatsCard";
 import { NextAppointmentCard } from "@/modules/patient/components/NextAppointmentCard";
+import { LegalSignModal } from "@/modules/patient/components/LegalSignModal";
 
 // Services
 import { patientService, PatientDashboardData } from "@/lib/services/patient";
+import { membershipService } from "@/lib/services/membership";
+import { sileo } from "sileo";
 
 export default function PatientDashboardPage() {
     const { token } = useAuth();
     const [data, setData] = useState<PatientDashboardData | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [isDownloading, setIsDownloading] = useState<string | null>(null);
 
     useEffect(() => {
         const fetchPatientDashboard = async () => {
@@ -75,8 +79,18 @@ export default function PatientDashboardPage() {
     const userName = data.patient.fullName || "Paciente";
     const nextAppointment = data.pendingAppointments.length > 0 ? data.pendingAppointments[0] : null;
 
+    const needsApplicationSign = !data.patient.applicationSignedAt;
+    const needsConsentSign = !data.patient.dataConsentAcceptedAt;
+    const needsLegalSign = needsApplicationSign || needsConsentSign;
+
     return (
         <div className="space-y-10 pb-20">
+            {/* Modal Legal - se muestra automaticamente si faltan firmas */}
+            <LegalSignModal
+                isOpen={needsLegalSign}
+                needsApplicationSign={needsApplicationSign}
+                needsConsentSign={needsConsentSign}
+            />
             {/* Header / Welcome */}
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
                 <motion.div
@@ -138,6 +152,7 @@ export default function PatientDashboardPage() {
                     time={nextAppointment?.date ? new Date(nextAppointment.date).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }) : null}
                     reason={nextAppointment?.reason || "Consulta de Seguimiento"}
                     isVirtual={false}
+                    organizationName={data.organization.name}
                 />
             </div>
 
@@ -146,26 +161,66 @@ export default function PatientDashboardPage() {
                 {[
                     { label: "Mi Historial", sub: "Ver recibos y consumos", icon: User, color: "text-blue-500", bg: "bg-blue-500/10" },
                     { label: "Catálogo", sub: "Cepa y productos", icon: MapPin, color: "text-primary", bg: "bg-primary/10" },
-                    { label: "REPROCAN", sub: "Sitio oficial Argentina", icon: ExternalLink, color: "text-slate-500", bg: "bg-slate-500/10", href: "https://reprocann.magyp.gob.ar/" },
-                    { label: "Soporte", sub: "Contacto con el club", icon: Building2, color: "text-rose-500", bg: "bg-rose-500/10" },
+                    {
+                        label: "Solicitud de Ingreso",
+                        sub: "Descargar mi solicitud",
+                        icon: FileText,
+                        color: "text-slate-500",
+                        bg: "bg-slate-500/10",
+                        onClick: async () => {
+                            if (isDownloading) return;
+                            setIsDownloading("Solicitud de Ingreso");
+                            try {
+                                await membershipService.downloadMyApplication(token || "");
+                            } catch (error) {
+                                sileo.error({ title: "Error", description: "No se pudo descargar la solicitud." });
+                            } finally {
+                                setIsDownloading(null);
+                            }
+                        }
+                    },
+                    {
+                        label: "Consentimiento",
+                        sub: "Descargar mi consentimiento",
+                        icon: ShieldCheck,
+                        color: "text-rose-500",
+                        bg: "bg-rose-500/10",
+                        onClick: async () => {
+                            if (isDownloading) return;
+                            setIsDownloading("Consentimiento");
+                            try {
+                                await membershipService.downloadMyConsent(token || "");
+                            } catch (error) {
+                                sileo.error({ title: "Error", description: "No se pudo descargar el consentimiento." });
+                            } finally {
+                                setIsDownloading(null);
+                            }
+                        }
+                    },
                 ].map((action, i) => (
-                    <motion.a
+                    <motion.div
                         key={action.label}
-                        href={action.href || "#"}
-                        target={action.href ? "_blank" : undefined}
+                        onClick={action.onClick}
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.3 + (i * 0.05) }}
-                        className="p-5 bg-white/60 hover:bg-white border border-white/50 rounded-2xl shadow-sm transition-all group/card flex items-center gap-4"
+                        className={cn(
+                            "p-5 bg-white/60 hover:bg-white border border-white/50 rounded-2xl shadow-sm transition-all group/card flex items-center gap-4",
+                            action.onClick && "cursor-pointer"
+                        )}
                     >
                         <div className={cn("w-12 h-12 rounded-xl flex items-center justify-center transition-transform group-hover/card:scale-110", action.bg, action.color)}>
-                            <action.icon size={22} />
+                            {isDownloading === action.label ? (
+                                <Loader2 size={22} className="animate-spin" />
+                            ) : (
+                                <action.icon size={22} />
+                            )}
                         </div>
                         <div>
                             <p className="text-xs font-black text-slate-800">{action.label}</p>
                             <p className="text-[10px] font-bold text-slate-400">{action.sub}</p>
                         </div>
-                    </motion.a>
+                    </motion.div>
                 ))}
             </div>
         </div>

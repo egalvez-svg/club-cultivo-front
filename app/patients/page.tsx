@@ -47,6 +47,10 @@ export default function PatientsPage() {
     const [email, setEmail] = useState("");
     const [reprocanNumber, setReprocanNumber] = useState("");
     const [reprocanExpiration, setreprocanExpiration] = useState("");
+    const [address, setAddress] = useState("");
+    const [phone, setPhone] = useState("");
+    const [minutesBookEntry, setMinutesBookEntry] = useState("");
+    const [memberNumber, setMemberNumber] = useState("");
 
     // Document check state
     const [docCheckStatus, setDocCheckStatus] = useState<"idle" | "checking" | "available" | "exists_can_add" | "already_patient">("idle");
@@ -106,6 +110,10 @@ export default function PatientsPage() {
         setEmail("");
         setReprocanNumber("");
         setreprocanExpiration("");
+        setAddress("");
+        setPhone("");
+        setMinutesBookEntry("");
+        setMemberNumber("");
         setDocCheckStatus("idle");
         setDocCheckInfo({});
         setSelectedPatient(null);
@@ -122,6 +130,8 @@ export default function PatientsPage() {
                 fullName,
                 documentNumber,
                 email: email || undefined,
+                phone: phone || undefined,
+                address: address || undefined,
                 reprocanNumber: reprocanNumber || undefined,
                 reprocanExpiration: reprocanExpiration || undefined,
             },
@@ -142,9 +152,13 @@ export default function PatientsPage() {
         setSelectedPatient(patient);
         setFullName(patient.fullName);
         setDocumentNumber(patient.documentNumber);
-        setEmail("");
+        setEmail(patient.email || "");
+        setAddress(patient.address || "");
+        setPhone(patient.phone || "");
         setReprocanNumber(patient.reprocanNumber || "");
         setreprocanExpiration(patient.reprocanExpiration ? patient.reprocanExpiration.split("T")[0] : "");
+        setMinutesBookEntry(patient.minutesBookEntry || "");
+        setMemberNumber(patient.memberNumber || "");
         setIsEditModalOpen(true);
         setActiveMenuId(null);
     };
@@ -160,6 +174,8 @@ export default function PatientsPage() {
                     fullName,
                     documentNumber,
                     email: email || undefined,
+                    phone: phone || undefined,
+                    address: address || undefined,
                     reprocanNumber: reprocanNumber || undefined,
                     reprocanExpiration: reprocanExpiration || undefined,
                 },
@@ -204,6 +220,10 @@ export default function PatientsPage() {
             case "email": setEmail(value); break;
             case "reprocanNumber": setReprocanNumber(value); break;
             case "reprocanExpiration": setreprocanExpiration(value); break;
+            case "address": setAddress(value); break;
+            case "phone": setPhone(value); break;
+            case "minutesBookEntry": setMinutesBookEntry(value); break;
+            case "memberNumber": setMemberNumber(value); break;
         }
     };
 
@@ -245,7 +265,7 @@ export default function PatientsPage() {
                 onCloseEdit={() => { setIsEditModalOpen(false); resetForm(); }}
                 onCloseDelete={() => setIsDeleteModalOpen(false)}
                 selectedPatient={selectedPatient}
-                formState={{ fullName, documentNumber, email, reprocanNumber, reprocanExpiration, docCheckStatus, docCheckInfo }}
+                formState={{ fullName, documentNumber, email, address, phone, reprocanNumber, reprocanExpiration, minutesBookEntry, memberNumber, docCheckStatus, docCheckInfo }}
                 onFormChange={handleFormChange}
                 onCreateSubmit={handleCreatePatient}
                 onUpdateSubmit={handleUpdatePatient}

@@ -1,4 +1,4 @@
-import { API_URL } from "./auth";
+import { apiClient } from "./api-client";
 import { translateEnum } from "../utils/mappers";
 
 // ── Interfaces ──────────────────────────────────────────────────────────────
@@ -45,91 +45,26 @@ const formatStrain = (s: any): Strain => ({
 
 export const strainService = {
     async getStrains(token: string): Promise<Strain[]> {
-        const response = await fetch(`${API_URL}/strains`, {
-            method: "GET",
-            headers: {
-                "Authorization": `Bearer ${token}`,
-                "Content-Type": "application/json",
-            },
-        });
-
-        if (!response.ok) {
-            const data = await response.json();
-            throw new Error(data.message || "Error al obtener cepas/genéticas");
-        }
-
-        const rawData = await response.json();
+        const rawData = await apiClient.get("/strains", token);
         return rawData.map(formatStrain);
     },
 
     async getStrain(id: string, token: string): Promise<Strain> {
-        const response = await fetch(`${API_URL}/strains/${id}`, {
-            method: "GET",
-            headers: {
-                "Authorization": `Bearer ${token}`,
-                "Content-Type": "application/json",
-            },
-        });
-
-        if (!response.ok) {
-            const data = await response.json();
-            throw new Error(data.message || "Error al obtener cepa");
-        }
-
-        const rawData = await response.json();
+        const rawData = await apiClient.get(`/strains/${id}`, token);
         return formatStrain(rawData);
     },
 
     async createStrain(params: CreateStrainParams, token: string): Promise<Strain> {
-        const response = await fetch(`${API_URL}/strains`, {
-            method: "POST",
-            headers: {
-                "Authorization": `Bearer ${token}`,
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(params),
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-            throw new Error(data.message || "Error al crear cepa");
-        }
-
+        const data = await apiClient.post("/strains", params, token);
         return formatStrain(data);
     },
 
     async updateStrain(id: string, params: UpdateStrainParams, token: string): Promise<Strain> {
-        const response = await fetch(`${API_URL}/strains/${id}`, {
-            method: "PATCH",
-            headers: {
-                "Authorization": `Bearer ${token}`,
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(params),
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-            throw new Error(data.message || "Error al actualizar cepa");
-        }
-
+        const data = await apiClient.patch(`/strains/${id}`, params, token);
         return formatStrain(data);
     },
 
     async deleteStrain(id: string, token: string): Promise<void> {
-        const response = await fetch(`${API_URL}/strains/${id}`, {
-            method: "DELETE",
-            headers: {
-                "Authorization": `Bearer ${token}`,
-                "Content-Type": "application/json",
-            },
-        });
-
-        if (!response.ok) {
-            const data = await response.json();
-            throw new Error(data.message || "Error al eliminar cepa");
-        }
+        await apiClient.delete(`/strains/${id}`, token);
     },
 };

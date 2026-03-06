@@ -1,4 +1,4 @@
-import { API_URL } from "./auth";
+import { apiClient } from "./api-client";
 import { translateEnum } from "../utils/mappers";
 
 export interface Role {
@@ -24,76 +24,22 @@ const formatRole = (r: any): Role => ({
 
 export const roleService = {
     async getRoles(token: string, organizationId?: string): Promise<Role[]> {
-        const url = new URL(`${API_URL}/roles`);
-        if (organizationId) url.searchParams.append("organizationId", organizationId);
-
-        const response = await fetch(url.toString(), {
-            method: "GET",
-            headers: {
-                "Authorization": `Bearer ${token}`,
-                "Content-Type": "application/json",
-            },
-        });
-
-        if (!response.ok) {
-            const data = await response.json().catch(() => ({}));
-            throw new Error(data.message || "Error al obtener roles");
-        }
-
-        const rawData = await response.json();
+        const query = organizationId ? `?organizationId=${organizationId}` : "";
+        const rawData = await apiClient.get(`/roles${query}`, token);
         return rawData.map(formatRole);
     },
 
     async createRole(params: CreateRoleParams, token: string): Promise<Role> {
-        const response = await fetch(`${API_URL}/roles`, {
-            method: "POST",
-            headers: {
-                "Authorization": `Bearer ${token}`,
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(params),
-        });
-
-        if (!response.ok) {
-            const data = await response.json().catch(() => ({}));
-            throw new Error(data.message || "Error al crear el rol");
-        }
-
-        const data = await response.json();
+        const data = await apiClient.post("/roles", params, token);
         return formatRole(data);
     },
 
     async updateRole(id: string, params: UpdateRoleParams, token: string): Promise<Role> {
-        const response = await fetch(`${API_URL}/roles/${id}`, {
-            method: "PATCH",
-            headers: {
-                "Authorization": `Bearer ${token}`,
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(params),
-        });
-
-        if (!response.ok) {
-            const data = await response.json().catch(() => ({}));
-            throw new Error(data.message || "Error al actualizar el rol");
-        }
-
-        const data = await response.json();
+        const data = await apiClient.patch(`/roles/${id}`, params, token);
         return formatRole(data);
     },
 
     async deleteRole(id: string, token: string): Promise<void> {
-        const response = await fetch(`${API_URL}/roles/${id}`, {
-            method: "DELETE",
-            headers: {
-                "Authorization": `Bearer ${token}`,
-                "Content-Type": "application/json",
-            },
-        });
-
-        if (!response.ok) {
-            const data = await response.json().catch(() => ({}));
-            throw new Error(data.message || "Error al eliminar el rol");
-        }
+        await apiClient.delete(`/roles/${id}`, token);
     },
 };

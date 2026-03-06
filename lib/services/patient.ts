@@ -1,4 +1,4 @@
-import { API_URL } from "./auth";
+import { apiClient } from "./api-client";
 import { translateEnum } from "../utils/mappers";
 
 // ── Interfaces ──────────────────────────────────────────────────────────────
@@ -12,6 +12,12 @@ export interface Patient {
     dailyDose: number | null;
     dailyConsumption: number | null;
     status: "ACTIVE" | "SUSPENDED";
+    membershipStatus: "PENDING" | "APPROVED" | "REJECTED" | null;
+    minutesBookEntry: string | null;
+    memberNumber: string | null;
+    address: string | null;
+    phone: string | null;
+    email?: string;
     translatedStatus?: string;
     organizationId: string;
     createdAt: string;
@@ -32,21 +38,21 @@ export interface CreatePatientParams {
     fullName: string;
     documentNumber: string;
     email?: string;
+    phone?: string;
+    address?: string;
     reprocanNumber?: string;
     reprocanExpiration?: string;
 }
-
-
 
 export interface UpdatePatientParams {
     fullName?: string;
     documentNumber?: string;
     email?: string;
+    phone?: string;
+    address?: string;
     reprocanNumber?: string;
     reprocanExpiration?: string;
 }
-
-
 
 export interface PatientDashboardData {
     patient: {
@@ -55,6 +61,8 @@ export interface PatientDashboardData {
         documentNumber: string;
         status: string;
         dailyDose: number;
+        applicationSignedAt: string | null;
+        dataConsentAcceptedAt: string | null;
     };
     organization: {
         name: string;
@@ -91,20 +99,7 @@ const formatPatient = (p: any): Patient => ({
 
 export const patientService = {
     async getPatientDashboard(token: string): Promise<PatientDashboardData> {
-        const response = await fetch(`${API_URL}/patients/me/dashboard`, {
-            method: "GET",
-            headers: {
-                "Authorization": `Bearer ${token}`,
-                "Content-Type": "application/json",
-            },
-        });
-
-        if (!response.ok) {
-            const data = await response.json();
-            throw new Error(data.message || "Error al obtener dashboard del paciente");
-        }
-
-        return response.json();
+        return apiClient.get("/patients/me/dashboard", token);
     },
 
     async checkDocumentNumber(documentNumber: string, token: string): Promise<{
@@ -116,166 +111,47 @@ export const patientService = {
         reprocanExpiration?: string | null;
         roles?: string[];
     }> {
-        const response = await fetch(`${API_URL}/patients/check/${documentNumber}`, {
-            method: "GET",
-            headers: {
-                "Authorization": `Bearer ${token}`,
-                "Content-Type": "application/json",
-            },
-        });
-
-        if (!response.ok) {
-            const data = await response.json();
-            throw new Error(data.message || "Error al verificar documento");
-        }
-
-        return response.json();
+        return apiClient.get(`/patients/check/${documentNumber}`, token);
     },
 
     async getPatients(token: string): Promise<Patient[]> {
-        const response = await fetch(`${API_URL}/patients`, {
-            method: "GET",
-            headers: {
-                "Authorization": `Bearer ${token}`,
-                "Content-Type": "application/json",
-            },
-        });
-
-        if (!response.ok) {
-            const data = await response.json();
-            throw new Error(data.message || "Error al obtener pacientes");
-        }
-
-        const rawData = await response.json();
+        const rawData = await apiClient.get("/patients", token);
         return rawData.map(formatPatient);
     },
 
     async getPatient(id: string, token: string): Promise<Patient> {
-        const response = await fetch(`${API_URL}/patients/${id}`, {
-            method: "GET",
-            headers: {
-                "Authorization": `Bearer ${token}`,
-                "Content-Type": "application/json",
-            },
-        });
-
-        if (!response.ok) {
-            const data = await response.json();
-            throw new Error(data.message || "Error al obtener paciente");
-        }
-
-        const rawData = await response.json();
+        const rawData = await apiClient.get(`/patients/${id}`, token);
         return formatPatient(rawData);
     },
 
     async createPatient(params: CreatePatientParams, token: string): Promise<Patient> {
-        const response = await fetch(`${API_URL}/patients`, {
-            method: "POST",
-            headers: {
-                "Authorization": `Bearer ${token}`,
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(params),
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-            throw new Error(data.message || "Error al crear paciente");
-        }
-
+        const data = await apiClient.post("/patients", params, token);
         return formatPatient(data);
     },
 
     async updatePatient(id: string, params: UpdatePatientParams, token: string): Promise<Patient> {
-        const response = await fetch(`${API_URL}/patients/${id}`, {
-            method: "PATCH",
-            headers: {
-                "Authorization": `Bearer ${token}`,
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(params),
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-            throw new Error(data.message || "Error al actualizar paciente");
-        }
-
+        const data = await apiClient.patch(`/patients/${id}`, params, token);
         return formatPatient(data);
     },
 
     async deletePatient(id: string, token: string): Promise<void> {
-        const response = await fetch(`${API_URL}/patients/${id}`, {
-            method: "DELETE",
-            headers: {
-                "Authorization": `Bearer ${token}`,
-                "Content-Type": "application/json",
-            },
-        });
-
-        if (!response.ok) {
-            const data = await response.json();
-            throw new Error(data.message || "Error al suspender paciente");
-        }
+        await apiClient.delete(`/patients/${id}`, token);
     },
 
     // ── Reprocann Records ───────────────────────────────────────────────────
 
     async getPatientReprocannHistory(patientId: string, token: string): Promise<ReprocanRecord[]> {
-        const response = await fetch(`${API_URL}/patients/${patientId}/reprocan`, {
-            method: "GET",
-            headers: {
-                "Authorization": `Bearer ${token}`,
-                "Content-Type": "application/json",
-            },
-        });
-
-        if (!response.ok) {
-            const data = await response.json();
-            throw new Error(data.message || "Error al obtener historial de REPROCANN");
-        }
-
-        const rawData = await response.json();
+        const rawData = await apiClient.get(`/patients/${patientId}/reprocan`, token);
         return rawData.map(formatReprocanRecord);
     },
 
     async createPatientReprocann(patientId: string, params: { reprocanNumber: string; expirationDate: string; status: string }, token: string): Promise<ReprocanRecord> {
-        const response = await fetch(`${API_URL}/patients/${patientId}/reprocan`, {
-            method: "POST",
-            headers: {
-                "Authorization": `Bearer ${token}`,
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(params),
-        });
-
-        if (!response.ok) {
-            const data = await response.json();
-            throw new Error(data.message || "Error al crear registro de REPROCANN");
-        }
-
-        const rawData = await response.json();
+        const rawData = await apiClient.post(`/patients/${patientId}/reprocan`, params, token);
         return formatReprocanRecord(rawData);
     },
 
     async updatePatientReprocann(patientId: string, recordId: string, params: { status: string; reprocanNumber?: string; expirationDate?: string }, token: string): Promise<ReprocanRecord> {
-        const response = await fetch(`${API_URL}/patients/${patientId}/reprocan/${recordId}`, {
-            method: "PATCH",
-            headers: {
-                "Authorization": `Bearer ${token}`,
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(params),
-        });
-
-        if (!response.ok) {
-            const data = await response.json();
-            throw new Error(data.message || "Error al actualizar registro de REPROCANN");
-        }
-
-        const rawData = await response.json();
+        const rawData = await apiClient.patch(`/patients/${patientId}/reprocan/${recordId}`, params, token);
         return formatReprocanRecord(rawData);
     },
 };

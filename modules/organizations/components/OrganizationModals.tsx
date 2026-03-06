@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Building2, Edit2, Trash2, CheckCircle2, Plus, Loader2, AlertTriangle, Fingerprint, ShieldAlert } from "lucide-react";
+import { X, Building2, Edit2, Trash2, CheckCircle2, Plus, Loader2, AlertTriangle, Fingerprint, ShieldAlert, Hash, MapPin } from "lucide-react";
 import { Organization } from "@/lib/services/organization";
 
 interface OrganizationModalsProps {
@@ -16,6 +16,10 @@ interface OrganizationModalsProps {
     // Form state
     name: string;
     setName: (name: string) => void;
+    cuit: string;
+    setCuit: (cuit: string) => void;
+    address: string;
+    setAddress: (address: string) => void;
     active: boolean;
     setActive: (active: boolean) => void;
 
@@ -44,6 +48,10 @@ export function OrganizationModals({
     selectedOrganization,
     name,
     setName,
+    cuit,
+    setCuit,
+    address,
+    setAddress,
     active,
     setActive,
     onCreateOrganization,
@@ -163,6 +171,36 @@ export function OrganizationModals({
                                                     onChange={(e) => setName(e.target.value)}
                                                     className="w-full pl-12 pr-4 py-3.5 bg-muted/30 border-2 border-transparent rounded-[1.25rem] outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary/20 transition-all font-medium text-[15px] text-slate-800"
                                                     placeholder="Ej: Asociacion Cannabis..."
+                                                />
+                                            </div>
+                                        </div>
+
+                                        <div className="space-y-2">
+                                            <label className="text-xs font-black text-muted-foreground uppercase tracking-widest ml-1">CUIT</label>
+                                            <div className="relative group/input">
+                                                <Hash className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within/input:text-primary transition-colors" size={18} />
+                                                <input
+                                                    type="text"
+                                                    required
+                                                    value={cuit}
+                                                    onChange={(e) => setCuit(e.target.value)}
+                                                    className="w-full pl-12 pr-4 py-3.5 bg-muted/30 border-2 border-transparent rounded-[1.25rem] outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary/20 transition-all font-medium text-[15px] text-slate-800"
+                                                    placeholder="Ej: 20-12345678-9"
+                                                />
+                                            </div>
+                                        </div>
+
+                                        <div className="space-y-2">
+                                            <label className="text-xs font-black text-muted-foreground uppercase tracking-widest ml-1">Dirección</label>
+                                            <div className="relative group/input">
+                                                <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within/input:text-primary transition-colors" size={18} />
+                                                <input
+                                                    type="text"
+                                                    required
+                                                    value={address}
+                                                    onChange={(e) => setAddress(e.target.value)}
+                                                    className="w-full pl-12 pr-4 py-3.5 bg-muted/30 border-2 border-transparent rounded-[1.25rem] outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary/20 transition-all font-medium text-[15px] text-slate-800"
+                                                    placeholder="Ej: Av. Corrientes 1234, CABA"
                                                 />
                                             </div>
                                         </div>

@@ -12,6 +12,7 @@ import {
     XCircle,
     User as UserIcon,
     Hash,
+    Building2,
     CalendarDays,
     Plus
 } from "lucide-react";
@@ -29,8 +30,12 @@ interface PatientModalsProps {
         fullName: string;
         documentNumber: string;
         email: string;
+        address: string;
+        phone: string;
         reprocanNumber: string;
         reprocanExpiration: string;
+        minutesBookEntry: string;
+        memberNumber: string;
         docCheckStatus: string;
         docCheckInfo: { fullName?: string; email?: string; roles?: string[] };
     };
@@ -56,8 +61,7 @@ export function PatientModals({
     onDeleteConfirm,
     isPending
 }: PatientModalsProps) {
-    const { fullName, documentNumber, email, reprocanNumber, reprocanExpiration, docCheckStatus, docCheckInfo } = formState;
-
+    const { fullName, documentNumber, email, address, phone, reprocanNumber, reprocanExpiration, minutesBookEntry, memberNumber, docCheckStatus, docCheckInfo } = formState;
     return (
         <>
             {/* Create/Edit Modal */}
@@ -170,6 +174,34 @@ export function PatientModals({
                                     </div>
 
                                     <div className="space-y-2">
+                                        <label className="text-xs font-black text-muted-foreground uppercase tracking-widest ml-1">Dirección <span className="text-muted-foreground/50">(Opcional)</span></label>
+                                        <div className="relative group/input">
+                                            <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within/input:text-primary transition-colors" size={18} />
+                                            <input
+                                                type="text"
+                                                value={address}
+                                                onChange={(e) => onFormChange("address", e.target.value)}
+                                                className="w-full pl-12 pr-4 py-3.5 bg-muted/30 border-2 border-transparent rounded-[1.25rem] outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary/20 transition-all font-medium text-[15px]"
+                                                placeholder="Ej: Av. Siempreviva 742"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <label className="text-xs font-black text-muted-foreground uppercase tracking-widest ml-1">Teléfono <span className="text-muted-foreground/50">(Opcional)</span></label>
+                                        <div className="relative group/input">
+                                            <Hash className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within/input:text-primary transition-colors" size={18} />
+                                            <input
+                                                type="text"
+                                                value={phone}
+                                                onChange={(e) => onFormChange("phone", e.target.value)}
+                                                className="w-full pl-12 pr-4 py-3.5 bg-muted/30 border-2 border-transparent rounded-[1.25rem] outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary/20 transition-all font-medium text-[15px]"
+                                                placeholder="Ej: 11 1234 5678"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-2">
                                         <label className="text-xs font-black text-muted-foreground uppercase tracking-widest ml-1">Nº REPROCANN <span className="text-muted-foreground/50">(Opcional)</span></label>
                                         <div className="relative group/input">
                                             <Hash className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within/input:text-primary transition-colors" size={18} />
@@ -183,6 +215,38 @@ export function PatientModals({
                                         </div>
                                     </div>
                                 </div>
+
+                                {isEditModalOpen && (
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-muted/20">
+                                        <div className="space-y-2">
+                                            <label className="text-xs font-black text-muted-foreground uppercase tracking-widest ml-1 opacity-50">Nº Acta / Folio (Membresía)</label>
+                                            <div className="relative group/input">
+                                                <FileText className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground/40" size={18} />
+                                                <input
+                                                    type="text"
+                                                    readOnly
+                                                    value={minutesBookEntry}
+                                                    className="w-full pl-12 pr-4 py-3.5 bg-muted/10 border-2 border-transparent rounded-[1.25rem] outline-none transition-all font-medium text-[15px] opacity-60 cursor-not-allowed"
+                                                    placeholder="Sin asignar"
+                                                />
+                                            </div>
+                                        </div>
+
+                                        <div className="space-y-2">
+                                            <label className="text-xs font-black text-muted-foreground uppercase tracking-widest ml-1 opacity-50">Nº de Socio</label>
+                                            <div className="relative group/input">
+                                                <Hash className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground/40" size={18} />
+                                                <input
+                                                    type="text"
+                                                    readOnly
+                                                    value={memberNumber}
+                                                    className="w-full pl-12 pr-4 py-3.5 bg-muted/10 border-2 border-transparent rounded-[1.25rem] outline-none transition-all font-medium text-[15px] opacity-60 cursor-not-allowed"
+                                                    placeholder="Sin asignar"
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
 
                                 <div className="space-y-2 max-w-xs">
                                     <label className="text-xs font-black text-muted-foreground uppercase tracking-widest ml-1">Vencimiento REPROCANN <span className="text-muted-foreground/50">(Opcional)</span></label>

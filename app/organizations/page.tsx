@@ -36,10 +36,14 @@ function OrganizationsContent() {
 
     // Form states
     const [name, setName] = useState("");
+    const [cuit, setCuit] = useState("");
+    const [address, setAddress] = useState("");
     const [active, setActive] = useState(true);
 
     const resetForm = () => {
         setName("");
+        setCuit("");
+        setAddress("");
         setActive(true);
         setSelectedOrganization(null);
     };
@@ -47,7 +51,7 @@ function OrganizationsContent() {
     const handleCreate = (e: React.FormEvent) => {
         e.preventDefault();
         createOrg.mutate(
-            { name, active },
+            { name, cuit, address, active },
             {
                 onSuccess: () => {
                     setIsCreateModalOpen(false);
@@ -61,7 +65,7 @@ function OrganizationsContent() {
         e.preventDefault();
         if (!selectedOrganization) return;
         updateOrg.mutate(
-            { id: selectedOrganization.id, params: { name, active } },
+            { id: selectedOrganization.id, params: { name, cuit, address, active } },
             {
                 onSuccess: () => {
                     setIsEditModalOpen(false);
@@ -84,6 +88,8 @@ function OrganizationsContent() {
     const openEditModal = (org: Organization) => {
         setSelectedOrganization(org);
         setName(org.name);
+        setCuit(org.cuit);
+        setAddress(org.address);
         setActive(org.active);
         setIsEditModalOpen(true);
         setActiveMenuId(null);
@@ -181,6 +187,10 @@ function OrganizationsContent() {
                 selectedOrganization={selectedOrganization}
                 name={name}
                 setName={setName}
+                cuit={cuit}
+                setCuit={setCuit}
+                address={address}
+                setAddress={setAddress}
                 active={active}
                 setActive={setActive}
                 onCreateOrganization={handleCreate}

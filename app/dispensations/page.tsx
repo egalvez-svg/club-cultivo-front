@@ -51,6 +51,19 @@ export default function DispensationsPage() {
 
     // Handlers
     const handleAddToCart = (product: Product) => {
+        if (!selectedPatient) {
+            sileo.warning({ title: "Sin Paciente", description: "Debes seleccionar un paciente antes de agregar productos." });
+            return;
+        }
+
+        if (selectedPatient.membershipStatus !== "APPROVED") {
+            sileo.error({
+                title: "No Autorizado",
+                description: "El paciente no es un socio aprobado por la ONG."
+            });
+            return;
+        }
+
         if (product.currentStock <= 0) {
             sileo.error({ title: "Sin Stock", description: "Este producto no tiene unidades disponibles." });
             return;
@@ -127,6 +140,13 @@ export default function DispensationsPage() {
     const handleOpenConfirm = () => {
         if (!activeRegister) {
             sileo.error({ title: "Caja Cerrada", description: "Debes abrir la caja antes de dispensar." });
+            return;
+        }
+        if (!selectedPatient || selectedPatient.membershipStatus !== "APPROVED") {
+            sileo.error({
+                title: "No Autorizado",
+                description: "El paciente no es un socio aprobado por la ONG."
+            });
             return;
         }
         setIsConfirmModalOpen(true);

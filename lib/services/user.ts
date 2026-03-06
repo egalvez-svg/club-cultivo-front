@@ -1,4 +1,4 @@
-import { API_URL } from "./auth";
+import { apiClient } from "./api-client";
 import { translateEnum } from "../utils/mappers";
 
 export interface Role {
@@ -34,7 +34,6 @@ export interface UserWithRole {
     };
 }
 
-
 export interface CreateUserParams {
     fullName: string;
     documentNumber: string;
@@ -69,113 +68,31 @@ const formatUser = (u: any): UserWithRole => ({
 
 export const userService = {
     async getRoles(token: string, organizationId?: string): Promise<Role[]> {
-        const url = new URL(`${API_URL}/roles`);
-        if (organizationId) {
-            url.searchParams.append("organizationId", organizationId);
-        }
-
-        const response = await fetch(url.toString(), {
-            method: "GET",
-            headers: {
-                "Authorization": `Bearer ${token}`,
-                "Content-Type": "application/json",
-            },
-        });
-
-        if (!response.ok) {
-            const data = await response.json();
-            throw new Error(data.message || "Error al obtener roles");
-        }
-
-        const rawData = await response.json();
+        const query = organizationId ? `?organizationId=${organizationId}` : "";
+        const rawData = await apiClient.get(`/roles${query}`, token);
         return rawData.map(formatRole);
     },
 
     async getOrganizations(token: string): Promise<Organization[]> {
-        const response = await fetch(`${API_URL}/organizations`, {
-            method: "GET",
-            headers: {
-                "Authorization": `Bearer ${token}`,
-                "Content-Type": "application/json",
-            },
-        });
-
-        if (!response.ok) {
-            const data = await response.json();
-            throw new Error(data.message || "Error al obtener organizaciones");
-        }
-
-        return response.json();
+        return apiClient.get("/organizations", token);
     },
 
     async getUsers(token: string): Promise<UserWithRole[]> {
-        const response = await fetch(`${API_URL}/users`, {
-            method: "GET",
-            headers: {
-                "Authorization": `Bearer ${token}`,
-                "Content-Type": "application/json",
-            },
-        });
-
-        if (!response.ok) {
-            const data = await response.json();
-            throw new Error(data.message || "Error al obtener usuarios");
-        }
-
-        const rawData = await response.json();
+        const rawData = await apiClient.get("/users", token);
         return rawData.map(formatUser);
     },
 
     async createUser(params: CreateUserParams, token: string): Promise<UserWithRole> {
-        const response = await fetch(`${API_URL}/users`, {
-            method: "POST",
-            headers: {
-                "Authorization": `Bearer ${token}`,
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(params),
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-            throw new Error(data.message || "Error al crear usuario");
-        }
-
+        const data = await apiClient.post("/users", params, token);
         return formatUser(data);
     },
 
     async updateUser(id: string, params: UpdateUserParams, token: string): Promise<UserWithRole> {
-        const response = await fetch(`${API_URL}/users/${id}`, {
-            method: "PATCH",
-            headers: {
-                "Authorization": `Bearer ${token}`,
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(params),
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-            throw new Error(data.message || "Error al actualizar usuario");
-        }
-
+        const data = await apiClient.patch(`/users/${id}`, params, token);
         return formatUser(data);
     },
 
     async deleteUser(id: string, token: string): Promise<void> {
-        const response = await fetch(`${API_URL}/users/${id}`, {
-            method: "DELETE",
-            headers: {
-                "Authorization": `Bearer ${token}`,
-                "Content-Type": "application/json",
-            },
-        });
-
-        if (!response.ok) {
-            const data = await response.json();
-            throw new Error(data.message || "Error al eliminar usuario");
-        }
+        await apiClient.delete(`/users/${id}`, token);
     },
 };

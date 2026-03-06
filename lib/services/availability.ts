@@ -1,4 +1,4 @@
-import { API_URL } from "./auth";
+import { apiClient } from "./api-client";
 
 // ── Interfaces ──────────────────────────────────────────────────────────────
 
@@ -41,73 +41,21 @@ export interface CreateAvailabilityConfigParams {
 
 export const availabilityService = {
     async getConfigs(token: string): Promise<AvailabilityConfig[]> {
-        const response = await fetch(`${API_URL}/availability/config`, {
-            method: "GET",
-            headers: {
-                "Authorization": `Bearer ${token}`,
-                "Content-Type": "application/json",
-            },
-        });
-
-        if (!response.ok) {
-            const data = await response.json();
-            throw new Error(data.message || "Error al obtener configuracion de disponibilidad");
-        }
-
-        return response.json();
+        return apiClient.get("/availability/config", token);
     },
 
     async createConfig(params: CreateAvailabilityConfigParams, token: string): Promise<AvailabilityConfig> {
-        const response = await fetch(`${API_URL}/availability/config`, {
-            method: "POST",
-            headers: {
-                "Authorization": `Bearer ${token}`,
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(params),
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-            throw new Error(data.message || "Error al crear configuracion de disponibilidad");
-        }
-
-        return data;
+        return apiClient.post("/availability/config", params, token);
     },
 
     async deleteConfig(id: string, token: string): Promise<void> {
-        const response = await fetch(`${API_URL}/availability/config/${id}`, {
-            method: "DELETE",
-            headers: {
-                "Authorization": `Bearer ${token}`,
-                "Content-Type": "application/json",
-            },
-        });
-
-        if (!response.ok) {
-            const data = await response.json();
-            throw new Error(data.message || "Error al eliminar configuracion");
-        }
+        await apiClient.delete(`/availability/config/${id}`, token);
     },
 
     async getSlots(date: string, reason: string, token: string): Promise<string[]> {
-        const response = await fetch(
-            `${API_URL}/availability/slots?date=${date}&reason=${encodeURIComponent(reason)}`,
-            {
-                method: "GET",
-                headers: {
-                    "Authorization": `Bearer ${token}`,
-                    "Content-Type": "application/json",
-                },
-            }
+        return apiClient.get(
+            `/availability/slots?date=${date}&reason=${encodeURIComponent(reason)}`,
+            token
         );
-
-        if (!response.ok) {
-            const data = await response.json();
-            throw new Error(data.message || "Error al obtener horarios disponibles");
-        }
-
-        return response.json();
     },
 };

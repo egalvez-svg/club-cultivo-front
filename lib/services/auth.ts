@@ -60,136 +60,34 @@ export interface ChangePasswordParams {
     newPassword: string;
 }
 
+import { apiClient } from "./api-client";
+
 export const authService = {
     async login(params: LoginParams): Promise<AuthResponse> {
-        const response = await fetch(`${API_URL}/auth/login`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(params),
-        });
-
-        const contentType = response.headers.get("content-type");
-        if (!contentType || !contentType.includes("application/json")) {
-            throw new Error(`Error del servidor: URL incorrecta o servicio no disponible (${response.status})`);
-        }
-
-        const data = await response.json();
-
-        if (!response.ok) {
-            throw new Error(data.message || "Error al iniciar sesión");
-        }
-        console.log(data);
-        return data;
+        return apiClient.post("/auth/login", params);
     },
 
     async register(params: LoginParams): Promise<AuthResponse> {
-        const response = await fetch(`${API_URL}/auth/register`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(params),
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-            throw new Error(data.message || "Error al registrarse");
-        }
-
-        return data;
+        return apiClient.post("/auth/register", params);
     },
 
     async refreshToken(params: RefreshTokenParams): Promise<AuthResponse> {
-        const response = await fetch(`${API_URL}/auth/refresh`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(params),
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-            throw new Error(data.message || "Error al refrescar el token");
-        }
-
-        return data;
+        return apiClient.post("/auth/refresh", params);
     },
 
     async getMe(token: string): Promise<AuthResponse> {
-        const response = await fetch(`${API_URL}/auth/me`, {
-            method: "GET",
-            headers: {
-                "Authorization": `Bearer ${token}`,
-                "Content-Type": "application/json",
-            },
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-            throw new Error(data.message || "Error al obtener perfil");
-        }
-
-        return data;
+        return apiClient.get("/auth/me", token);
     },
 
     async forgotPassword(params: ForgotPasswordParams): Promise<{ message: string }> {
-        const response = await fetch(`${API_URL}/auth/forgot-password`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(params),
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-            throw new Error(data.message || "Error al solicitar recuperación");
-        }
-
-        return data;
+        return apiClient.post("/auth/forgot-password", params);
     },
 
     async resetPassword(params: ResetPasswordParams): Promise<{ message: string }> {
-        const response = await fetch(`${API_URL}/auth/reset-password`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(params),
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-            throw new Error(data.message || "Error al restablecer contraseña");
-        }
-
-        return data;
+        return apiClient.post("/auth/reset-password", params);
     },
 
     async changePassword(params: ChangePasswordParams, token: string): Promise<{ message: string }> {
-        const response = await fetch(`${API_URL}/auth/change-password`, {
-            method: "POST",
-            headers: {
-                "Authorization": `Bearer ${token}`,
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(params),
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-            throw new Error(data.message || "Error al cambiar contraseña");
-        }
-
-        return data;
+        return apiClient.post("/auth/change-password", params, token);
     },
 };

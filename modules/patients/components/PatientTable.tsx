@@ -9,7 +9,9 @@ import {
     XCircle,
     AlertTriangle,
     CheckCircle2,
-    MoreVertical
+    MoreVertical,
+    Clock,
+    Building2
 } from "lucide-react";
 import { Patient } from "@/lib/services/patient";
 
@@ -110,6 +112,11 @@ export function PatientTable({
                                         <p className="text-[10px] text-muted-foreground mt-1 flex items-center gap-1">
                                             <FileText size={10} /> {p.documentNumber}
                                         </p>
+                                        <div className="mt-2 flex flex-wrap gap-1">
+                                            {p.membershipStatus === "PENDING" && (
+                                                <span className="px-2 py-0.5 bg-amber-50 text-[9px] font-bold text-amber-600 rounded-full border border-amber-100 uppercase tracking-tighter">Pendiente</span>
+                                            )}
+                                        </div>
                                     </div>
                                 </div>
                                 <button
@@ -145,18 +152,13 @@ export function PatientTable({
                             </div>
 
                             <div className="space-y-2 pt-2 border-t border-white/40">
-                                <div className="flex justify-between text-[10px] font-bold">
-                                    <span className="text-muted-foreground">Consumo Diario</span>
-                                    <span className="text-foreground">{p.dailyConsumption ?? 0}g / {p.dailyDose ?? 0}g</span>
-                                </div>
-                                <div className="w-full bg-muted/40 rounded-full h-1.5 overflow-hidden">
-                                    <div
-                                        className={`h-full rounded-full transition-all ${p.dailyDose && p.dailyDose > 0 && (p.dailyConsumption ?? 0) >= p.dailyDose
-                                            ? "bg-destructive"
-                                            : "bg-primary"
-                                            }`}
-                                        style={{ width: `${Math.min(100, (p.dailyDose && p.dailyDose > 0) ? ((p.dailyConsumption ?? 0) / p.dailyDose) * 100 : 0)}%` }}
-                                    />
+                                <div className="flex justify-between items-center text-[10px] font-bold">
+                                    <span className="text-muted-foreground uppercase tracking-wider">Membresía</span>
+                                    {p.memberNumber ? (
+                                        <span className="text-emerald-600">Socio {p.memberNumber}</span>
+                                    ) : (
+                                        <span className="text-slate-400">Sin Nº de Socio</span>
+                                    )}
                                 </div>
                             </div>
                         </motion.div>
@@ -172,7 +174,7 @@ export function PatientTable({
                             <th className="px-6 py-4 text-[10px] font-black text-muted-foreground uppercase tracking-widest">DNI</th>
                             <th className="px-6 py-4 text-[10px] font-black text-muted-foreground uppercase tracking-widest">REPROCANN</th>
                             <th className="px-6 py-4 text-[10px] font-black text-muted-foreground uppercase tracking-widest">Vencimiento</th>
-                            <th className="px-6 py-4 text-[10px] font-black text-muted-foreground uppercase tracking-widest">Dispensa Diaria</th>
+                            <th className="px-6 py-4 text-[10px] font-black text-muted-foreground uppercase tracking-widest">Nº Socio</th>
                             <th className="px-6 py-4 text-[10px] font-black text-muted-foreground uppercase tracking-widest text-center">Estado</th>
                             <th className="px-6 py-4 text-[10px] font-black text-muted-foreground uppercase tracking-widest text-right rounded-tr-3xl">Acciones</th>
                         </tr>
@@ -212,7 +214,9 @@ export function PatientTable({
                                             <div className="w-10 h-10 rounded-2xl bg-primary/10 flex items-center justify-center text-primary font-bold text-lg">
                                                 {p.fullName.charAt(0)}
                                             </div>
-                                            <p className="font-bold text-sm text-foreground">{p.fullName}</p>
+                                            <div className="flex flex-col">
+                                                <p className="font-bold text-sm text-foreground leading-tight">{p.fullName}</p>
+                                            </div>
                                         </div>
                                     </td>
                                     <td className="px-6 py-5">
@@ -253,39 +257,39 @@ export function PatientTable({
                                         )}
                                     </td>
                                     <td className="px-6 py-5">
-                                        {p.dailyDose != null ? (
-                                            <div className="space-y-1.5 min-w-[100px]">
-                                                <div className="flex items-center justify-between text-[10px] font-bold">
-                                                    <span className="text-foreground">{p.dailyConsumption ?? 0}g</span>
-                                                    <span className="text-muted-foreground">/ {p.dailyDose}g</span>
-                                                </div>
-                                                <div className="w-full bg-muted/40 rounded-full h-1.5 overflow-hidden">
-                                                    <div
-                                                        className={`h-full rounded-full transition-all ${p.dailyDose > 0 && (p.dailyConsumption ?? 0) >= p.dailyDose
-                                                            ? "bg-destructive"
-                                                            : p.dailyDose > 0 && (p.dailyConsumption ?? 0) >= p.dailyDose * 0.8
-                                                                ? "bg-amber-500"
-                                                                : "bg-primary"
-                                                            }`}
-                                                        style={{ width: `${Math.min(100, p.dailyDose > 0 ? ((p.dailyConsumption ?? 0) / p.dailyDose) * 100 : 0)}%` }}
-                                                    />
-                                                </div>
-                                            </div>
+                                        {p.memberNumber ? (
+                                            <span className="font-bold text-sm text-slate-700">
+                                                {p.memberNumber}
+                                            </span>
                                         ) : (
-                                            <span className="text-xs text-muted-foreground/50 font-medium">Sin dosis</span>
+                                            <span className="text-xs text-muted-foreground/50 font-medium">No es socio</span>
                                         )}
                                     </td>
                                     <td className="px-6 py-5">
-                                        <div className="flex justify-center">
+                                        <div className="flex flex-col gap-2">
                                             {p.status === "ACTIVE" ? (
-                                                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 font-bold text-[10px] border border-emerald-500/20">
+                                                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 font-bold text-[10px] border border-emerald-500/20 w-fit">
                                                     <CheckCircle2 size={10} /> Activo
                                                 </span>
                                             ) : (
-                                                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 font-bold text-[10px] border border-amber-500/20">
+                                                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 font-bold text-[10px] border border-amber-500/20 w-fit">
                                                     <AlertTriangle size={10} /> Suspendido
                                                 </span>
                                             )}
+
+                                            {p.membershipStatus === "APPROVED" ? (
+                                                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-600 font-bold text-[10px] border border-blue-500/20 w-fit">
+                                                    <Building2 size={10} /> Socio Aprobado
+                                                </span>
+                                            ) : p.membershipStatus === "PENDING" ? (
+                                                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 font-bold text-[10px] border border-amber-500/20 w-fit">
+                                                    <Clock size={10} /> Socio Pendiente
+                                                </span>
+                                            ) : p.membershipStatus === "REJECTED" ? (
+                                                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-rose-500/10 text-rose-600 font-bold text-[10px] border border-rose-500/20 w-fit">
+                                                    <XCircle size={10} /> Socio Rechazado
+                                                </span>
+                                            ) : null}
                                         </div>
                                     </td>
                                     <td className="px-6 py-5 text-right relative">

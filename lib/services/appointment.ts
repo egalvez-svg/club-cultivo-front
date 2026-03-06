@@ -1,4 +1,4 @@
-import { API_URL } from "./auth";
+import { apiClient } from "./api-client";
 import { translateEnum } from "../utils/mappers";
 
 // ── Interfaces ──────────────────────────────────────────────────────────────
@@ -44,134 +44,38 @@ const formatAppointment = (a: any): Appointment => ({
 
 export const appointmentService = {
     async getAppointments(token: string): Promise<Appointment[]> {
-        const response = await fetch(`${API_URL}/appointments`, {
-            method: "GET",
-            headers: {
-                "Authorization": `Bearer ${token}`,
-                "Content-Type": "application/json",
-            },
-        });
-
-        if (!response.ok) {
-            const data = await response.json();
-            throw new Error(data.message || "Error al obtener turnos");
-        }
-
-        const rawData = await response.json();
+        const rawData = await apiClient.get("/appointments", token);
         return rawData.map(formatAppointment);
     },
 
     async getTodayAppointments(token: string): Promise<Appointment[]> {
-        const response = await fetch(`${API_URL}/appointments/today`, {
-            method: "GET",
-            headers: {
-                "Authorization": `Bearer ${token}`,
-                "Content-Type": "application/json",
-            },
-        });
-
-        if (!response.ok) {
-            const data = await response.json();
-            throw new Error(data.message || "Error al obtener turnos de hoy");
-        }
-
-        const rawData = await response.json();
+        const rawData = await apiClient.get("/appointments/today", token);
         return rawData.map(formatAppointment);
     },
 
     async getAppointment(id: string, token: string): Promise<Appointment> {
-        const response = await fetch(`${API_URL}/appointments/${id}`, {
-            method: "GET",
-            headers: {
-                "Authorization": `Bearer ${token}`,
-                "Content-Type": "application/json",
-            },
-        });
-
-        if (!response.ok) {
-            const data = await response.json();
-            throw new Error(data.message || "Error al obtener turno");
-        }
-
-        const rawData = await response.json();
+        const rawData = await apiClient.get(`/appointments/${id}`, token);
         return formatAppointment(rawData);
     },
 
     async createAppointment(params: CreateAppointmentParams, token: string): Promise<Appointment> {
-        const response = await fetch(`${API_URL}/appointments`, {
-            method: "POST",
-            headers: {
-                "Authorization": `Bearer ${token}`,
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(params),
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-            throw new Error(data.message || "Error al agendar turno");
-        }
-
+        const data = await apiClient.post("/appointments", params, token);
         return formatAppointment(data);
     },
 
     async updateAppointment(id: string, params: UpdateAppointmentParams, token: string): Promise<Appointment> {
-        const response = await fetch(`${API_URL}/appointments/${id}`, {
-            method: "PATCH",
-            headers: {
-                "Authorization": `Bearer ${token}`,
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(params),
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-            throw new Error(data.message || "Error al actualizar turno");
-        }
-
+        const data = await apiClient.patch(`/appointments/${id}`, params, token);
         return formatAppointment(data);
     },
 
     async getMyAppointments(token: string, search?: string): Promise<Appointment[]> {
-        const url = search
-            ? `${API_URL}/appointments/my?search=${encodeURIComponent(search)}`
-            : `${API_URL}/appointments/my`;
-
-        const response = await fetch(url, {
-            method: "GET",
-            headers: {
-                "Authorization": `Bearer ${token}`,
-                "Content-Type": "application/json",
-            },
-        });
-
-        if (!response.ok) {
-            const data = await response.json();
-            throw new Error(data.message || "Error al obtener tus turnos");
-        }
-
-        const rawData = await response.json();
+        const query = search ? `?search=${encodeURIComponent(search)}` : "";
+        const rawData = await apiClient.get(`/appointments/my${query}`, token);
         return rawData.map(formatAppointment);
     },
 
     async cancelAppointment(id: string, token: string): Promise<Appointment> {
-        const response = await fetch(`${API_URL}/appointments/${id}`, {
-            method: "DELETE",
-            headers: {
-                "Authorization": `Bearer ${token}`,
-                "Content-Type": "application/json",
-            },
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-            throw new Error(data.message || "Error al cancelar turno");
-        }
-
+        const data = await apiClient.delete(`/appointments/${id}`, token);
         return formatAppointment(data);
     },
 };

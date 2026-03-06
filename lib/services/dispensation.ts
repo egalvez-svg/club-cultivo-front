@@ -1,4 +1,4 @@
-import { API_URL } from "./auth";
+import { apiClient } from "./api-client";
 
 // ── Interfaces ──────────────────────────────────────────────────────────────
 
@@ -30,21 +30,6 @@ export interface DispensationResponse {
 
 export const dispensationService = {
     async createDispensation(data: CreateDispensationDto, token: string): Promise<DispensationResponse> {
-        const response = await fetch(`${API_URL}/dispensations`, {
-            method: "POST",
-            headers: {
-                "Authorization": `Bearer ${token}`,
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(data),
-        });
-
-        const resData = await response.json();
-
-        if (!response.ok) {
-            throw new Error(resData.message || "Error al registrar la dispensación");
-        }
-
-        return resData;
+        return apiClient.post("/dispensations", data, token);
     },
 };

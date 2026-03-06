@@ -1,4 +1,4 @@
-import { API_URL } from "./auth";
+import { apiClient } from "./api-client";
 import { translateEnum } from "../utils/mappers";
 
 export type CashRegisterStatus = "OPEN" | "CLOSED";
@@ -58,76 +58,27 @@ const formatCashRegister = (r: any): CashRegister => ({
 
 export const cashRegisterService = {
     async getActiveRegister(token: string): Promise<CashRegister | null> {
-        const response = await fetch(`${API_URL}/cash-register/active`, {
-            method: "GET",
-            headers: {
-                "Authorization": `Bearer ${token}`,
-                "Content-Type": "application/json",
-            },
-        });
-
-        if (response.status === 404) return null;
-
-        if (!response.ok) {
-            const data = await response.json();
-            throw new Error(data.message || "Error al obtener la caja activa");
+        try {
+            const rawData = await apiClient.get("/cash-register/active", token);
+            return formatCashRegister(rawData);
+        } catch (error: any) {
+            if (error.message?.includes("404")) return null;
+            throw error;
         }
-
-        const rawData = await response.json();
-        return formatCashRegister(rawData);
     },
 
     async openRegister(data: OpenRegisterDto, token: string): Promise<CashRegister> {
-        const response = await fetch(`${API_URL}/cash-register/open`, {
-            method: "POST",
-            headers: {
-                "Authorization": `Bearer ${token}`,
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(data),
-        });
-
-        const resData = await response.json();
-        if (!response.ok) {
-            throw new Error(resData.message || "Error al abrir la caja");
-        }
-
+        const resData = await apiClient.post("/cash-register/open", data, token);
         return formatCashRegister(resData);
     },
 
     async createMovement(data: CreateMovementDto, token: string): Promise<CashMovement> {
-        const response = await fetch(`${API_URL}/cash-register/movements`, {
-            method: "POST",
-            headers: {
-                "Authorization": `Bearer ${token}`,
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(data),
-        });
-
-        const resData = await response.json();
-        if (!response.ok) {
-            throw new Error(resData.message || "Error al registrar movimiento");
-        }
-
+        const resData = await apiClient.post("/cash-register/movements", data, token);
         return formatCashMovement(resData);
     },
 
     async closeRegister(data: CloseRegisterDto, token: string): Promise<CashRegister> {
-        const response = await fetch(`${API_URL}/cash-register/close`, {
-            method: "POST",
-            headers: {
-                "Authorization": `Bearer ${token}`,
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(data),
-        });
-
-        const resData = await response.json();
-        if (!response.ok) {
-            throw new Error(resData.message || "Error al cerrar la caja");
-        }
-
+        const resData = await apiClient.post("/cash-register/close", data, token);
         return formatCashRegister(resData);
     },
 };

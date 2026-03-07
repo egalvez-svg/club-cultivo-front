@@ -24,6 +24,20 @@ export default function LoginPage() {
     const [showPassword, setShowPassword] = useState(false);
     const loginMutation = useLogin();
 
+    // Navigation logic: force password change if required
+    const handleNavigation = (data: AuthResponse) => {
+        if (data.user?.requiresPasswordChange) {
+            router.push("/auth/change-password");
+        } else {
+            // Role-based main page
+            if (data.user?.activeRole === "PATIENT") {
+                router.push("/paciente");
+            } else {
+                router.push("/dashboard");
+            }
+        }
+    };
+
     // Multi-role state
     const [pendingAuthData, setPendingAuthData] = useState<AuthResponse | null>(null);
     const [availableRoles, setAvailableRoles] = useState<UserRole[]>([]);
@@ -50,7 +64,7 @@ export default function LoginPage() {
                             if (roles.length === 1) {
                                 setActiveRole(roles[0].name);
                             }
-                            router.push("/dashboard");
+                            handleNavigation(data);
                         }
                     }
                 },
@@ -65,7 +79,7 @@ export default function LoginPage() {
         if (!pendingAuthData) return;
         login(pendingAuthData);
         setActiveRole(roleName);
-        router.push("/dashboard");
+        handleNavigation(pendingAuthData);
     };
 
     const handleBackToLogin = () => {

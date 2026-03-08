@@ -22,7 +22,7 @@ export const reportService = {
      */
     async downloadPatientTraceability(token: string, month: number, year: number): Promise<void> {
         const filename = `Trazabilidad_Pacientes_${new Date().toISOString().split('T')[0]}.pdf`;
-        return apiClient.download(`/reports/traceability/patients?month=${month}&year=${year}&format=pdf`, filename, token);
+        return apiClient.download(`/reports/traceability/patients?month=${month}&year=${year}&format=pdf`, token, filename);
     },
 
     /**
@@ -30,7 +30,7 @@ export const reportService = {
      */
     async downloadProductionTraceability(token: string, month: number, year: number): Promise<void> {
         const filename = `Libro_Cultivo_${new Date().toISOString().split('T')[0]}.pdf`;
-        return apiClient.download(`/reports/traceability/production?month=${month}&year=${year}&format=pdf`, filename, token);
+        return apiClient.download(`/reports/traceability/production?month=${month}&year=${year}&format=pdf`, token, filename);
     },
 
     /**
@@ -38,13 +38,13 @@ export const reportService = {
      */
     async downloadFinanceAudit(token: string, month: number, year: number): Promise<void> {
         const filename = `Auditoria_Financiera_${new Date().toISOString().split('T')[0]}.pdf`;
-        return apiClient.download(`/reports/finance/audit?month=${month}&year=${year}&format=pdf`, filename, token);
+        return apiClient.download(`/reports/finance/audit?month=${month}&year=${year}&format=pdf`, token, filename);
     },
 
     /**
      * Descarga un reporte histórico por su ID
      */
     async downloadReportById(token: string, id: string, name: string): Promise<void> {
-        return apiClient.download(`/reports/download/${id}`, name, token);
+        return apiClient.download(`/reports/download/${id}`, token, name);
     }
 };

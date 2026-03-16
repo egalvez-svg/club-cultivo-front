@@ -79,9 +79,9 @@ export function PatientModals({
                             initial={{ opacity: 0, scale: 0.9, y: 20 }}
                             animate={{ opacity: 1, scale: 1, y: 0 }}
                             exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                            className="relative w-full max-w-2xl glass bg-white rounded-[2.5rem] shadow-2xl border border-white/50 p-8 max-h-[90vh] overflow-y-auto"
+                            className="relative flex flex-col w-full max-w-2xl glass bg-white rounded-[2.5rem] shadow-2xl border border-white/50 max-h-[90vh] overflow-hidden"
                         >
-                            <div className="flex items-center justify-between mb-8">
+                            <div className="flex items-center justify-between p-8 pb-6 shrink-0 border-b border-muted/10">
                                 <div className="flex items-center gap-3">
                                     <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
                                         {isEditModalOpen ? <Edit2 size={24} /> : <UserPlus size={24} />}
@@ -101,7 +101,8 @@ export function PatientModals({
                                 </button>
                             </div>
 
-                            <form onSubmit={isEditModalOpen ? onUpdateSubmit : onCreateSubmit} className="space-y-6">
+                            <div className="p-8 pt-6 overflow-y-auto custom-scrollbar">
+                                <form onSubmit={isEditModalOpen ? onUpdateSubmit : onCreateSubmit} className="space-y-6">
                                 <div className="space-y-2">
                                     <label className="text-xs font-black text-muted-foreground uppercase tracking-widest ml-1">Documento (DNI)</label>
                                     <div className="relative group/input">
@@ -285,6 +286,7 @@ export function PatientModals({
                                     </button>
                                 </div>
                             </form>
+                            </div>
                         </motion.div>
                     </div>
                 )}

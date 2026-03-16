@@ -25,6 +25,25 @@ export interface MembershipRequest {
 export interface ApproveMembershipParams {
     minutesBookEntry: string;
     memberNumber: string;
+    reprocanNumber?: string;
+    reprocanExpiration?: string;
+}
+
+export interface PublicOrganization {
+    id: string;
+    name: string;
+}
+
+export interface MembershipApplicationParams {
+    organizationId: string;
+    fullName: string;
+    documentNumber: string;
+    email?: string;
+    phone?: string;
+    address?: string;
+    reprocanNumber?: string;
+    reprocanExpiration?: string;
+    dailyDose?: number;
 }
 
 // ── Helpers ─────────────────────────────────────────────────────────────────
@@ -51,6 +70,10 @@ export const membershipService = {
 
     async approveMembership(id: string, params: ApproveMembershipParams, token: string): Promise<void> {
         await apiClient.post(`/membership/${id}/approve`, params, token);
+    },
+
+    async getPendingCount(token: string): Promise<{ count: number }> {
+        return apiClient.get("/membership/pending-count", token);
     },
 
     async rejectMembership(id: string, token: string): Promise<void> {
@@ -83,5 +106,15 @@ export const membershipService = {
 
     async signDocument(type: SignType, token: string): Promise<void> {
         await apiClient.post("/membership/sign", { type }, token);
+    },
+
+    // ── Endpoints públicos (sin auth) ────────────────────────────────────────
+
+    async getPublicOrganizations(): Promise<PublicOrganization[]> {
+        return apiClient.get("/public/organizations");
+    },
+
+    async apply(params: MembershipApplicationParams): Promise<void> {
+        await apiClient.post("/public/patients/apply", params);
     },
 };

@@ -12,6 +12,17 @@ export const usePendingMemberships = () => {
     });
 };
 
+export const usePendingCount = () => {
+    const { token } = useAuth();
+
+    return useQuery({
+        queryKey: ["pending-memberships-count"],
+        queryFn: () => membershipService.getPendingCount(token || ""),
+        enabled: !!token,
+        refetchInterval: 30_000,
+    });
+};
+
 export const useApproveMembership = () => {
     const { token } = useAuth();
     const queryClient = useQueryClient();
@@ -21,6 +32,7 @@ export const useApproveMembership = () => {
             membershipService.approveMembership(id, params, token || ""),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["pending-memberships"] });
+            queryClient.invalidateQueries({ queryKey: ["pending-memberships-count"] });
             queryClient.invalidateQueries({ queryKey: ["patients-list"] });
         },
     });
@@ -34,6 +46,7 @@ export const useRejectMembership = () => {
         mutationFn: (id: string) => membershipService.rejectMembership(id, token || ""),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["pending-memberships"] });
+            queryClient.invalidateQueries({ queryKey: ["pending-memberships-count"] });
             queryClient.invalidateQueries({ queryKey: ["patients-list"] });
         },
     });

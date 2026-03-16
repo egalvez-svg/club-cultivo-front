@@ -14,10 +14,10 @@ import { LotMobileTabs } from "@/modules/lots/components/LotMobileTabs";
 
 const KANBAN_COLUMNS = [
     { id: "CREATED", title: "Cargado", color: "bg-muted text-muted-foreground", border: "border-muted" },
-    { id: "IN_ANALYSIS", title: "En Análisis", color: "bg-amber-500/10 text-amber-600", border: "border-amber-500/20" },
+    { id: "TESTING", title: "En Análisis", color: "bg-amber-500/10 text-amber-600", border: "border-amber-500/20" },
     { id: "RELEASED", title: "Liberado", color: "bg-emerald-500/10 text-emerald-600", border: "border-emerald-500/20" },
     { id: "BLOCKED", title: "Bloqueado", color: "bg-rose-500/10 text-rose-600", border: "border-rose-500/20" },
-    { id: "EXHAUSTED", title: "Agotado", color: "bg-slate-500/10 text-slate-600", border: "border-slate-500/20" },
+    { id: "DEPLETED", title: "Agotado", color: "bg-slate-500/10 text-slate-600", border: "border-slate-500/20" },
 ];
 
 export default function LotsPage() {

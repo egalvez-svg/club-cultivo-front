@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useAuth } from "@/context/auth-context";
-import { Loader2, User, MapPin, FileText, ShieldCheck, Building2 } from "lucide-react";
+import { Loader2, User, MapPin, FileText, ShieldCheck, Building2, Clock } from "lucide-react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
@@ -18,15 +18,17 @@ import { membershipService } from "@/lib/services/membership";
 import { sileo } from "sileo";
 
 export default function PatientDashboardPage() {
-    const { token } = useAuth();
+    const { token, user } = useAuth();
     const [data, setData] = useState<PatientDashboardData | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [isDownloading, setIsDownloading] = useState<string | null>(null);
 
+    const isApplicant = user?.activeRole === "APPLICANT";
+
     useEffect(() => {
         const fetchPatientDashboard = async () => {
-            if (!token) {
+            if (!token || isApplicant) {
                 setLoading(false);
                 return;
             }
@@ -51,6 +53,25 @@ export default function PatientDashboardPage() {
                 <div className="flex flex-col items-center gap-4">
                     <Loader2 className="h-10 w-10 animate-spin text-primary" />
                     <p className="text-sm font-medium text-muted-foreground animate-pulse">Cargando tu información...</p>
+                </div>
+            </div>
+        );
+    }
+
+    if (isApplicant) {
+        return (
+            <div className="flex flex-col items-center justify-center h-[70vh] text-center max-w-lg mx-auto space-y-6">
+                <div className="w-24 h-24 bg-amber-500/10 text-amber-500 rounded-full flex items-center justify-center mx-auto">
+                    <Clock size={48} />
+                </div>
+                <div>
+                    <h1 className="text-3xl font-black text-slate-800">Trámite en Revisión</h1>
+                    <p className="text-slate-500 font-medium mt-4">
+                        Tu solicitud de admisión ha sido recibida y está <span className="font-bold text-slate-700">Esperando Aprobación de la Comisión Directiva</span>.
+                    </p>
+                    <p className="text-sm text-slate-400 mt-4">
+                        Te notificaremos en cuanto tu membresía sea aprobada para que puedas acceder a todos los beneficios del club, solicitar dispensaciones y reservar turnos.
+                    </p>
                 </div>
             </div>
         );

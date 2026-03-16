@@ -139,7 +139,7 @@ export default function PatientsPage() {
                 onSuccess: () => {
                     setIsCreateModalOpen(false);
                     resetForm();
-                    sileo.success({ title: "¡Registrado!", description: "Paciente creado exitosamente" });
+                    sileo.success({ title: "¡Registrado!", description: "El usuario ha sido registrado exitosamente y su solicitud de admisión está pendiente de revisión." });
                 },
                 onError: (error) => {
                     sileo.error({ title: "Error", description: error.message || "No se pudo crear el paciente" });

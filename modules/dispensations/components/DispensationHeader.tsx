@@ -19,8 +19,9 @@ export function DispensationHeader({
     onSelectPatient
 }: DispensationHeaderProps) {
     const filteredPatients = patients?.filter(p =>
-        p.fullName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        p.documentNumber?.includes(searchQuery)
+        (p.fullName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        p.documentNumber?.includes(searchQuery)) &&
+        p.roles?.includes("PATIENT")
     );
 
     return (

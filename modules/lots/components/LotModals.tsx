@@ -69,10 +69,10 @@ export function LotModals({
 
     const KANBAN_COLUMNS = [
         { id: "CREATED", title: "Cargado" },
-        { id: "IN_ANALYSIS", title: "En Análisis" },
+        { id: "TESTING", title: "En Análisis" },
         { id: "RELEASED", title: "Liberado" },
         { id: "BLOCKED", title: "Bloqueado" },
-        { id: "EXHAUSTED", title: "Agotado" },
+        { id: "DEPLETED", title: "Agotado" },
     ];
 
     const onStatusChange = (newStatus: string) => {

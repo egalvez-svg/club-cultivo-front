@@ -116,6 +116,11 @@ export function PatientTable({
                                             {p.membershipStatus === "PENDING" && (
                                                 <span className="px-2 py-0.5 bg-amber-50 text-[9px] font-bold text-amber-600 rounded-full border border-amber-100 uppercase tracking-tighter">Pendiente</span>
                                             )}
+                                            {(p.reprocanStatus === "PENDING_VALIDATION" || p.roles?.includes("APPLICANT")) && (
+                                                <span className="px-2 py-0.5 bg-amber-500/10 text-[9px] font-bold text-amber-600 rounded-full border border-amber-500/20 uppercase tracking-tighter">
+                                                    Postulante
+                                                </span>
+                                            )}
                                         </div>
                                     </div>
                                 </div>
@@ -290,6 +295,12 @@ export function PatientTable({
                                                     <XCircle size={10} /> Socio Rechazado
                                                 </span>
                                             ) : null}
+
+                                            {(p.reprocanStatus === "PENDING_VALIDATION" || p.roles?.includes("APPLICANT")) && (
+                                                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 font-bold text-[10px] border border-amber-500/20 w-fit">
+                                                    <AlertTriangle size={10} /> Pendiente de Validación
+                                                </span>
+                                            )}
                                         </div>
                                     </td>
                                     <td className="px-6 py-5 text-right relative">

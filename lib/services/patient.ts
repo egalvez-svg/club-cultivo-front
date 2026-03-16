@@ -18,6 +18,8 @@ export interface Patient {
     address: string | null;
     phone: string | null;
     email?: string;
+    roles?: string[];
+    reprocanStatus?: "ACTIVE" | "EXPIRED" | "PENDING_RENEWAL" | "PENDING_VALIDATION" | "REJECTED" | string;
     translatedStatus?: string;
     organizationId: string;
     createdAt: string;
@@ -29,7 +31,7 @@ export interface ReprocanRecord {
     id: string;
     reprocanNumber: string;
     expirationDate: string;
-    status: "ACTIVE" | "EXPIRED" | "PENDING_RENEWAL" | "REJECTED";
+    status: "ACTIVE" | "EXPIRED" | "PENDING_RENEWAL" | "PENDING_VALIDATION" | "REJECTED";
     translatedStatus?: string;
     createdAt: string;
 }

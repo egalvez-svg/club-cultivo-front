@@ -8,7 +8,8 @@ import {
     FileText,
     ChevronRight,
     Loader2,
-    Building2
+    Building2,
+    UserX
 } from "lucide-react";
 import { usePendingMemberships } from "@/lib/hooks/useMemberships";
 import { MembershipRequest, membershipService } from "@/lib/services/membership";
@@ -16,17 +17,18 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ApprovalModal } from "@/modules/membership/components/ApprovalModal";
 import { useAuth } from "@/context/auth-context";
 import { sileo } from "sileo";
+import { cn } from "@/lib/utils";
 
-export default function PendingMembershipsPage() {
+export default function MembershipsPage() {
     const { token } = useAuth();
-    const { data: pending, isLoading } = usePendingMemberships();
+    const { data: requests, isLoading } = usePendingMemberships();
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedRequest, setSelectedRequest] = useState<MembershipRequest | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const [isDownloadingBook, setIsDownloadingBook] = useState(false);
 
-    const filtered = pending?.filter(p =>
+    const filtered = requests?.filter(p =>
     (p.user?.fullName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         p.user?.documentNumber?.includes(searchTerm))
     );
@@ -56,8 +58,8 @@ export default function PendingMembershipsPage() {
                     <div>
                         <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">Comisión Directiva</h1>
                         <p className="text-slate-500 font-medium flex items-center gap-2">
-                            <Clock size={16} />
-                            Solicitudes de Membresía Pendientes
+                            <Users size={16} />
+                            Gestión de Membresías
                         </p>
                     </div>
                 </div>
@@ -108,21 +110,29 @@ export default function PendingMembershipsPage() {
                             className="bg-white rounded-3xl border border-slate-200 p-6 hover:shadow-xl hover:border-primary/20 transition-all group relative overflow-hidden"
                         >
                             <div className="flex items-start justify-between mb-4">
-                                <div className="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center text-slate-500 group-hover:bg-primary/10 group-hover:text-primary transition-colors">
-                                    <FileText size={24} />
+                                <div className={cn(
+                                    "w-12 h-12 rounded-xl flex items-center justify-center transition-colors",
+                                    request.estado === "RECHAZADO" 
+                                        ? "bg-rose-50 text-rose-500" 
+                                        : "bg-slate-100 text-slate-500 group-hover:bg-primary/10 group-hover:text-primary"
+                                )}>
+                                    {request.estado === "RECHAZADO" ? <UserX size={24} /> : <FileText size={24} />}
                                 </div>
-                                <div className="px-3 py-1 bg-amber-100 text-amber-700 text-[10px] font-black uppercase tracking-widest rounded-full">
-                                    PENDIENTE
+                                <div className={cn(
+                                    "px-3 py-1 text-[10px] font-black uppercase tracking-widest rounded-full",
+                                    request.estado === "RECHAZADO" ? "bg-rose-100 text-rose-700" : "bg-amber-100 text-amber-700"
+                                )}>
+                                    {request.estado}
                                 </div>
                             </div>
 
                             <div className="space-y-1 mb-6">
-                                <h3 className="font-bold text-lg text-slate-900 leading-tight group-hover:text-primary transition-colors">
+                                <h3 className="font-bold text-lg text-slate-900 leading-tight group-hover:text-primary transition-colors text-ellipsis overflow-hidden whitespace-nowrap">
                                     {request.user.fullName}
                                 </h3>
                                 <div className="space-y-0.5">
                                     <p className="text-slate-500 text-sm font-medium">DNI: {request.user.documentNumber}</p>
-                                    <p className="text-slate-400 text-xs font-medium">{request.user.email}</p>
+                                    <p className="text-slate-400 text-xs font-medium text-ellipsis overflow-hidden whitespace-nowrap">{request.user.email}</p>
                                 </div>
                             </div>
 
@@ -150,8 +160,8 @@ export default function PendingMembershipsPage() {
 
                 {filtered?.length === 0 && (
                     <div className="col-span-full py-20 bg-slate-50 rounded-[40px] border-2 border-dashed border-slate-200 flex flex-col items-center justify-center text-slate-400">
-                        <Clock size={40} className="mb-4 opacity-20" />
-                        <p className="font-bold uppercase tracking-widest text-xs">No hay solicitudes pendientes</p>
+                        <Users size={40} className="mb-4 opacity-20" />
+                        <p className="font-bold uppercase tracking-widest text-xs">No hay solicitudes para mostrar</p>
                     </div>
                 )}
             </div>

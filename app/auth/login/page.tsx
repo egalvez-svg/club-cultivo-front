@@ -224,9 +224,9 @@ export default function LoginPage() {
                                             Conexión segura y cifrada
                                         </div>
                                         <p className="text-sm text-muted-foreground font-medium">
-                                            ¿Nuevo en el club?{" "}
-                                            <Link href="/auth/register" className="text-primary font-bold hover:underline">
-                                                Registrar nueva cuenta
+                                            ¿Queres ser parte del club?{" "}
+                                            <Link href="/postulacion" className="text-primary font-bold hover:underline">
+                                                Postulate como socio
                                             </Link>
                                         </p>
                                     </div>

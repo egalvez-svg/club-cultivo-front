@@ -10,9 +10,10 @@ export function proxy(request: NextRequest) {
     const isAuthPage = request.nextUrl.pathname.startsWith("/auth");
     const isSelectRolePage = request.nextUrl.pathname === "/auth/select-role";
     const isChangePasswordPage = request.nextUrl.pathname === "/auth/change-password";
+    const isPublicPage = request.nextUrl.pathname === "/postulacion";
 
-    // Si no hay token y no es una página de auth, redirigir al login
-    if (!token && !isAuthPage) {
+    // Si no hay token y no es una página pública ni de auth, redirigir al login
+    if (!token && !isAuthPage && !isPublicPage) {
         return NextResponse.redirect(new URL("/auth/login", request.url));
     }
 

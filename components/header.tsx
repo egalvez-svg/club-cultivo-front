@@ -35,8 +35,8 @@ export function Header() {
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
 
-    // No mostrar el header en las rutas de autenticación
-    if (pathname?.startsWith("/auth")) {
+    // No mostrar el header en rutas públicas
+    if (pathname?.startsWith("/auth") || pathname === "/postulacion") {
         return null;
     }
 

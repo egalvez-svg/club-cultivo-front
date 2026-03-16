@@ -31,13 +31,14 @@ export default function DashboardPage() {
     const organizationId = searchParams.get("organizationId");
     const isSuperAdmin = user?.activeRole === "SUPER_ADMIN";
     const isPatient = user?.activeRole === "PATIENT";
+    const isApplicant = user?.activeRole === "APPLICANT";
 
-    // Redirigir si es paciente a su dashboard específico
+    // Redirigir si es paciente o postulante a su dashboard específico
     useEffect(() => {
-        if (isPatient) {
+        if (isPatient || isApplicant) {
             router.replace("/paciente");
         }
-    }, [isPatient, router]);
+    }, [isPatient, isApplicant, router]);
 
     // Si hay organizationId, estamos viendo el detalle de un club (solo SuperAdmin)
     const isViewingClub = isSuperAdmin && !!organizationId;

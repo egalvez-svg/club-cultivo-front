@@ -25,6 +25,8 @@ export function ApprovalModal({ isOpen, onClose, request }: ApprovalModalProps) 
     const { token } = useAuth();
     const [minutesBookEntry, setMinutesBookEntry] = useState("");
     const [memberNumber, setMemberNumber] = useState("");
+    const [reprocanNumber, setReprocanNumber] = useState("");
+    const [reprocanExpiration, setReprocanExpiration] = useState("");
 
     const approveMutation = useApproveMembership();
     const rejectMutation = useRejectMembership();
@@ -40,9 +42,14 @@ export function ApprovalModal({ isOpen, onClose, request }: ApprovalModalProps) 
         try {
             await approveMutation.mutateAsync({
                 id: request.id,
-                params: { minutesBookEntry, memberNumber }
+                params: {
+                    minutesBookEntry,
+                    memberNumber,
+                    ...(reprocanNumber ? { reprocanNumber } : {}),
+                    ...(reprocanExpiration ? { reprocanExpiration } : {})
+                }
             });
-            sileo.success({ title: "¡Aprobado!", description: "El socio ha sido aprobado exitosamente." });
+            sileo.success({ title: "¡Aprobado!", description: "Membresía aprobada exitosamente y usuario activado como Paciente." });
             onClose();
         } catch (error: any) {
             sileo.error({ title: "Error", description: error.message || "No se pudo aprobar la membresía." });
@@ -167,6 +174,37 @@ export function ApprovalModal({ isOpen, onClose, request }: ApprovalModalProps) 
                                     value={memberNumber}
                                     onChange={(e) => setMemberNumber(e.target.value)}
                                     placeholder="Ej: 001-2024"
+                                    className="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all font-medium text-slate-900"
+                                />
+                            </div>
+                        </div>
+
+                        <div className="space-y-1.5">
+                            <label className="text-xs font-bold text-slate-400 uppercase tracking-wider ml-1">
+                                Nº REPROCANN (Opcional)
+                            </label>
+                            <div className="relative">
+                                <Hash className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+                                <input
+                                    type="text"
+                                    value={reprocanNumber}
+                                    onChange={(e) => setReprocanNumber(e.target.value)}
+                                    placeholder="Ej: 725901"
+                                    className="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all font-medium text-slate-900"
+                                />
+                            </div>
+                        </div>
+
+                        <div className="space-y-1.5">
+                            <label className="text-xs font-bold text-slate-400 uppercase tracking-wider ml-1">
+                                Vencimiento (Opcional)
+                            </label>
+                            <div className="relative">
+                                <FileText className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+                                <input
+                                    type="date"
+                                    value={reprocanExpiration}
+                                    onChange={(e) => setReprocanExpiration(e.target.value)}
                                     className="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all font-medium text-slate-900"
                                 />
                             </div>

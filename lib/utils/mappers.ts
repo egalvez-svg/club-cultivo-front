@@ -27,10 +27,12 @@ export const ENUM_TRANSLATIONS: Record<string, string> = {
     BUDTENDER: "Budtender / Dispensador",
     PATIENT: "Paciente",
     DOCTOR: "Médico / Doctor",
+    APPLICANT: "Postulante",
 
     // Reprocann Statuses
     EXPIRED: "Vencido",
     PENDING_RENEWAL: "Renovación Pendiente",
+    PENDING_VALIDATION: "Pendiente de Validación",
     REJECTED: "Rechazado",
 
     // Strain Types

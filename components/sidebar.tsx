@@ -22,20 +22,23 @@ import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "@/context/auth-context";
 import { useUI } from "@/context/ui-context";
+import { usePendingCount } from "@/lib/hooks/useMemberships";
 import { X } from "lucide-react";
 
 export function Sidebar() {
     const pathname = usePathname();
     const { user } = useAuth();
     const { isSidebarOpen, closeSidebar } = useUI();
+    const { data: pendingCountData } = usePendingCount();
+    const pendingCount = pendingCountData?.count ?? 0;
 
-    // No mostrar el sidebar en las rutas de autenticación
-    if (pathname?.startsWith("/auth")) {
+    // No mostrar el sidebar en rutas públicas
+    if (pathname?.startsWith("/auth") || pathname === "/postulacion") {
         return null;
     }
 
 
-    let sections: { title?: string, items: any[] }[] = [];
+    let sections: { title?: string, items: { icon: any; label: string; href: string; badge?: number }[] }[] = [];
     const isActive = (href: string) => pathname === href;
 
     if (user?.activeRole === "PATIENT") {
@@ -48,9 +51,17 @@ export function Sidebar() {
                 ]
             }
         ];
+    } else if (user?.activeRole === "APPLICANT") {
+        sections = [
+            {
+                items: [
+                    { icon: Home, label: "Estado del Trámite", href: "/paciente" },
+                ]
+            }
+        ];
     } else {
         const adminItems = [
-            { icon: ShieldAlert, label: "Membresías", href: "/dashboard/membership/pending" },
+            { icon: ShieldAlert, label: "Membresías", href: "/memberships", badge: pendingCount },
             { icon: UserCog, label: "Personal", href: "/users" },
             { icon: BarChart3, label: "Reportes", href: "/reports" },
         ];
@@ -156,7 +167,12 @@ export function Sidebar() {
                                             "transition-colors",
                                             isActive(item.href) ? "text-primary" : "text-slate-400 group-hover:text-primary"
                                         )} />
-                                        <span className="text-sm">{item.label}</span>
+                                        <span className="text-sm flex-1">{item.label}</span>
+                                        {item.badge != null && item.badge > 0 && (
+                                            <span className="ml-auto min-w-5 h-5 px-1.5 bg-amber-500 text-white text-[10px] font-black rounded-full flex items-center justify-center">
+                                                {item.badge > 99 ? "99+" : item.badge}
+                                            </span>
+                                        )}
                                         {isActive(item.href) && (
                                             <motion.div
                                                 layoutId="active-pill"

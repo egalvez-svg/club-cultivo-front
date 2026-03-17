@@ -95,7 +95,7 @@ export default function LoginPage() {
             <div className="hidden lg:flex lg:w-1/2 flex-col justify-between p-12 xl:p-16 bg-[#0a1f18] border-r border-white/5 relative">
                 {/* Background Decor */}
                 <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:32px_32px]" />
-                
+
                 <div className="relative z-10 flex items-center gap-3">
                     <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center p-2">
                         <Image src="/logo.png" alt="Logo" width={32} height={32} className="object-contain brightness-0" />
@@ -114,10 +114,10 @@ export default function LoginPage() {
                     <p className="text-white/40 text-lg max-w-md leading-relaxed">
                         Sistema integral para la trazabilidad y dispensación en asociaciones cannábicas.
                     </p>
-                    
+
                     <div className="flex flex-wrap gap-2 pt-2">
-                        {["Trazabilidad", "Dispensación", "Reportes"].map((s) => (
-                            <span key={s} className="px-4 py-1 rounded-full bg-white/5 border border-white/10 text-[10px] font-bold uppercase tracking-widest text-white/60">
+                        {["Membresías", "Trazabilidad", "Dispensario", "Inventario", "Finanzas", "Reportes"].map((s) => (
+                            <span key={s} className="px-3 py-1 rounded-full bg-white/5 border border-white/10 text-[9px] font-bold uppercase tracking-widest text-white/50">
                                 {s}
                             </span>
                         ))}
@@ -222,7 +222,7 @@ export default function LoginPage() {
                                     <button onClick={handleBackToLogin} className="relative z-10 flex items-center gap-2 text-[9px] font-bold uppercase tracking-widest text-white/30 hover:text-white mb-6 transition-colors">
                                         <ChevronLeft size={14} /> Volver
                                     </button>
-                                    
+
                                     <div className="relative z-10 mb-8">
                                         <h3 className="text-2xl font-black tracking-tight mb-2">IDENTIDAD</h3>
                                         <p className="text-white/40 text-[11px] font-medium uppercase tracking-widest leading-relaxed">

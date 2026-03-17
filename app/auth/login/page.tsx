@@ -89,223 +89,171 @@ export default function LoginPage() {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-[#f8faf9] relative overflow-hidden px-4">
-            {/* Background Decorative Elements */}
-            <div className="absolute top-[-10%] right-[-5%] w-[40%] h-[40%] bg-primary/5 rounded-full blur-3xl animate-pulse" />
-            <div className="absolute bottom-[-10%] left-[-5%] w-[40%] h-[40%] bg-accent/5 rounded-full blur-3xl" />
-
-            <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, ease: "easeOut" }}
-                className="w-full max-w-md relative"
-            >
-                <div className="text-center mb-10">
-                    <motion.div
-                        initial={{ scale: 0.5, opacity: 0 }}
-                        animate={{ scale: 1, opacity: 1 }}
-                        transition={{ type: "spring", stiffness: 200, damping: 15 }}
-                        className="inline-block mb-4"
-                    >
-                        <div className="relative w-24 h-24 mx-auto">
-                            <Image
-                                src="/logo.png"
-                                alt="Club Cultivo Logo"
-                                fill
-                                className="object-contain drop-shadow-xl"
-                                priority
-                            />
-                        </div>
-                    </motion.div>
-                    <h1 className="text-4xl font-extrabold text-primary tracking-tight mb-1">Club Cultivo</h1>
-                    <p className="text-muted-foreground font-medium">Gestión de Cultivo Inteligente</p>
+        <div className="fixed inset-0 flex flex-col lg:flex-row bg-[#081410] text-white font-sans overflow-hidden">
+            <div className="absolute inset-0 bg-[#081410] -z-10" />
+            {/* Left Panel - Branding */}
+            <div className="hidden lg:flex lg:w-1/2 flex-col justify-between p-12 xl:p-16 bg-[#0a1f18] border-r border-white/5 relative">
+                {/* Background Decor */}
+                <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:32px_32px]" />
+                
+                <div className="relative z-10 flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center p-2">
+                        <Image src="/logo.png" alt="Logo" width={32} height={32} className="object-contain brightness-0" />
+                    </div>
+                    <span className="text-lg font-bold tracking-tight">CLUB CULTIVO</span>
                 </div>
 
-                <div className="glass p-8 rounded-[2.5rem] shadow-[0_20px_50px_rgba(45,90,76,0.1)] border border-white/50 backdrop-blur-xl relative overflow-hidden group">
-                    <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent pointer-events-none" />
-
-                    <div className="relative">
-                        <AnimatePresence mode="wait">
-                            {!showRoleSelector ? (
-                                <motion.div
-                                    key="login-form"
-                                    initial={{ opacity: 0, x: -20 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    exit={{ opacity: 0, x: -20 }}
-                                    transition={{ duration: 0.3 }}
-                                >
-                                    <h2 className="text-2xl font-bold mb-8 text-foreground flex items-center gap-2">
-                                        Iniciar Sesión
-                                    </h2>
-
-                                    <form onSubmit={handleSubmit} className="space-y-6">
-                                        <div className="space-y-2">
-                                            <label className="text-sm font-semibold text-muted-foreground ml-1">
-                                                Correo Corporativo
-                                            </label>
-                                            <div className="relative group/input">
-                                                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within/input:text-primary transition-colors">
-                                                    <Mail size={20} />
-                                                </div>
-                                                <input
-                                                    type="email"
-                                                    required
-                                                    value={email}
-                                                    onChange={(e) => setEmail(e.target.value)}
-                                                    className="w-full bg-white/60 border-2 border-transparent rounded-2xl py-3.5 pl-12 pr-4 outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary/20 transition-all text-[15px] shadow-sm hover:bg-white/80"
-                                                    placeholder="admin@clubcultivo.com"
-                                                />
-                                            </div>
-                                        </div>
-
-                                        <div className="space-y-2">
-                                            <div className="flex justify-between items-center ml-1">
-                                                <label className="text-sm font-semibold text-muted-foreground">
-                                                    Contraseña
-                                                </label>
-                                                <Link href="/auth/forgot" className="text-xs font-bold text-primary hover:underline">
-                                                    ¿Olvidaste tu contraseña?
-                                                </Link>
-                                            </div>
-                                            <div className="relative group/input">
-                                                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within/input:text-primary transition-colors">
-                                                    <Lock size={20} />
-                                                </div>
-                                                <input
-                                                    type={showPassword ? "text" : "password"}
-                                                    required
-                                                    value={password}
-                                                    onChange={(e) => setPassword(e.target.value)}
-                                                    className="w-full bg-white/60 border-2 border-transparent rounded-2xl py-3.5 pl-12 pr-12 outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary/20 transition-all text-[15px] shadow-sm hover:bg-white/80"
-                                                    placeholder="••••••••"
-                                                />
-                                                <button
-                                                    type="button"
-                                                    onClick={() => setShowPassword(!showPassword)}
-                                                    className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-primary transition-all duration-200 hover:scale-110 active:scale-95 focus:outline-none"
-                                                    aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
-                                                >
-                                                    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-                                                </button>
-                                            </div>
-                                        </div>
-
-                                        {loginMutation.isError && (
-                                            <motion.div
-                                                initial={{ opacity: 0, scale: 0.95 }}
-                                                animate={{ opacity: 1, scale: 1 }}
-                                                className="bg-destructive/10 border border-destructive/20 text-destructive text-sm font-semibold p-4 rounded-2xl flex items-center gap-3"
-                                            >
-                                                <div className="w-2 h-2 rounded-full bg-destructive" />
-                                                {loginMutation.error instanceof Error ? loginMutation.error.message : "Credenciales inválidas"}
-                                            </motion.div>
-                                        )}
-
-                                        <button
-                                            type="submit"
-                                            disabled={loginMutation.isPending}
-                                            className="w-full py-4.5 bg-primary text-primary-foreground rounded-2xl font-bold flex items-center justify-center gap-3 shadow-xl shadow-primary/30 transition-all hover:bg-primary/95 hover:shadow-2xl hover:-translate-y-0.5 active:scale-[0.97] disabled:opacity-70 disabled:active:scale-100 disabled:hover:translate-y-0 cursor-pointer overflow-hidden relative group/btn"
-                                        >
-                                            <div className="absolute inset-0 bg-white/10 translate-y-full group-hover/btn:translate-y-0 transition-transform duration-300" />
-                                            {loginMutation.isPending ? (
-                                                <Loader2 className="animate-spin" size={22} />
-                                            ) : (
-                                                <>
-                                                    <span className="relative">Acceder al Panel</span>
-                                                    <ArrowRight className="relative group-hover/btn:translate-x-1 transition-transform" size={20} />
-                                                </>
-                                            )}
-                                        </button>
-                                    </form>
-
-                                    <div className="mt-10 pt-8 border-t border-border flex flex-col items-center gap-4">
-                                        <div className="flex items-center gap-2 text-xs text-muted-foreground font-medium">
-                                            <ShieldCheck size={14} className="text-accent" />
-                                            Conexión segura y cifrada
-                                        </div>
-                                        <p className="text-sm text-muted-foreground font-medium">
-                                            ¿Queres ser parte del club?{" "}
-                                            <Link href="/postulacion" className="text-primary font-bold hover:underline">
-                                                Postulate como socio
-                                            </Link>
-                                        </p>
-                                    </div>
-                                </motion.div>
-                            ) : (
-                                <motion.div
-                                    key="role-selector"
-                                    initial={{ opacity: 0, x: 20 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    exit={{ opacity: 0, x: 20 }}
-                                    transition={{ duration: 0.3 }}
-                                >
-                                    <button
-                                        onClick={handleBackToLogin}
-                                        className="flex items-center gap-1 text-sm font-bold text-muted-foreground hover:text-foreground transition-colors mb-6"
-                                    >
-                                        <ChevronLeft size={16} />
-                                        Volver
-                                    </button>
-
-                                    <div className="text-center mb-8">
-                                        <h2 className="text-2xl font-black text-foreground mb-2">¿Cómo querés ingresar?</h2>
-                                        <p className="text-sm text-muted-foreground font-medium">
-                                            Hola <span className="text-foreground font-bold">{pendingAuthData?.user?.fullName || pendingAuthData?.user?.name}</span>, seleccioná tu rol para continuar.
-                                        </p>
-                                    </div>
-
-                                    <div className="space-y-3">
-                                        {availableRoles.map((role, index) => {
-                                            const config = ROLE_CONFIG[role.name] || {
-                                                icon: Shield,
-                                                label: role.name,
-                                                description: "Acceso al sistema",
-                                                color: "text-primary",
-                                            };
-                                            const Icon = config.icon;
-
-                                            return (
-                                                <motion.button
-                                                    key={role.id}
-                                                    initial={{ opacity: 0, y: 10 }}
-                                                    animate={{ opacity: 1, y: 0 }}
-                                                    transition={{ delay: index * 0.1 }}
-                                                    onClick={() => handleRoleSelect(role.name)}
-                                                    className="w-full flex items-center gap-4 p-4 bg-white/60 hover:bg-white/90 border-2 border-transparent hover:border-primary/20 rounded-2xl transition-all hover:-translate-y-0.5 hover:shadow-lg group/role cursor-pointer"
-                                                >
-                                                    <div className={`w-12 h-12 rounded-2xl bg-current/10 flex items-center justify-center ${config.color}`} style={{ backgroundColor: "currentcolor", opacity: 0.1, position: "relative" }}>
-                                                        <Icon size={24} className={`${config.color} absolute`} style={{ opacity: 1 }} />
-                                                    </div>
-                                                    <div className="flex-1 text-left">
-                                                        <p className="font-bold text-foreground">{config.label}</p>
-                                                        <p className="text-xs text-muted-foreground font-medium">{config.description}</p>
-                                                    </div>
-                                                    <ArrowRight size={18} className="text-muted-foreground group-hover/role:text-primary group-hover/role:translate-x-1 transition-all" />
-                                                </motion.button>
-                                            );
-                                        })}
-                                    </div>
-
-                                    {availableRoles.some(r => r.isDefault) && (
-                                        <p className="text-center text-[11px] text-muted-foreground/60 font-medium mt-6">
-                                            Tu rol predeterminado es <span className="font-bold">{ROLE_CONFIG[availableRoles.find(r => r.isDefault)?.name || ""]?.label || "—"}</span>
-                                        </p>
-                                    )}
-                                </motion.div>
-                            )}
-                        </AnimatePresence>
+                <div className="relative z-10 space-y-8">
+                    <h1 className="text-5xl xl:text-6xl font-black leading-[1.1] tracking-tighter">
+                        GESTIÓN DE
+                        <br />
+                        <span className="text-primary">CULTIVO</span>
+                        <br />
+                        INTELIGENTE
+                    </h1>
+                    <p className="text-white/40 text-lg max-w-md leading-relaxed">
+                        Sistema integral para la trazabilidad y dispensación en asociaciones cannábicas.
+                    </p>
+                    
+                    <div className="flex flex-wrap gap-2 pt-2">
+                        {["Trazabilidad", "Dispensación", "Reportes"].map((s) => (
+                            <span key={s} className="px-4 py-1 rounded-full bg-white/5 border border-white/10 text-[10px] font-bold uppercase tracking-widest text-white/60">
+                                {s}
+                            </span>
+                        ))}
                     </div>
                 </div>
 
-                <motion.p
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 1 }}
-                    className="text-center mt-12 text-[11px] font-bold text-muted-foreground/60 uppercase tracking-widest"
-                >
-                    © {new Date().getFullYear()} Club Cultivo • Versión PRO 2.0
-                </motion.p>
-            </motion.div>
+                <div className="relative z-10 text-[10px] font-bold text-white/20 uppercase tracking-[0.3em]">
+                    SISTEMA PROFESIONAL • v2.0
+                </div>
+            </div>
+
+            {/* Right Panel - Form */}
+            <div className="flex-1 flex flex-col items-center justify-center p-8 bg-[#081410]">
+                <div className="w-full max-w-[360px] space-y-8">
+                    {/* Header */}
+                    <div className="text-left space-y-2">
+                        <h2 className="text-3xl font-black tracking-tight">ACCESO</h2>
+                        <p className="text-white/40 text-sm font-medium">Ingresá tus credenciales para continuar.</p>
+                    </div>
+
+                    <form onSubmit={handleSubmit} className="space-y-6">
+                        <div className="space-y-4">
+                            <div className="space-y-2">
+                                <label className="text-[10px] font-bold uppercase tracking-widest text-white/30 ml-1">Email</label>
+                                <div className="relative group">
+                                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-primary transition-colors" size={18} />
+                                    <input
+                                        type="email"
+                                        required
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                        className="w-full bg-white/[0.03] border border-white/10 rounded-xl py-3 pl-11 pr-4 outline-none focus:border-primary/50 focus:bg-white/5 transition-all text-sm font-medium"
+                                        placeholder="admin@clubcultivo.com"
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="space-y-2">
+                                <div className="flex justify-between px-1">
+                                    <label className="text-[10px] font-bold uppercase tracking-widest text-white/30">Password</label>
+                                    <Link href="/auth/forgot" className="text-[9px] font-bold uppercase tracking-widest text-primary hover:underline">¿Olvidaste la clave?</Link>
+                                </div>
+                                <div className="relative group">
+                                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-primary transition-colors" size={18} />
+                                    <input
+                                        type={showPassword ? "text" : "password"}
+                                        required
+                                        value={password}
+                                        onChange={(e) => setPassword(e.target.value)}
+                                        className="w-full bg-white/[0.03] border border-white/10 rounded-xl py-3 pl-11 pr-12 outline-none focus:border-primary/50 focus:bg-white/5 transition-all text-sm font-medium"
+                                        placeholder="••••••••"
+                                    />
+                                    <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-white/20 hover:text-white transition-colors">
+                                        {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        {loginMutation.isError && (
+                            <div className="p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-[10px] font-bold uppercase flex items-center gap-3">
+                                <div className="w-1.5 h-1.5 rounded-full bg-red-500" />
+                                {loginMutation.error instanceof Error ? loginMutation.error.message : "Error de acceso"}
+                            </div>
+                        )}
+
+                        <button
+                            type="submit"
+                            disabled={loginMutation.isPending}
+                            className="w-full py-4 bg-primary text-white rounded-xl font-bold uppercase tracking-widest text-xs flex items-center justify-center gap-2 hover:bg-primary/90 transition-all active:scale-[0.98] disabled:opacity-50"
+                        >
+                            {loginMutation.isPending ? <Loader2 className="animate-spin" size={20} /> : (
+                                <>
+                                    <span>Ingresar</span>
+                                    <ArrowRight size={18} />
+                                </>
+                            )}
+                        </button>
+                    </form>
+
+                    <div className="pt-6 border-t border-white/5 flex flex-col items-center gap-4">
+                        <div className="flex items-center gap-2 text-[8px] text-white/20 font-bold uppercase tracking-widest">
+                            <ShieldCheck size={12} className="text-primary" />
+                            Seguridad SSL 256-bit
+                        </div>
+                        <p className="text-[10px] text-white/40">
+                            ¿Necesitás ayuda? <Link href="/postulacion" className="text-primary font-bold hover:underline">Contactar soporte</Link>
+                        </p>
+                    </div>
+
+                    <AnimatePresence>
+                        {showRoleSelector && (
+                            <motion.div
+                                initial={{ opacity: 0, scale: 0.9 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                className="fixed inset-0 z-50 flex items-center justify-center bg-[#081410]/90 backdrop-blur-sm p-6"
+                            >
+                                <div className="w-full max-w-[400px] bg-[#0a1f18] border border-white/10 rounded-[2rem] p-8 shadow-2xl relative overflow-hidden">
+                                    <button onClick={handleBackToLogin} className="relative z-10 flex items-center gap-2 text-[9px] font-bold uppercase tracking-widest text-white/30 hover:text-white mb-6 transition-colors">
+                                        <ChevronLeft size={14} /> Volver
+                                    </button>
+                                    
+                                    <div className="relative z-10 mb-8">
+                                        <h3 className="text-2xl font-black tracking-tight mb-2">IDENTIDAD</h3>
+                                        <p className="text-white/40 text-[11px] font-medium uppercase tracking-widest leading-relaxed">
+                                            Hola <span className="text-primary">{pendingAuthData?.user?.fullName || pendingAuthData?.user?.name}</span>, seleccioná tu rol.
+                                        </p>
+                                    </div>
+
+                                    <div className="relative z-10 space-y-3">
+                                        {availableRoles.map((role) => {
+                                            const config = ROLE_CONFIG[role.name] || { icon: Shield, label: role.name, description: "Entrar", color: "text-primary" };
+                                            return (
+                                                <button
+                                                    key={role.id}
+                                                    onClick={() => handleRoleSelect(role.name)}
+                                                    className="w-full flex items-center gap-4 p-4 bg-white/5 border border-white/10 rounded-2xl hover:bg-white/10 hover:border-primary/40 transition-all group text-left"
+                                                >
+                                                    <div className={`w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center ${config.color}`}>
+                                                        <config.icon size={20} />
+                                                    </div>
+                                                    <div className="flex-1">
+                                                        <p className="text-sm font-bold uppercase tracking-tight">{config.label}</p>
+                                                        <p className="text-[9px] text-white/20 font-medium uppercase tracking-widest">{config.description}</p>
+                                                    </div>
+                                                    <ArrowRight size={16} className="text-white/10 group-hover:text-primary transition-colors" />
+                                                </button>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
+                </div>
+            </div>
         </div>
     );
 }

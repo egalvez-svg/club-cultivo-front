@@ -75,29 +75,33 @@ export default function DispensationsPage() {
             return;
         }
 
+        // Validaciones previas al estado
+        const existing = cartItems.find(item => item.product.id === product.id);
+        
+        if (totalGrams + product.equivalentDryGrams > 40) {
+            sileo.error({
+                title: "Límite de Dispensación",
+                description: "No se pueden superar los 40g por operación."
+            });
+            return;
+        }
+
+        if (existing && existing.quantity >= product.currentStock) {
+            sileo.error({ title: "Límite excedido", description: "No puedes agregar más del stock disponible." });
+            return;
+        }
+
         setCartItems(prev => {
-            const existing = prev.find(item => item.product.id === product.id);
-            const additionalGrams = product.equivalentDryGrams;
+            const isAlreadyInCart = prev.some(item => item.product.id === product.id);
 
-            if (totalGrams + additionalGrams > 40) {
-                sileo.error({
-                    title: "Límite de Dispensación",
-                    description: "No se pueden superar los 40g por operación."
-                });
-                return prev;
-            }
-
-            if (existing) {
-                if (existing.quantity >= product.currentStock) {
-                    sileo.error({ title: "Límite excedido", description: "No puedes agregar más del stock disponible." });
-                    return prev;
-                }
+            if (isAlreadyInCart) {
                 return prev.map(item =>
                     item.product.id === product.id
                         ? { ...item, quantity: item.quantity + 1 }
                         : item
                 );
             }
+
             return [...prev, {
                 product,
                 quantity: 1,
@@ -108,29 +112,34 @@ export default function DispensationsPage() {
     };
 
     const handleUpdateQuantity = (productId: string, delta: number) => {
-        setCartItems(prev => prev.map(item => {
-            if (item.product.id === productId) {
-                const newQty = Math.max(1, item.quantity + delta);
+        const item = cartItems.find(i => i.product.id === productId);
+        if (!item) return;
 
-                if (delta > 0) {
-                    const additionalGrams = item.product.equivalentDryGrams;
-                    if (totalGrams + additionalGrams > 40) {
-                        sileo.error({
-                            title: "Límite de Dispensación",
-                            description: "No se pueden superar los 40g por operación."
-                        });
-                        return item;
-                    }
-                }
+        const newQty = item.quantity + delta;
 
-                if (newQty > item.product.currentStock) {
-                    sileo.error({ title: "Límite excedido", description: "No puedes superar el stock actual." });
-                    return item;
-                }
-                return { ...item, quantity: newQty };
+        // Validaciones
+        if (delta > 0) {
+            if (totalGrams + item.product.equivalentDryGrams > 40) {
+                sileo.error({
+                    title: "Límite de Dispensación",
+                    description: "No se pueden superar los 40g por operación."
+                });
+                return;
             }
-            return item;
-        }));
+
+            if (newQty > item.product.currentStock) {
+                sileo.error({ title: "Límite excedido", description: "No puedes superar el stock actual." });
+                return;
+            }
+        }
+
+        if (newQty < 1) return;
+
+        setCartItems(prev => prev.map(i =>
+            i.product.id === productId
+                ? { ...i, quantity: newQty }
+                : i
+        ));
     };
 
     const handleRemoveFromCart = (productId: string) => {

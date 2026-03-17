@@ -198,14 +198,17 @@ export default function LoginPage() {
                         </button>
                     </form>
 
-                    <div className="pt-6 border-t border-white/5 flex flex-col items-center gap-4">
+                    <div className="pt-8 border-t border-white/5 flex flex-col items-center gap-5">
                         <div className="flex items-center gap-2 text-[8px] text-white/20 font-bold uppercase tracking-widest">
-                            <ShieldCheck size={12} className="text-primary" />
-                            Seguridad SSL 256-bit
+                            <ShieldCheck size={14} className="text-primary" />
+                            Protocolo de Seguridad SSL
                         </div>
-                        <p className="text-[10px] text-white/40">
-                            ¿Necesitás ayuda? <Link href="/postulacion" className="text-primary font-bold hover:underline">Contactar soporte</Link>
-                        </p>
+                        <div className="flex flex-col items-center gap-2">
+                            <p className="text-[10px] text-white/40 font-bold uppercase tracking-widest">¿Sos nuevo en el club?</p>
+                            <Link href="/postulacion" className="px-6 py-2 rounded-full border border-primary/30 text-primary font-black uppercase tracking-widest text-[9px] hover:bg-primary hover:text-[#081410] transition-all">
+                                Solicitar Ingreso
+                            </Link>
+                        </div>
                     </div>
 
                     <AnimatePresence>

@@ -80,86 +80,153 @@ export default function AvailabilityConfigPage() {
         return acc;
     }, {});
 
+    // Calendar Constants
+    const START_HOUR = 8;
+    const END_HOUR = 21;
+    const HOURS = Array.from({ length: END_HOUR - START_HOUR + 1 }, (_, i) => START_HOUR + i);
+    const DAYS = [1, 2, 3, 4, 5, 6, 0]; // Lunes to Domingo
+
+    const timeToMinutes = (time: string) => {
+        const [h, m] = time.split(":").map(Number);
+        return h * 60 + m;
+    };
+
+    const getPosition = (startTime: string, endTime: string) => {
+        const startMin = timeToMinutes(startTime);
+        const endMin = timeToMinutes(endTime);
+        const calendarStartMin = START_HOUR * 60;
+        const calendarTotalMin = (END_HOUR - START_HOUR + 1) * 60;
+
+        const top = ((startMin - calendarStartMin) / calendarTotalMin) * 100;
+        const height = ((endMin - startMin) / calendarTotalMin) * 100;
+
+        return { top: `${top}%`, height: `${height}%` };
+    };
+
+    const getReasonColor = (reason: AppointmentReason) => {
+        switch (reason) {
+            case "MEDICAL_CONSULTATION": return "bg-blue-500/10 border-blue-500/20 text-blue-600";
+            case "DISPENSATION": return "bg-emerald-500/10 border-emerald-500/20 text-emerald-600";
+            case "REPROCAN_RENEWAL": return "bg-purple-500/10 border-purple-500/20 text-purple-600";
+            default: return "bg-slate-500/10 border-slate-500/20 text-slate-600";
+        }
+    };
+
     return (
         <div className="space-y-8 pb-10">
             {/* Header */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <h1 className="text-3xl font-extrabold tracking-tight">Malla Horaria</h1>
+                    <h1 className="text-4xl font-black tracking-tightest">Malla Horaria</h1>
                     <p className="text-muted-foreground mt-1 text-sm font-medium">
-                        Configura los horarios disponibles para turnos en tu organizacion.
+                        Configura los bloques de disponibilidad semanal de tu organización.
                     </p>
                 </div>
-                <button
-                    onClick={() => { resetForm(); setIsModalOpen(true); }}
-                    className="flex items-center justify-center gap-2 bg-primary text-primary-foreground px-5 py-2.5 rounded-xl font-bold shadow-lg shadow-primary/20 hover:bg-primary/90 transition-all hover:-translate-y-0.5 active:scale-95"
-                >
-                    <Plus size={18} />
-                    <span>Nueva Regla</span>
-                </button>
+                <div className="flex items-center gap-3">
+                    <button
+                        onClick={() => { resetForm(); setIsModalOpen(true); }}
+                        className="flex items-center justify-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-2xl font-bold shadow-xl shadow-primary/20 hover:bg-primary/90 transition-all hover:-translate-y-1 active:scale-95"
+                    >
+                        <Plus size={20} />
+                        <span>Nueva Regla</span>
+                    </button>
+                </div>
             </div>
 
-            {/* Weekly Grid */}
+            {/* Calendar View */}
             {isLoading ? (
-                <div className="flex items-center justify-center h-[40vh]">
-                    <Loader2 className="animate-spin text-primary" size={40} />
+                <div className="flex items-center justify-center h-[50vh]">
+                    <div className="flex flex-col items-center gap-4">
+                        <Loader2 className="animate-spin text-primary" size={40} />
+                        <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Cargando disponibilidad...</p>
+                    </div>
                 </div>
             ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                    {[1, 2, 3, 4, 5, 6, 0].map((day) => {
-                        const dayConfigs = byDay[day] || [];
-                        return (
-                            <motion.div
-                                key={day}
-                                initial={{ opacity: 0, y: 10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: day * 0.03 }}
-                                className="glass rounded-[2rem] border border-white/50 shadow-sm bg-white/40 backdrop-blur-md overflow-hidden"
-                            >
-                                <div className="px-6 py-4 border-b border-white/40 bg-muted/10">
-                                    <h3 className="font-black text-sm uppercase tracking-widest text-slate-700">
-                                        {WEEKDAY_LABELS[day]}
-                                    </h3>
+                <div className="glass rounded-[2.5rem] border border-white/50 shadow-2xl bg-white/40 backdrop-blur-xl overflow-hidden">
+                    <div className="overflow-x-auto">
+                        <div className="min-w-[800px] flex flex-col">
+                            {/* Days Header */}
+                            <div className="flex border-b border-white/40 bg-muted/5">
+                                <div className="w-20 shrink-0 border-r border-white/20" />
+                                {DAYS.map(day => (
+                                    <div key={day} className="flex-1 py-4 text-center border-r border-white/10 last:border-r-0">
+                                        <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
+                                            {WEEKDAY_LABELS[day].slice(0, 3)}
+                                        </span>
+                                        <h4 className="text-sm font-black text-slate-700">{WEEKDAY_LABELS[day]}</h4>
+                                    </div>
+                                ))}
+                            </div>
+
+                            {/* Grid Body */}
+                            <div className="relative flex h-[800px]">
+                                {/* Time Scale */}
+                                <div className="w-20 shrink-0 border-r border-white/20 bg-muted/5 relative">
+                                    {HOURS.map(hour => (
+                                        <div key={hour} className="absolute w-full text-center" style={{ top: `${((hour - START_HOUR) / (END_HOUR - START_HOUR + 1)) * 100}%` }}>
+                                            <span className="text-[10px] font-bold text-slate-400 -translate-y-1/2 inline-block bg-white/50 px-2 rounded-full">
+                                                {String(hour).padStart(2, '0')}:00
+                                            </span>
+                                        </div>
+                                    ))}
                                 </div>
-                                <div className="p-4 space-y-3 min-h-[120px]">
-                                    {dayConfigs.length === 0 ? (
-                                        <p className="text-xs text-muted-foreground text-center py-6 font-medium">
-                                            Sin horarios configurados
-                                        </p>
-                                    ) : (
-                                        dayConfigs.map((c) => (
-                                            <div
-                                                key={c.id}
-                                                className="flex items-center justify-between p-3 bg-white/60 rounded-xl border border-white/40 group"
-                                            >
-                                                <div className="space-y-1">
-                                                    <div className="flex items-center gap-2">
-                                                        <Clock size={12} className="text-primary" />
-                                                        <span className="text-xs font-bold text-slate-700">
-                                                            {c.startTime} - {c.endTime}
-                                                        </span>
-                                                        <span className="text-[10px] font-bold text-muted-foreground bg-muted/30 px-2 py-0.5 rounded-full">
-                                                            {c.slotDuration}min
-                                                        </span>
-                                                    </div>
-                                                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-primary/10 text-primary font-bold text-[10px]">
-                                                        {REASON_LABELS[c.reason as AppointmentReason] || c.reason}
-                                                    </span>
-                                                </div>
-                                                <button
-                                                    onClick={() => handleDelete(c.id)}
-                                                    disabled={deleteMutation.isPending}
-                                                    className="p-2 rounded-lg text-muted-foreground hover:text-red-500 hover:bg-red-500/10 transition-colors opacity-0 group-hover:opacity-100"
-                                                >
-                                                    <Trash2 size={14} />
-                                                </button>
-                                            </div>
-                                        ))
-                                    )}
+
+                                {/* Columns */}
+                                <div className="flex-1 flex relative">
+                                    {/* Background Grid Lines */}
+                                    <div className="absolute inset-0 pointer-events-none">
+                                        {HOURS.map(hour => (
+                                            <div key={hour} className="absolute w-full border-t border-slate-200/30" style={{ top: `${((hour - START_HOUR) / (END_HOUR - START_HOUR + 1)) * 100}%` }} />
+                                        ))}
+                                    </div>
+
+                                    {DAYS.map(day => (
+                                        <div key={day} className="flex-1 relative border-r border-white/10 last:border-r-0 group/col">
+                                            {/* Hover highlight */}
+                                            <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover/col:opacity-100 transition-opacity pointer-events-none" />
+                                            
+                                            {/* Config Blocks */}
+                                            {(byDay[day] || []).map(c => {
+                                                const pos = getPosition(c.startTime, c.endTime);
+                                                const colorClass = getReasonColor(c.reason as AppointmentReason);
+                                                return (
+                                                    <motion.div
+                                                        initial={{ opacity: 0, scale: 0.95 }}
+                                                        animate={{ opacity: 1, scale: 1 }}
+                                                        key={c.id}
+                                                        style={{ position: 'absolute', left: '4px', right: '4px', ...pos }}
+                                                        className={`z-10 rounded-xl border p-2 shadow-sm overflow-hidden group/block hover:shadow-md hover:z-20 transition-all ${colorClass}`}
+                                                    >
+                                                        <div className="flex flex-col h-full justify-between">
+                                                            <div className="space-y-0.5">
+                                                                <p className="text-[9px] font-black leading-tight uppercase tracking-tight">
+                                                                    {REASON_LABELS[c.reason as AppointmentReason] || c.reason}
+                                                                </p>
+                                                                <p className="text-[10px] font-bold opacity-80">
+                                                                    {c.startTime} - {c.endTime}
+                                                                </p>
+                                                            </div>
+                                                            <div className="flex items-center justify-between mt-auto pt-1 border-t border-current/10">
+                                                                <span className="text-[8px] font-black uppercase tracking-widest bg-current/5 px-1.5 py-0.5 rounded-md">
+                                                                    {c.slotDuration}M
+                                                                </span>
+                                                                <button
+                                                                    onClick={() => handleDelete(c.id)}
+                                                                    className="p-1 rounded-md hover:bg-red-500 hover:text-white transition-all opacity-0 group-hover/block:opacity-100"
+                                                                >
+                                                                    <Trash2 size={10} />
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </motion.div>
+                                                );
+                                            })}
+                                        </div>
+                                    ))}
                                 </div>
-                            </motion.div>
-                        );
-                    })}
+                            </div>
+                        </div>
+                    </div>
                 </div>
             )}
 
@@ -188,7 +255,7 @@ export default function AvailabilityConfigPage() {
                                     <div>
                                         <h3 className="text-xl font-black">Nueva Regla de Disponibilidad</h3>
                                         <p className="text-xs font-bold text-muted-foreground opacity-70">
-                                            Define un rango horario para un dia de la semana
+                                            Define un rango horario para un día de la semana
                                         </p>
                                     </div>
                                 </div>
@@ -200,10 +267,10 @@ export default function AvailabilityConfigPage() {
                                 </button>
                             </div>
 
-                            <form onSubmit={handleCreate} className="space-y-6">
+                            <form onSubmit={handleCreate} className="space-y-6 text-slate-700">
                                 {/* Day of week */}
                                 <div className="space-y-2">
-                                    <label className="text-xs font-black text-muted-foreground uppercase tracking-widest ml-1">Dia de la semana</label>
+                                    <label className="text-xs font-black text-muted-foreground uppercase tracking-widest ml-1">Día de la semana</label>
                                     <select
                                         value={dayOfWeek}
                                         onChange={(e) => setDayOfWeek(Number(e.target.value))}
@@ -241,7 +308,7 @@ export default function AvailabilityConfigPage() {
 
                                 {/* Slot duration */}
                                 <div className="space-y-2">
-                                    <label className="text-xs font-black text-muted-foreground uppercase tracking-widest ml-1">Duracion del turno (minutos)</label>
+                                    <label className="text-xs font-black text-muted-foreground uppercase tracking-widest ml-1">Duración del turno (minutos)</label>
                                     <input
                                         type="number"
                                         required
